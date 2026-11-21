@@ -9,5 +9,6 @@ import { RFS69_B } from './rfs69b'
 import { RFS69_C } from './rfs69c'
 import { ADIDAS1014 } from './adidas1014'
 import { ADIDAS1517 } from './adidas1517'
+import { SSG100 } from './ssg100'
 
-export const BOOK_SCENES: Record<string, BookScene> = { ...U6_SCENES, ...U8_SCENES, ...U10_SCENES, ...U12_SCENES, ...FIFA82_SCENES, ...RFS69_A, ...RFS69_B, ...RFS69_C, ...ADIDAS1014, ...ADIDAS1517 }
+export const BOOK_SCENES: Record<string, BookScene> = { ...U6_SCENES, ...U8_SCENES, ...U10_SCENES, ...U12_SCENES, ...FIFA82_SCENES, ...RFS69_A, ...RFS69_B, ...RFS69_C, ...ADIDAS1014, ...ADIDAS1517, ...SSG100 }

@@ -3,6 +3,7 @@ import { EPYSA_ROWS } from './library-epysa'
 import { RFS_69 } from './library-rfs69'
 import { ADIDAS_1014 } from './library-adidas1014'
 import { ADIDAS_1517 } from './library-adidas1517'
+import { SSG_100 } from './library-ssg100'
 
 /**
  * Drills retold briefly from the coach's books (see sources.ts).
@@ -18,4 +19,4 @@ const toDrill = ([id, cat, dia, age, min, players, source, name, desc, equip, po
   points: points.map(([uz, ru]) => ({ uz, ru })),
 })
 
-export const BOOK_DRILLS: Drill[] = [...RFS_69, ...ADIDAS_1014, ...ADIDAS_1517, ...EPYSA_ROWS].map(toDrill)
+export const BOOK_DRILLS: Drill[] = [...RFS_69, ...ADIDAS_1014, ...ADIDAS_1517, ...SSG_100, ...EPYSA_ROWS].map(toDrill)
