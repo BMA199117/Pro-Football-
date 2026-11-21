@@ -5,6 +5,7 @@ import { useT } from '../hooks'
 import { update, useData } from '../store'
 import { parse } from '../dates'
 import { PHASES, type Drill, type Phase } from '../types'
+import { SOURCES } from '../sources'
 
 export function DrillDetail({ drill, onClose }: { drill: Drill; onClose: () => void }) {
   const { t, L, months } = useT()
@@ -36,6 +37,9 @@ export function DrillDetail({ drill, onClose }: { drill: Drill; onClose: () => v
       </div>
       {L(drill.desc) && <p className="lead">{L(drill.desc)}</p>}
       <p className="sub"><b>{t('equip')}:</b> {L(drill.equip)}</p>
+      {drill.source && SOURCES[drill.source] && (
+        <p className="source">📖 {t('source')}: {SOURCES[drill.source].author}, «{SOURCES[drill.source].title}»</p>
+      )}
       {drill.points && drill.points.length > 0 && (
         <div>
           <h3 className="label">{t('points')}</h3>

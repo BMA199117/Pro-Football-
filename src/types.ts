@@ -2,7 +2,7 @@ export type Lang = 'uz' | 'ru'
 export type Text = { uz: string; ru: string }
 export type Category = 'tech' | 'tact' | 'phys' | 'gk'
 export type Phase = 'warm' | 'main' | 'cool'
-export type Diagram = 'dribble' | 'pass' | 'rondo' | 'smallgame' | 'sprint' | 'warmup' | 'shoot' | 'gk'
+export type Diagram = 'dribble' | 'pass' | 'rondo' | 'smallgame' | 'sprint' | 'warmup' | 'shoot' | 'gk' | 'duel' | 'overload'
 
 export interface Drill {
   id: string
@@ -16,6 +16,8 @@ export interface Drill {
   players?: string
   /** Short coaching points shown on the drill card and in run mode. */
   points?: Text[]
+  /** Key of SOURCES when the drill comes from a book. */
+  source?: string
   custom?: boolean
 }
 
@@ -51,3 +53,13 @@ export interface AppData {
 
 export const PHASES: Phase[] = ['warm', 'main', 'cool']
 export const CATEGORIES: Category[] = ['tech', 'tact', 'phys', 'gk']
+
+export type Topic = 'method' | 'game' | 'kids' | 'physical'
+export interface KnowledgeCard {
+  id: string
+  topic: Topic
+  title: Text
+  idea: Text
+  tips: Text[]
+  source: string
+}

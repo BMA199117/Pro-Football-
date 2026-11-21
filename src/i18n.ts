@@ -26,6 +26,9 @@ const uz = {
   points: 'Murabbiy maslahatlari', playersCount: "O'yinchilar", favs: 'Sevimlilar', allAges: 'Barcha yoshlar',
   addTo: "Mashg'ulotga qo'shish", added: "Qo'shildi", start: "Mashg'ulotni boshlash", startTimer: 'Taymerni boshlash', pause: 'Pauza', resume: 'Davom etish',
   next: 'Keyingi', prev: 'Oldingi', finish: 'Tugatish', done: "Mashg'ulot tugadi. Barakalla!", drillOf: 'mashq', search: 'Qidirish',
+  know: 'Bilim', knowSub: "Kitoblardan murabbiy uchun qisqa g'oyalar va maslahatlar", howTo: "Qanday qo'llash",
+  method: 'Uslubiyat', game: "O'yin g'oyalari", kids: 'Bolalar bilan ishlash', physical: 'Jismoniy tayyorgarlik',
+  source: 'Manba', fromBooks: 'Kitoblardan', allSources: 'Barcha manbalar',
   days: ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'],
   months: ['yan', 'fev', 'mar', 'apr', 'may', 'iyn', 'iyl', 'avg', 'sen', 'okt', 'noy', 'dek'],
 }
@@ -56,6 +59,9 @@ const ru: typeof uz = {
   points: 'Советы тренеру', playersCount: 'Игроков', favs: 'Избранное', allAges: 'Все возрасты',
   addTo: 'Добавить в тренировку', added: 'Добавлено', start: 'Начать тренировку', startTimer: 'Запустить таймер', pause: 'Пауза', resume: 'Продолжить',
   next: 'Далее', prev: 'Назад', finish: 'Завершить', done: 'Тренировка окончена. Молодцы!', drillOf: 'упражнение', search: 'Поиск',
+  know: 'Знания', knowSub: 'Короткие идеи и советы тренеру из книг', howTo: 'Как использовать',
+  method: 'Методика', game: 'Идеи игры', kids: 'Работа с детьми', physical: 'Физподготовка',
+  source: 'Источник', fromBooks: 'Из книг', allSources: 'Все источники',
   days: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
   months: ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
 }

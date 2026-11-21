@@ -10,8 +10,13 @@ Tillar: o'zbekcha va ruscha.
 - **Maydonda rejim**: "Mashg'ulotni boshlash" tugmasi mashqlarni birma-bir katta sxema, maslahatlar va taymer bilan ko'rsatadi. Ekran o'chmaydi.
 - **Mashqlar kutubxonasi**: maydon sxemasi, tavsif, jihozlar va murabbiy maslahatlari bilan tayyor mashqlar. Turi, yoshi, sevimlilar bo'yicha filtr va qidiruv. O'z mashqingizni qo'shish.
 - **Jamoa va davomat**: guruhlar (U10, U12...), o'yinchilar ro'yxati, har mashg'ulotda kim kelganini belgilash va davomat foizi.
+- **Bilim**: murabbiy kitoblaridan qisqa g'oyalar va "qanday qo'llash" maslahatlari (uslubiyat, o'yin g'oyalari, bolalar bilan ishlash, jismoniy tayyorgarlik).
 - **Kalendar**: haftalik ko'rinish, kunga bosib yangi mashg'ulot qo'shish.
 - **Sinxronlash**: email orqali kirilsa, telefon va kompyuterdagi ma'lumotlar avtomatik bir xil bo'ladi.
+
+## Mazmun manbalari
+
+Mashqlar (`src/library-books.ts`) va bilim kartalari (`src/knowledge.ts`) murabbiy yuklagan kitoblardan qisqa qayta hikoya qilingan, kitob matni ko'chirilmagan. Har bir yozuvda manba ko'rsatiladi (`src/sources.ts`).
 
 ## Ishga tushirish (dasturchi uchun)
 

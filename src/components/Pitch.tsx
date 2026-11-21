@@ -44,6 +44,17 @@ function shapes(type: Diagram) {
       g.push(goal(186, 35, 40, 'g'), <rect key="box" x={140} y={20} width={52} height={70} fill="none" stroke="#fff" strokeOpacity={0.7} />)
       g.push(P(40, 55, RED, 'p1'), P(110, 40, BLUE, 'p2'), P(182, 55, PURPLE, 'k'), A(48, 53, 102, 42, 'a1'), A(115, 44, 180, 52, 'a2', true), B(44, 57, 'b'))
       break
+    case 'duel':
+      g.push(goal(186, 35, 40, 'g'), <line key="l" x1={120} y1={10} x2={120} y2={100} stroke="#fff" strokeOpacity={0.6} strokeDasharray="5 4" />)
+      g.push(P(40, 55, PURPLE, 'k0'), A(48, 55, 78, 55, 'a0'), P(85, 55, RED, 'p'), B(92, 58, 'b'), P(125, 55, BLUE, 'd'), P(182, 55, PURPLE, 'k'))
+      g.push(<path key="c" d="M92 58 Q110 85 140 70" stroke="#fff" strokeDasharray="4 3" fill="none" strokeWidth={1.5} />, A(140, 70, 178, 58, 'a1'))
+      break
+    case 'overload':
+      g.push(goal(186, 35, 40, 'g'), P(182, 55, PURPLE, 'k'))
+      ;[[60, 30], [70, 55], [60, 80]].forEach(([x, y], i) => g.push(P(x, y, RED, 'r' + i)))
+      ;[[130, 42], [130, 68]].forEach(([x, y], i) => g.push(P(x, y, BLUE, 'u' + i)))
+      g.push(B(76, 58, 'b'), A(76, 55, 112, 30, 'a1'), A(66, 80, 150, 88, 'a2', true), A(66, 30, 150, 20, 'a3', true))
+      break
     case 'gk':
       g.push(goal(186, 30, 50, 'g'), P(176, 55, PURPLE, 'k'), P(110, 55, RED, 'p'), A(118, 52, 176, 36, 'a1', true), A(118, 58, 176, 74, 'a2', true), B(114, 56, 'b'))
       break

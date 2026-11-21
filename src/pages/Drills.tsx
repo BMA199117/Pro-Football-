@@ -18,6 +18,7 @@ export function Drills() {
   const [adding, setAdding] = useState(false)
   const [age, setAge] = useState('')
   const [onlyFav, setOnlyFav] = useState(false)
+  const [onlyBooks, setOnlyBooks] = useState(false)
   const [detail, setDetail] = useState<Drill | null>(null)
   const favs = useData().favorites ?? []
   const ages = ['U8', 'U10', 'U12', 'U14', 'U16']
@@ -28,7 +29,7 @@ export function Drills() {
     const a = Number(age.slice(1))
     return n.length === 0 || (a >= n[0] && a <= (n[1] ?? n[0]))
   }
-  const shown = drills.filter((d) => (cat === 'all' || d.cat === cat) && fitsAge(d.age) && (!onlyFav || favs.includes(d.id)) &&
+  const shown = drills.filter((d) => (cat === 'all' || d.cat === cat) && fitsAge(d.age) && (!onlyFav || favs.includes(d.id)) && (!onlyBooks || !!d.source) &&
     (q === '' || (d.name.uz + ' ' + d.name.ru).toLowerCase().includes(q.toLowerCase())))
 
   return (
@@ -42,6 +43,7 @@ export function Drills() {
           <button key={c} aria-pressed={cat === c} onClick={() => setCat(c)}>{t(c)}</button>
         ))}
         <button aria-pressed={onlyFav} onClick={() => setOnlyFav(!onlyFav)}>★ {t('favs')}</button>
+        <button aria-pressed={onlyBooks} onClick={() => setOnlyBooks(!onlyBooks)}>📖 {t('fromBooks')}</button>
         <select className="sel small" id="drill-age" value={age} onChange={(e) => setAge(e.target.value)} aria-label={t('age')}>
           <option value="">{t('allAges')}</option>
           {ages.map((a) => <option key={a}>{a}</option>)}
@@ -60,6 +62,7 @@ export function Drills() {
                 <span className="chip" style={{ boxShadow: `inset 3px 0 0 ${CAT_COLOR[d.cat]}` }}>{t(d.cat)}</span>
                 <span className="chip">{d.age}</span>
                 <span className="chip cone">{d.min} {t('min')}</span>
+                {d.source && <span className="chip book" title={t('source')}>📖</span>}
               </div>
               {d.custom && (
                 <ConfirmButton label={t('del')} confirmLabel={t('yes')}

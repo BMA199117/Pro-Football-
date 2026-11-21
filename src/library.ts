@@ -68,3 +68,6 @@ const EXTRA: Record<string, { players: string; points: { uz: string; ru: string 
   b12: { players: '1–3', points: [T('Yon tomonga yiqiling, oldinga emas', 'Падайте в сторону, а не вперёд'), T("Qo'llar to'p orqasida", 'Руки за мячом'), T('Tez turib, keyingisiga tayyorlaning', 'Быстро вставайте и готовьтесь')] },
 }
 for (const d of LIBRARY) Object.assign(d, EXTRA[d.id] ?? {})
+
+import { BOOK_DRILLS } from './library-books'
+LIBRARY.push(...BOOK_DRILLS)
