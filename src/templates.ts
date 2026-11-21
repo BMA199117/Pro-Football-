@@ -6,7 +6,8 @@ type Row = [id: string, ages: string, group: string, source: string, title: [str
  * Ready session plans, taken week by week from the books.
  * EPYSA U6–U12 season plans: technical warm-up → small-sided activities → game (same order as the book).
  * The closing game of each week goes at the end of the main part (the books have no separate cool-down).
- * 15–17: sessions built from the FIFA part 8.2 physical exercises, grouped by the quality they train.
+ * RFS 6–9 and adidas 10–14 / 15–17: sessions put together from each programme's block exercises.
+ * 15–17: also sessions built from the FIFA part 8.2 physical exercises, grouped by the quality they train.
  */
 const ROWS: Row[] = [
   // EPYSA U6 — game at the end of each week: 3×3
@@ -79,6 +80,45 @@ const ROWS: Row[] = [
     ["Darvozabonlar maydon o'yinchilari bilan, 4×4 darvozalarga", 'Вратари с полевыми, 4×4 на ворота'], ['e10-22'], ['e10-23', 'e10-24'], ['e12-20']],
   ['u12w10', '11–12', 'U12', 'epysa12', ['10-hafta: darvozabon va zarba', 'Неделя 10: вратарь и удар'],
     ["Siljib ushlash, 2×1 darvozabonlar bilan, 4×4 katta darvozaga", 'Перемещение и ловля, 2×1 с вратарями, 4×4 на большие ворота'], ['e12-18'], ['e12-19', 'e10-24'], ['e12-20']],
+  // RFS 6–9 — one or two sessions per stage (Ball, +Goal, +Opponent, +Partner)
+  ['r69p1', '5–6', 'RFS 6', 'rfs69', ["«To'p» bosqichi: harakat texnikasi", 'Этап «Мяч»: техника передвижения'],
+    ["Yugurish, sakrash, to'xtash va burilish o'yinlarda", 'Бег, прыжки, остановки и повороты в играх'], ['r69-1'], ['r69-2', 'r69-3', 'r69-5'], ['r69-10']],
+  ['r69p2', '5–6', 'RFS 6', 'rfs69', ["«To'p» bosqichi: olib yurish", 'Этап «Мяч»: ведение мяча'],
+    ["To'pni «qadamda», tezlikda va yo'nalish o'zgartirib olib yurish", 'Ведение «в шаге», на скорости, со сменой направления'], ['r69-4'], ['r69-6', 'r69-8', 'r69-9'], ['r69-10']],
+  ['r69p3', '7–8', 'RFS 7', 'rfs69', ["«To'p + darvoza»: burilishlar", 'Этап «Мяч + ворота»: развороты'],
+    ["Olib yurish, burilish va chiziqni egallash", 'Ведение, развороты и взятие линии'], ['r69-12'], ['r69-17', 'r69-18'], ['r69-20']],
+  ['r69p4', '7–8', 'RFS 7', 'rfs69', ["«To'p + darvoza»: zarba", 'Этап «Мяч + ворота»: удар'],
+    ["Oyoq yuzi bilan zarba, startdan keyin zarba, 1×1 ikki darvozaga", 'Удар подъёмом, удар после старта, 1×1 в двое ворот'], ['r69-14'], ['r69-21', 'r69-24'], ['r69-25']],
+  ['r69p5', '7–8', 'RFS 8', 'rfs69', ["«+ raqib»: 1×1 da aldash", 'Этап «+ соперник»: финты в 1×1'],
+    ["Yuzma-yuz va yonlab 1×1, fint va tezlanish", '1×1 лицом и боком, финт и ускорение'], ['r69-26'], ['r69-27', 'r69-28'], ['r69-30']],
+  ['r69p6', '7–8', 'RFS 8', 'rfs69', ["«+ raqib»: 1×1 va zarba", 'Этап «+ соперник»: 1×1 и удар'],
+    ["Yondan quvlovchi himoyachi, start 1×1, ikki darvozabon", 'Защитник сбоку, старты 1×1, два вратаря'], ['r69-26'], ['r69-36', 'r69-39'], ['r69-41']],
+  ['r69p7', '9–10', 'RFS 9', 'rfs69', ["«+ sherik»: pas va 2×1", 'Этап «+ партнёр»: пас и 2×1'],
+    ["Aniq pas, ko'pchilikda hujum, 2×2 to'rt darvozaga", 'Точный пас, атака в большинстве, 2×2 в четверо ворот'], ['r69-43'], ['r69-44', 'r69-45'], ['r69-47']],
+  ['r69p8', '9–10', 'RFS 9', 'rfs69', ["«+ sherik»: 2×2 va bosh bilan o'yin", 'Этап «+ партнёр»: 2×2 и игра головой'],
+    ["Bosh bilan pas, 2×2 chiziqni egallash, 2×1 uchta darvozaga", 'Передачи головой, 2×2 взятие линии, 2×1 в трое ворот'], ['r69-69'], ['r69-57', 'r69-64'], ['r69-65']],
+  // adidas / RFS 10–14 — sessions from the block exercises
+  ['a14p1', '11–12', '10–11', 'adidas1014', ['Olib yurish va 1×1 (1-blok)', 'Ведение и 1×1 (блок 1)'],
+    ["Stoykalarni aylanib olib yurish, 1×1 ikki darvozaga, 4×4 chiziqni egallash", 'Обводка стоек, 1×1 в двое ворот, 4×4 взятие линии'], ['a14-1'], ['a14-12', 'a14-2'], []],
+  ['a14p2', '11–12', '10–11', 'adidas1014', ['Pas va kvadratlar', 'Передачи и квадраты'],
+    ["Konus darvozachalar orqali pas, 3×1 va 3×2, 4×4 to'rt darvozaga", 'Пас через ворота из конусов, 3×1 и 3×2, 4×4 в четверо ворот'], ['a14-9'], ['a14-4', 'a14-5'], ['a14-10']],
+  ['a14p3', '11–12', '12', 'adidas1014', ['Yuqori pas', 'Передача верхом'],
+    ["Juftlikda yuqori pas va zarba, ikki kvadrat 4×2, 4×4 yuqori pas bilan", 'Передача верхом в парах и удар, два квадрата 4×2, 4×4 с передачами верхом'], ['a14-14'], ['a14-16', 'a14-17'], []],
+  ['a14p4', '11–12', '12', 'adidas1014', ['Juftlikda o\'zaro harakat', 'Взаимодействия в двойках'],
+    ["«Devor», 4×4 zonalar bilan, 3 + darvozabon × 3 + darvozabon", '«Стенка», 4×4 с зонами, 3 + вратарь × 3 + вратарь'], ['a14-18'], ['a14-19'], ['a14-20']],
+  ['a14p5', '13–14', '13', 'adidas1014', ['Uchlikda kombinatsiyalar', 'Комбинации в тройках'],
+    ["Reaksiya estafetalari, uchlikda ishlash, neytrallar bilan o'yin, zonali 8×8", 'Эстафеты на реакцию, работа в тройках, игра с нейтральными, 8×8 по зонам'], ['a14-24'], ['a14-21', 'a14-22'], ['a14-23']],
+  ['a14p6', '13–14', '14', 'adidas1014', ['Yakunlash va qanot hujumi', 'Завершение и атака по флангу'],
+    ["1×1 darvozaga, yuqori uzatma va bosh, 6×6 qanotdan hujum", '1×1 с атакой ворот, передача верхом и удар головой, 6×6 атака по флангу'], ['a14-25'], ['a14-26'], ['a14-27']],
+  ['a14p7', '13–14', '14', 'adidas1014', ["Chiziqlar va zonalar", 'Линии и зоны'],
+    ["Chiziqlar orasidan pas, zonali 8×8, 11×11 zonalar bo'yicha", 'Передача между линиями, 8×8 по зонам, 11×11 по зонам'], ['a14-8'], ['a14-23'], ['a14-28']],
+  // adidas / RFS 15–17 — group tactics
+  ['a17p1', '15–17', '15', 'adidas1517', ['Hujumni boshlash (1-zona)', 'Начало атаки (зона 1)'],
+    ["Yoriuvchi paslar, markazdan va qanotdan boshlash, yo'nalishni o'zgartirish", 'Проникающие передачи, начало по центру и по флангу, смена направления'], ['a17-4'], ['a17-1', 'a17-2'], ['a17-3']],
+  ['a17p2', '15–17', '15', 'adidas1517', ['Hujumni yakunlash', 'Завершение атак'],
+    ["Ozchilikda himoya, 3×2 va 4×2 yakunlash, 5×4 chiziqni kesish", 'Оборона в меньшинстве, завершение 3×2 и 4×2, 5×4 с выходом 1 на 1'], ['a17-8'], ['a17-6', 'a17-7'], ['a17-5']],
+  ['a17p3', '15–17', '16–17', 'adidas1517', ['Qanotdan hujum', 'Атака по флангу'],
+    ["8×4 yoriuvchi paslar, 7×5 uzatmadan gol, 7 + darvozabon × 7", '8×4 проникающие передачи, 7×5 гол после передачи, 7 + вратарь × 7'], ['a17-9'], ['a17-10'], ['a17-11']],
   // FIFA 8.2 — 15–17
   ['f82s1', '15–17', 'U16', 'fifa82', ['Aerob chidamlilik', 'Аэробная выносливость'],
     ["Koordinatsiya, to'p bilan aylana, 6×6 fartlek", 'Координация, круг с мячом, игра 6×6 (фартлек)'], ['f82-25'], ['f82-2', 'f82-4'], []],
@@ -92,7 +132,7 @@ const ROWS: Row[] = [
     ["To'rt stansiya, keyin 5×5 o'yin", 'Четыре станции, затем игра 5×5'], ['f82-25', 'f82-26'], ['f82-27', 'f82-28', 'f82-11'], []],
 ]
 
-export const TEMPLATE_AGES = ['5–6', '7–8', '9–10', '11–12', '15–17']
+export const TEMPLATE_AGES = ['5–6', '7–8', '9–10', '11–12', '13–14', '15–17']
 
 export const TEMPLATES: Template[] = ROWS.map(([id, ages, group, source, title, focus, warm, main, game]) => ({
   id, ages, group, source,
