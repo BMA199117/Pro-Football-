@@ -86,7 +86,7 @@ export function Drills() {
       </div>
       <div className="ages" role="group" aria-label={t('age')}>
         <button aria-pressed={age === ''} onClick={() => setAge('')}>{t('allAges')}<small>{base.length}</small></button>
-        {BANDS.map((b) => (
+        {BANDS.filter((b) => b.id === age || drills.some((d) => fitsBand(d.age, b))).map((b) => (
           <button key={b.id} aria-pressed={age === b.id} onClick={() => setAge(b.id)}>
             {b.label}<span className="yrs">{b.from}–{b.to} {t('years')}</span><small>{base.filter((d) => fitsBand(d.age, b)).length}</small>
           </button>

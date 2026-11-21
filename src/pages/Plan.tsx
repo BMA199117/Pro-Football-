@@ -9,7 +9,7 @@ import { RunSession } from '../components/RunSession'
 import { sampleData } from '../sample'
 import { parse, weekdayIndex } from '../dates'
 import { PHASES, type Drill, type Phase, type Template } from '../types'
-import { TEMPLATES } from '../templates'
+import { TEMPLATES, TEMPLATE_AGES } from '../templates'
 
 export function Plan() {
   const { t, L, days, months } = useT()
@@ -43,7 +43,7 @@ export function Plan() {
       {tplOpen && (
         <Modal title={t('templates')} onClose={() => setTplOpen(false)}>
           <p className="sub" style={{ margin: 0 }}>{t('templatesSub')}</p>
-          {['10–14', '15–17'].map((age) => (
+          {TEMPLATE_AGES.map((age) => (
             <div key={age} className="list">
               <h3 className="label">{age} {t('ages')}</h3>
               {TEMPLATES.filter((x) => x.ages === age).map((x) => (
