@@ -25,6 +25,7 @@ export default function App() {
   const Page = { plan: Plan, drills: Drills, team: Team, cal: Calendar, know: Knowledge }[tab]
   return (
     <div className="app">
+      <header className="mtop" aria-hidden="true"><span className="mbrand">{t('appName')}</span></header>
       <aside className="rail">
         <div className="brand">{t('appName')}<small>{t('sub')}</small></div>
         <nav className="nav">

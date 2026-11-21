@@ -1,12 +1,13 @@
+import { cloneElement, isValidElement, useId } from 'react'
 import type { Diagram } from '../types'
 
-const RED = '#E46E26', BLUE = '#3B6FB6', PURPLE = '#8A5BB8'
-const P = (x: number, y: number, c: string, k: string) => <circle key={k} cx={x} cy={y} r={5} fill={c} stroke="#fff" strokeWidth={1.5} />
-const C = (x: number, y: number, k: string) => <path key={k} d={`M${x - 4} ${y + 4}L${x} ${y - 5}L${x + 4} ${y + 4}Z`} fill="#F08A3C" />
+export const RED = '#E46E26', BLUE = '#3B6FB6', PURPLE = '#8A5BB8'
+export const P = (x: number, y: number, c: string, k: string) => <circle key={k} cx={x} cy={y} r={5} fill={c} stroke="#fff" strokeWidth={1.5} />
+export const C = (x: number, y: number, k: string) => <path key={k} d={`M${x - 4} ${y + 4}L${x} ${y - 5}L${x + 4} ${y + 4}Z`} fill="#F08A3C" />
 const A = (x1: number, y1: number, x2: number, y2: number, k: string, dashed = false) =>
-  <path key={k} d={`M${x1} ${y1}L${x2} ${y2}`} stroke="#fff" strokeWidth={1.6} strokeDasharray={dashed ? '4 3' : undefined} markerEnd="url(#ah)" fill="none" />
-const B = (x: number, y: number, k: string) => <circle key={k} cx={x} cy={y} r={3} fill="#fff" stroke="#16231C" strokeWidth={1} />
-const goal = (x: number, y: number, h: number, k: string) => <rect key={k} x={x} y={y} width={6} height={h} fill="#fff" />
+  <path key={k} d={`M${x1} ${y1}L${x2} ${y2}`} stroke="#fff" strokeWidth={1.6} strokeDasharray={dashed ? '4 3' : undefined} markerEnd="url(#AH)" fill="none" />
+export const B = (x: number, y: number, k: string) => <circle key={k} cx={x} cy={y} r={3} fill="#fff" stroke="#16231C" strokeWidth={1} />
+export const goal = (x: number, y: number, h: number, k: string) => <rect key={k} x={x} y={y} width={6} height={h} fill="#fff" />
 
 function shapes(type: Diagram) {
   const g: React.ReactNode[] = []
@@ -62,11 +63,12 @@ function shapes(type: Diagram) {
   return g
 }
 
-export function Pitch({ type, maxHeight }: { type: Diagram; maxHeight?: number }) {
+/** Grass, lines and the arrow marker shared by the static and animated pitch. */
+export function Field({ markerId, children, maxHeight }: { markerId: string; children: React.ReactNode; maxHeight?: number }) {
   return (
     <svg className="pitch" viewBox="0 0 200 110" style={{ maxHeight }} role="img" aria-hidden="true">
       <defs>
-        <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+        <marker id={markerId} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
           <path d="M0 0L10 5L0 10Z" fill="#fff" />
         </marker>
       </defs>
@@ -74,7 +76,20 @@ export function Pitch({ type, maxHeight }: { type: Diagram; maxHeight?: number }
       <g stroke="#fff" strokeOpacity={0.25}>
         <line x1="0" y1="27" x2="200" y2="27" /><line x1="0" y1="55" x2="200" y2="55" /><line x1="0" y1="82" x2="200" y2="82" />
       </g>
-      {shapes(type)}
+      {children}
     </svg>
   )
+}
+
+export function Pitch({ type, maxHeight }: { type: Diagram; maxHeight?: number }) {
+  // each SVG needs its own marker id, otherwise hidden copies break the arrows
+  const id = 'ah' + useId().replace(/:/g, '')
+  return <Field markerId={id} maxHeight={maxHeight}>{withMarker(shapes(type), id)}</Field>
+}
+
+function withMarker(nodes: React.ReactNode[], id: string) {
+  return nodes.map((n) => {
+    if (!isValidElement<{ markerEnd?: string }>(n) || !n.props.markerEnd) return n
+    return cloneElement(n, { markerEnd: `url(#${id})` })
+  })
 }

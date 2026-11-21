@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Modal } from './Modal'
-import { Pitch } from './Pitch'
+import { AnimatedPitch } from './AnimatedPitch'
 import { useT } from '../hooks'
 import { update, useData } from '../store'
 import { parse } from '../dates'
@@ -27,7 +27,7 @@ export function DrillDetail({ drill, onClose }: { drill: Drill; onClose: () => v
 
   return (
     <Modal title={L(drill.name)} onClose={onClose}>
-      <div className="detail-pitch"><Pitch type={drill.dia} /></div>
+      <div className="detail-pitch"><AnimatedPitch type={drill.dia} /></div>
       <div className="meta">
         <span className="chip">{t(drill.cat)}</span>
         <span className="chip">{drill.age}</span>

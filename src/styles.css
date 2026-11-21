@@ -164,10 +164,15 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
   .app { grid-template-columns: 1fr }
   .rail { position: fixed; inset: auto 0 0 0; height: auto; flex-direction: row; padding: 6px max(8px, env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); z-index: 20; gap: 0 }
   .brand { display: none }
+  .app .mtop { display: flex; position: fixed; inset: 0 0 auto 0; z-index: 15; height: calc(52px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) 16px 0; align-items: center; background: var(--bg); border-bottom: 1px solid var(--line) }
+  .mbrand { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: .02em; text-transform: uppercase; color: var(--pitch) }
+  .rail-foot { z-index: 21 }
   .nav { flex-direction: row; flex: 1; justify-content: space-around }
   .nav button { flex-direction: column; gap: 2px; font-size: 11px; padding: 6px 4px }
   .rail-foot { position: fixed; top: env(safe-area-inset-top); right: max(12px, env(safe-area-inset-right)); flex-direction: row; margin: 0; padding-top: 10px }
   .rail-foot .sync-badge, .rail-foot .lang { background: #1F6B4A }
+  .rail-foot .slabel { display: none }
+  .rail-foot .sync-badge { padding: 9px 11px }
   .lang button { padding: 4px 8px; font-size: 12px }
   main { padding-top: 60px; padding-bottom: 110px }
   .grid2 { grid-template-columns: 1fr }
@@ -196,3 +201,13 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 @media (max-width: 820px) { .know-list { grid-template-columns: 1fr } .nav button { font-size: 10.5px } }
 .pick.tpl { align-items: center }
 .pick.tpl b { display: block }
+
+/* animated drill pitch */
+.apitch { position: relative }
+.apitch-ctl { position: absolute; right: 8px; bottom: 8px; display: flex; gap: 6px }
+.apitch-ctl button { min-width: 34px; height: 30px; border: 0; border-radius: 8px; background: rgba(10, 30, 20, .62); color: #fff; font-weight: 700; font-size: 13px; backdrop-filter: blur(2px) }
+.apitch-ctl button:hover { background: rgba(10, 30, 20, .82) }
+.apitch-ctl button[aria-pressed="true"] { background: #fff; color: #16231C }
+.mtop { display: none }
+.card-open { position: relative; background: #2E7D52 }
+.play-badge { position: absolute; right: 8px; bottom: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(10, 30, 20, .55); color: #fff; font-size: 11px; display: grid; place-items: center; pointer-events: none }

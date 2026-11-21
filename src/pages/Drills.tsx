@@ -8,7 +8,7 @@ import { uid } from '../dates'
 import { CATEGORIES, type Category, type Diagram, type Drill } from '../types'
 
 const CAT_COLOR: Record<Category, string> = { tech: 'var(--pitch)', tact: 'var(--blue)', phys: 'var(--cone)', gk: 'var(--purple)' }
-const DIAGRAMS: Diagram[] = ['pass', 'dribble', 'rondo', 'smallgame', 'shoot', 'sprint', 'warmup', 'gk']
+const DIAGRAMS: Diagram[] = ['pass', 'dribble', 'rondo', 'smallgame', 'shoot', 'duel', 'overload', 'sprint', 'warmup', 'gk']
 
 export function Drills() {
   const { t, L } = useT()
@@ -53,7 +53,7 @@ export function Drills() {
       <div className="cards">
         {shown.map((d) => (
           <article className="card" key={d.id}>
-            <button className="card-open" onClick={() => setDetail(d)} aria-label={L(d.name)}><Pitch type={d.dia} maxHeight={110} /></button>
+            <button className="card-open" onClick={() => setDetail(d)} aria-label={L(d.name)}><Pitch type={d.dia} maxHeight={110} /><span className="play-badge" aria-hidden="true">▶</span></button>
             <div className="b">
               <button className="n link" onClick={() => setDetail(d)}>{favs.includes(d.id) && <span className="fav">★ </span>}{L(d.name)}</button>
               <p>{L(d.desc)}</p>

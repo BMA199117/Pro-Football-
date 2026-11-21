@@ -7,7 +7,7 @@ export function SyncBadge({ onClick }: { onClick: () => void }) {
   const { t } = useT()
   const { status } = useSync()
   const label = status === 'synced' ? t('syncOn') : status === 'syncing' ? t('syncing') : t('syncOff')
-  return <button className={'sync-badge s-' + status} onClick={onClick}><span className="sdot" />{label}</button>
+  return <button className={'sync-badge s-' + status} onClick={onClick} aria-label={label} title={label}><span className="sdot" /><span className="slabel">{label}</span></button>
 }
 
 export function SyncPanel({ onClose }: { onClose: () => void }) {
