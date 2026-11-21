@@ -23,7 +23,7 @@ export const LIBRARY: Drill[] = [
     desc: { uz: "Jamoalar 20 metrga estafeta yuguradi. Signal bo'yicha start.", ru: 'Команды бегут эстафету на 20 м. Старт по сигналу.' },
     equip: { uz: '6 konus', ru: '6 фишек' } },
   { id: 'b6', cat: 'phys', dia: 'warmup', age: 'U8–U16', min: 10,
-    name: { uz: 'Dinamik razminka', ru: 'Динамическая разминка' },
+    name: { uz: 'Dinamik badan qizdirish', ru: 'Динамическая разминка' },
     desc: { uz: "Yengil yugurish, tizzani ko'tarish, yon qadamlar va cho'zilish mashqlari.", ru: 'Лёгкий бег, высокое поднимание бедра, приставные шаги, растяжка.' },
     equip: { uz: 'Konuslar', ru: 'Фишки' } },
   { id: 'b7', cat: 'tech', dia: 'shoot', age: 'U10–U16', min: 15,

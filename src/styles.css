@@ -112,7 +112,8 @@ h2 { font-family: var(--display); font-size: 24px; line-height: 1.1; margin: 0; 
 .fav, .star.on { color: #E8A317 }
 .star { margin-left: auto; border: 1px solid var(--line); background: none; border-radius: 999px; font-size: 18px; line-height: 1; padding: 4px 9px; color: var(--muted) }
 svg.pitch { display: block; width: 100%; height: auto }
-.detail-pitch { border-radius: 10px; overflow: hidden }
+.detail-pitch { border-radius: 10px; overflow: hidden; flex-shrink: 0; background: #2E7D52 }
+.detail-pitch svg.pitch { max-height: 46vh }
 .points { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px }
 .add-to { border-top: 1px solid var(--line); padding-top: 12px }
 .dia-pick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px }
@@ -156,7 +157,7 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .run-meta { display: flex; gap: 12px; align-items: center; font-size: 14px; opacity: .9 }
 .run h1 { font-size: 40px }
 .run-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: start }
-.run-pitch { border-radius: 12px; overflow: hidden }
+.run-pitch { border-radius: 12px; overflow: hidden; flex-shrink: 0 }
 .run-side { display: flex; flex-direction: column; gap: 14px }
 .clock { font-family: var(--display); font-size: 88px; line-height: 1; font-variant-numeric: tabular-nums; text-align: center }
 .clock.zero { color: #FFB27A }
@@ -247,3 +248,4 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .stage-area { background: var(--pitch-soft); border-radius: 10px; padding: 10px 12px }
 .stage-area.avoid { background: var(--cone-soft) }
 .source a { color: var(--pitch) }
+.modal > * { flex-shrink: 0 }

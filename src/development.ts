@@ -38,7 +38,7 @@ export type DevArea = 'technical' | 'tactical' | 'physical' | 'mental'
 export const DEV_AREA_LABELS: Record<DevArea, DevText> = {
   technical: ['Texnika', 'Техника'],
   tactical: ["O'yinni tushunish", 'Понимание игры'],
-  physical: ['Jismoniy', 'Физика'],
+  physical: ['Jismoniy tayyorgarlik', 'Физподготовка'],
   mental: ['Psixologiya va jamoa', 'Психология и команда'],
 }
 
@@ -106,7 +106,7 @@ export const DEV_STAGES: DevStage[] = [
     ],
     coachAvoid: [
       ["Uzun tushuntirish va saflarda kutish", 'Долгих объяснений и ожидания в колоннах'],
-      ["Pozitsiyalarga qattiq bog'lash va natijaga bosim", 'Жёсткой привязки к позициям и давления на результат'],
+      ["O'yinchini bitta o'ringa qattiq bog'lash va natijaga bosim", 'Жёсткой привязки к позициям и давления на результат'],
     ],
     heading: ["Bosh bilan o'ynash o'rgatilmaydi. Faqat yumshoq to'p yoki shar bilan koordinatsiya o'yinlari.", 'Игру головой не учат. Только игры на координацию с мягким мячом или шариком.'],
     sources: ['fifaGrass', 'fifaPPP', 'fifaWarm', 'uefaRules', 'uefaHead'],
@@ -148,8 +148,8 @@ export const DEV_STAGES: DevStage[] = [
     session: ["Global – Analitik – Global: o'yin bilan boshlang va kimga nima kerakligini kuzating; keyin bitta texnik mavzuni raqibsiz takrorlang (tezlikdan ko'ra aniqlik muhim); oxirida yana o'yin — ko'nikma o'yinda ishladimi, tekshiring.",
       'Глобально – Аналитически – Глобально: начните с игры и понаблюдайте, кому что нужно; затем повторяйте одну техническую тему без соперника (точность важнее скорости); в конце снова игра — проверьте, работает ли навык.'],
     coachDo: [
-      ["Haftada bir marta yig'ilsangiz ham: qiziqarli razminka, mini-o'yinlar, oxirida haqiqiy o'yin", 'Даже если встречаетесь раз в неделю: интересная разминка, мини-игры, в конце настоящая игра'],
-      ["Pozitsiyalarni almashtiring — hamma hujumda ham, himoyada ham o'ynasin", 'Меняйте позиции — каждый играет и в атаке, и в защите'],
+      ["Haftada bir marta yig'ilsangiz ham: qiziqarli badan qizdirish, mini-o'yinlar, oxirida haqiqiy o'yin", 'Даже если встречаетесь раз в неделю: интересная разминка, мини-игры, в конце настоящая игра'],
+      ["O'rinlarni almashtiring — hamma hujumda ham, himoyada ham o'ynasin", 'Меняйте позиции — каждый играет и в атаке, и в защите'],
       ["Natijani emas, harakatni maqtang", 'Хвалите усилие, а не результат'],
     ],
     coachAvoid: [
@@ -204,14 +204,14 @@ export const DEV_STAGES: DevStage[] = [
       ["Bugungi kuchli (erta o'sgan) bolalarga tayanib, qolganlarni chetga surish", 'Опираться только на сегодня сильных (рано выросших) и отодвигать остальных'],
       ["Kattalar mashg'ulotini nusxalash — bolalar kichik kattalar emas", 'Копировать взрослые тренировки — дети не маленькие взрослые'],
     ],
-    heading: ["12 yoshdan razminkaga bo'yin va yelka mashqlari. 14 yoshdan yengil bosim bilan, kam takror va kuzatuv ostida.", 'С 12 лет — упражнения для шеи и плеч в разминке. С 14 лет — с лёгким давлением, малым числом повторов и под контролем.'],
+    heading: ["12 yoshdan badan qizdirishga bo'yin va yelka mashqlari. 14 yoshdan yengil bosim bilan, kam takror va kuzatuv ostida.", 'С 12 лет — упражнения для шеи и плеч в разминке. С 14 лет — с лёгким давлением, малым числом повторов и под контролем.'],
     sources: ['fifaGrass', 'fifaProg', 'fifaSkill', 'fifaGame', 'fifaSpiral', 'fifaTrain', 'uefaU18', 'uefaHead'],
   },
   {
     id: 'st4',
     ages: '15–17',
     title: ["Katta futbolga tayyorlanish", 'Подготовка к взрослому футболу'],
-    goal: ["Pozitsiyada o'ynash, musobaqa bosimi va mustaqil qaror.", 'Игра на позиции, соревновательное давление и самостоятельность.'],
+    goal: ["O'z o'rnida o'ynash, musobaqa bosimi va mustaqil qaror.", 'Игра на позиции, соревновательное давление и самостоятельность.'],
     profile: [
       ["Jismonan kattalarga yaqinlashadi — kuch va chidamlilik o'sadi", 'Физически приближается к взрослым — растут сила и выносливость'],
       ["O'qish, ish, do'stlar — futboldan ketish xavfi yuqori (16–17 yosh)", 'Учёба, работа, друзья — высокий риск ухода из футбола (16–17 лет)'],
@@ -238,7 +238,7 @@ export const DEV_STAGES: DevStage[] = [
       ["11×11, katta maydon, 5-o'lcham to'p", '11×11, большое поле, мяч размер 5'],
       ["Turli darajadagi raqiblar bilan muntazam o'yinlar", 'Регулярные игры с соперниками разного уровня'],
     ],
-    session: ["Kattalarnikiga yaqin: razminka, mavzu bo'yicha o'yin mashqlari, o'yin. Taktik va jismoniy yuklamani hafta davomida muvozanatlang.",
+    session: ["Kattalarnikiga yaqin: badan qizdirish, mavzu bo'yicha o'yin mashqlari, o'yin. Taktik va jismoniy yuklamani hafta davomida muvozanatlang.",
       'Близко к взрослой: разминка, игровые упражнения по теме, игра. Балансируйте тактическую и физическую нагрузку в течение недели.'],
     coachDo: [
       ["Har o'yinchi bilan yakka suhbat: maqsad va rivojlanish rejasi", 'Индивидуальные беседы: цель и план развития'],
