@@ -1,5 +1,5 @@
 import { useId, type ReactNode } from 'react'
-import { arcCtl, frameAt, marks, posAt, smooth, tracks, ballAt, type BookScene, type ConeColor, type Dir, type Item, type Pt, type Team } from '../book/scene'
+import { arcCtl, frameAt, marks, posAt, smooth, tracks, ballAt, type BookScene, type ConeColor, type Dir, type Item, type Mark, type Pt, type Team } from '../book/scene'
 
 export const TEAM: Record<Team, { fill: string; stroke: string; text: string }> = {
   r: { fill: '#D9342B', stroke: '#fff', text: '#fff' },
@@ -180,17 +180,11 @@ function Frame({ id, children, maxHeight }: { id: string; children: ReactNode; m
 }
 
 
-/** The drill as in the book: start positions and every movement as arrows. */
-export function BookStatic({ scene, maxHeight }: { scene: BookScene; maxHeight?: number }) {
-  const id = 'bk' + useId().replace(/:/g, '')
-  const ms = marks(scene)
+/** Arrows of a drawing (runs, dribbles, passes, shots, lofted balls) in the book's line style. */
+function MarkPaths({ scene, ms, id, opacity = 1 }: { scene: BookScene; ms: Mark[]; id: string; opacity?: number }) {
   const st = styleOf(scene)
-  const trs = tracks(scene)
-  // balls at the start; a ball that only comes later shows where it enters
-  const start = trs.map((t) => ballAt(scene, t, 0) ?? (() => { const k = t.findIndex((b) => b !== 0); return k >= 0 ? ballAt(scene, t, k) : null })()).filter(Boolean) as Pt[]
   return (
-    <Frame id={id} maxHeight={maxHeight}>
-      {scene.field.map((it, i) => item(it, i, id + 'net'))}
+    <g opacity={opacity}>
       {ms.map((m, i) => {
         if (m.kind === 'lob') {
           const [a, b] = m.pts, c = arcCtl(a, b)
@@ -201,20 +195,45 @@ export function BookStatic({ scene, maxHeight }: { scene: BookScene; maxHeight?:
         const y = st[m.kind]
         return <path key={'m' + i} d={toD(pts)} fill="none" stroke={y.stroke} strokeWidth={y.width} strokeDasharray={y.dash} markerEnd={`url(#${id}${y.marker})`} strokeLinecap="round" strokeLinejoin="round" />
       })}
+    </g>
+  )
+}
+
+/** The drill as in the book: start positions and every movement as arrows. */
+export function BookStatic({ scene, maxHeight }: { scene: BookScene; maxHeight?: number }) {
+  const id = 'bk' + useId().replace(/:/g, '')
+  const trs = tracks(scene)
+  // balls at the start; a ball that only comes later shows where it enters
+  const start = trs.map((t) => ballAt(scene, t, 0) ?? (() => { const k = t.findIndex((b) => b !== 0); return k >= 0 ? ballAt(scene, t, k) : null })()).filter(Boolean) as Pt[]
+  return (
+    <Frame id={id} maxHeight={maxHeight}>
+      {scene.field.map((it, i) => item(it, i, id + 'net'))}
+      <MarkPaths scene={scene} ms={marks(scene)} id={id} />
       {scene.players.map((p) => playerDot(p.t, posAt(scene, p, 0), p.l, 'p' + p.id))}
       {start.map((b, i) => ballDot(b, 'b' + i))}
     </Frame>
   )
 }
 
-/** One moment of the drill while it plays. */
-export function BookFrame({ scene, t, maxHeight }: { scene: BookScene; t: number; maxHeight?: number }) {
+/**
+ * One moment of the drill while it plays.
+ * step: the step whose arrows are drawn ahead of / during the movement (shown at stepOpacity);
+ * the steps before it stay as faint traces, so the coach sees what has happened so far.
+ */
+export function BookFrame({ scene, t, maxHeight, step, stepOpacity = 1 }: { scene: BookScene; t: number; maxHeight?: number; step?: number; stepOpacity?: number }) {
   const id = 'bf' + useId().replace(/:/g, '')
   const f = frameAt(scene, t)
+  const movers = new Set<string>()
+  if (step !== undefined && step < scene.steps - 1) {
+    for (const p of scene.players) { const a = posAt(scene, p, step), b = posAt(scene, p, step + 1); if (!p.quiet && Math.hypot(b[0] - a[0], b[1] - a[1]) > 1.5) movers.add(p.id) }
+  }
   return (
     <Frame id={id} maxHeight={maxHeight}>
       {scene.field.map((it, i) => item(it, i, id + 'net'))}
+      {step !== undefined && step > 0 && <MarkPaths scene={scene} ms={marks(scene, 0, Math.min(step, scene.steps - 1))} id={id} opacity={0.28} />}
+      {step !== undefined && step < scene.steps - 1 && stepOpacity > 0 && <MarkPaths scene={scene} ms={marks(scene, step, step + 1)} id={id} opacity={stepOpacity} />}
       {f.trails.map(([a, b, shot], i) => { const y = styleOf(scene)[shot ? 'shot' : 'pass']; return <line key={'t' + i} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={y.stroke} strokeOpacity={0.75} strokeWidth={y.width} strokeDasharray={y.dash} strokeLinecap="round" /> })}
+      {f.players.filter(({ p }) => movers.has(p.id)).map(({ p, at }) => <circle key={'h' + p.id} cx={at[0]} cy={at[1]} r={6.6} fill="none" stroke="#FFE45C" strokeWidth={0.9} strokeOpacity={0.9} />)}
       {f.players.map(({ p, at }) => playerDot(p.t, at, p.l, 'p' + p.id))}
       {f.balls.map((b, i) => ballDot(b, 'b' + i))}
     </Frame>

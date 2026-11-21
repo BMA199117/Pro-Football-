@@ -166,14 +166,14 @@ export function ballAt(sc: BookScene, tr: BallStep[], k: number): Pt | null {
 
 export interface Mark { kind: 'run' | 'drib' | 'pass' | 'shot' | 'lob'; pts: Pt[] }
 
-/** Arrows for the static diagram: every move of every step. */
-export function marks(sc: BookScene): Mark[] {
+/** Arrows for the static diagram: every move of every step (or only steps from…to-1). */
+export function marks(sc: BookScene, from = 0, to = sc.steps - 1): Mark[] {
   const out: Mark[] = []
   const trs = tracks(sc)
   for (const p of sc.players) {
     if (p.quiet) continue
     let cur: Mark | null = null
-    for (let k = 0; k < sc.steps - 1; k++) {
+    for (let k = from; k < to; k++) {
       const r = route(sc, p, k)
       const moved = dist(r[0], r[r.length - 1]) > 1.5 || r.length > 2
       if (!moved) { cur = null; continue }
@@ -184,7 +184,7 @@ export function marks(sc: BookScene): Mark[] {
     }
   }
   for (const t of trs) {
-    for (let k = 0; k < sc.steps - 1; k++) {
+    for (let k = from; k < to; k++) {
       if (t[k] === t[k + 1] && typeof t[k] === 'string') continue
       const a = ballAt(sc, t, k), b = ballAt(sc, t, k + 1)
       if (a && b && dist(a, b) > 4) out.push({ kind: isShot(t[k + 1]) ? 'shot' : isLob(t[k + 1]) ? 'lob' : 'pass', pts: [a, b] })
