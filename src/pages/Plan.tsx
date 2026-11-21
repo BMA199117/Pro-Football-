@@ -8,7 +8,8 @@ import { DrillDetail } from '../components/DrillDetail'
 import { RunSession } from '../components/RunSession'
 import { sampleData } from '../sample'
 import { parse, weekdayIndex } from '../dates'
-import { PHASES, type Drill, type Phase } from '../types'
+import { PHASES, type Drill, type Phase, type Template } from '../types'
+import { TEMPLATES } from '../templates'
 
 export function Plan() {
   const { t, L, days, months } = useT()
@@ -20,6 +21,8 @@ export function Plan() {
   const [picking, setPicking] = useState<Phase | null>(null)
   const [detail, setDetail] = useState<Drill | null>(null)
   const [running, setRunning] = useState(false)
+  const [tplOpen, setTplOpen] = useState(false)
+  const [tpl, setTpl] = useState<Template | null>(null)
 
   const sorted = [...data.sessions].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
   const s = sorted.find((x) => x.id === selected) ?? sorted[0]
@@ -28,8 +31,37 @@ export function Plan() {
   const head = (
     <div className="head">
       <div><h1>{t('plan')}</h1><p className="sub">{t('planSub')}</p></div>
-      <button className="btn" onClick={() => setForm('new')}>+ {t('newS')}</button>
+      <div className="row">
+        <button className="btn ghost" onClick={() => setTplOpen(true)}>📋 {t('fromTemplate')}</button>
+        <button className="btn" onClick={() => setForm('new')}>+ {t('newS')}</button>
+      </div>
     </div>
+  )
+  const tplMins = (x: Template) => PHASES.reduce((a, p) => a + x.phases[p].reduce((b, id) => b + (byId.get(id)?.min ?? 0), 0), 0)
+  const modals = (
+    <>
+      {tplOpen && (
+        <Modal title={t('templates')} onClose={() => setTplOpen(false)}>
+          <p className="sub" style={{ margin: 0 }}>{t('templatesSub')}</p>
+          {['10–14', '15–17'].map((age) => (
+            <div key={age} className="list">
+              <h3 className="label">{age} {t('ages')}</h3>
+              {TEMPLATES.filter((x) => x.ages === age).map((x) => (
+                <button key={x.id} className="pick tpl" onClick={() => { setTpl(x); setTplOpen(false) }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <b>{L(x.title)}</b>
+                    <div className="m">{L(x.focus)}</div>
+                  </div>
+                  <span className="chip cone">{tplMins(x)} {t('min')}</span>
+                </button>
+              ))}
+            </div>
+          ))}
+          <div className="row"><button className="btn ghost" onClick={() => setTplOpen(false)}>{t('close')}</button></div>
+        </Modal>
+      )}
+      {tpl && <SessionForm template={tpl} onClose={() => setTpl(null)} />}
+    </>
   )
 
   if (!s) return (
@@ -42,6 +74,7 @@ export function Plan() {
         </div>
       </div>
       {form && <SessionForm onClose={() => setForm(null)} />}
+      {modals}
     </>
   )
 
@@ -120,6 +153,7 @@ export function Plan() {
       {form && <SessionForm session={form === 'edit' ? s : undefined} onClose={() => setForm(null)} />}
       {detail && <DrillDetail drill={detail} onClose={() => setDetail(null)} />}
       {running && <RunSession session={s} onClose={() => setRunning(false)} />}
+      {modals}
       {picking && (
         <Modal title={`${t('choose')} · ${t(picking)}`} onClose={() => setPicking(null)}>
           <div className="list">

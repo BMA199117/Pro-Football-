@@ -1,0 +1,59 @@
+import type { Template, Phase } from './types'
+
+type Row = [id: string, ages: string, group: string, source: string, title: [string, string], focus: [string, string], warm: string[], main: string[], cool: string[]]
+
+/**
+ * Ready session plans. 10–14: the 8 technique blocks of the adidas/РФС/DFB programme with its suggested
+ * exercise order. 15–17: the programme's 6 tactical zone blocks, filled with drills from our library.
+ * Structure follows FIFA: warm-up 15–20 min, main part 50–60, cool-down 10–15.
+ */
+const ROWS: Row[] = [
+  ['t1', '10–14', 'U12', 'adidas1014', ["Olib yurish va to'p olish", 'Ведение и отбор мяча'],
+    ["1×1 aldab o'tish, to'pni tana bilan yopish; koordinatsiya, masofaviy tezlik", '1×1 обводка, укрывание мяча корпусом; координация, дистанционная скорость'],
+    ['a10'], ['a1', 'a2', 'a3', 'a11'], ['b9']],
+  ['t2', '10–14', 'U12', 'adidas1014', ["To'pni olib qo'yish", 'Отбор мяча'],
+    ["1×1 himoya, to'pli va to'psiz raqibga qarshi; start tezligi", '1×1 отбор, действия против соперника с мячом и без; стартовая скорость'],
+    ['a10', 'a9'], ['a4', 'k5', 'a5', 'a11'], ['b9']],
+  ['t3', '10–14', 'U12', 'adidas1014', ["To'psiz harakat", 'Перемещения без мяча'],
+    ["Ochilish, bo'sh joy yaratish, sug'urta; tezkorlik, umumiy chidamlilik", 'Открывание, создание пространства, страховка; быстрота, общая выносливость'],
+    ['a10', 'b5'], ['a5', 'k22', 'a11'], ['b9']],
+  ['t4', '10–14', 'U12', 'adidas1014', ['Pas berish', 'Передача мяча'],
+    ["Juftlikdagi hamkorlik, bo'sh joydan foydalanish, yopish va sug'urta", 'Взаимодействие в двойках, использование пространства, закрывание и страховка'],
+    ['a10', 'b2'], ['a4', 'a6', 'a5', 'a11'], ['b9']],
+  ['t5', '10–14', 'U12', 'adidas1014', ["To'pni qabul qilish va ishlov berish", 'Приём и обработка мяча'],
+    ["Uchlikdagi hamkorlik, bo'sh joy, masofaviy tezlik", 'Взаимодействие в тройках, пространство, дистанционная скорость'],
+    ['b10'], ['a6', 'a5', 'a11'], ['a7']],
+  ['t6', '10–14', 'U12', 'adidas1014', ['Zarba', 'Удар'],
+    ["1×1 aldab o'tish va zarba, to'p olib birinchi pas", '1×1 обводка и удар, отбор и первый пас'],
+    ['a10', 'a8'], ['b7', 'k5', 'a11'], ['b9']],
+  ['t7', '10–14', 'U12', 'adidas1014', ['Bosh bilan zarba', 'Удар головой'],
+    ["Turli balandlikdagi to'pni qabul qilish, autdan tashlash, to'pni saqlash", 'Приём мяча на разной высоте, вбрасывание, удержание мяча'],
+    ['a10'], ['k4', 'a7', 'a11'], ['b9']],
+  ['t8', '10–14', 'U12', 'adidas1014', ["Olib yurish + aldash + zarba", 'Связка «ведение + финт + удар»'],
+    ["1×1 hujum va himoya, to'pni yopish; masofaviy tezlik", '1×1 атака и отбор, укрывание мяча; дистанционная скорость'],
+    ['a10', 'a1'], ['k1', 'a2', 'a5', 'a11'], ['b9']],
+  ['t9', '15–17', 'U16', 'adidas1517', ['Hujum, 1-zona: orqadan boshlash', 'Атака, зона 1: начало атаки'],
+    ["Himoya zonasida hujumni boshlash va rivojlantirish + yo'qotgandan keyin o'tish", 'Начало и развитие атаки в зоне обороны + переход после потери'],
+    ['a10', 'b2'], ['k13', 'k15', 'a11'], ['b9']],
+  ['t10', '15–17', 'U16', 'adidas1517', ["Hujum, 2-zona: o'rta zona", 'Атака, зона 2: средняя зона'],
+    ["O'rta zonada hujumni rivojlantirish, chiziqlar orasida qabul + o'tish", 'Развитие атаки в средней зоне, приём между линиями + переход'],
+    ['a10', 'k3'], ['k24', 'k19', 'a11'], ['b9']],
+  ['t11', '15–17', 'U16', 'adidas1517', ['Hujum, 3-zona: yakunlash', 'Атака, зона 3: завершение'],
+    ["Hujum zonasida rivojlantirish va yakunlash, ko'pchilikdan foydalanish + o'tish", 'Развитие и завершение атак, использование большинства + переход'],
+    ['a10', 'b7'], ['k17', 'k18', 'k20'], ['b9']],
+  ['t12', '15–17', 'U16', 'adidas1517', ['Himoya, 1-zona', 'Оборона, зона 1'],
+    ["O'z zonamizda hujumga qarshi turish, chiziq siljishi + to'p olgandan keyin hujumga o'tish", 'Противодействие атаке в своей зоне, сдвиг линии + переход в атаку'],
+    ['a10', 'a4'], ['k14', 'k10', 'a11'], ['b9']],
+  ['t13', '15–17', 'U16', 'adidas1517', ["Himoya, 2-zona", 'Оборона, зона 2'],
+    ["O'rta zonada hujumni to'xtatish, ixchamlik + o'tish", 'Противодействие в средней зоне, компактность + переход'],
+    ['a10', 'b3'], ['k12', 'k14', 'a11'], ['b9']],
+  ['t14', '15–17', 'U16', 'adidas1517', ['Himoya, 3-zona: yuqori bosim', 'Оборона, зона 3: высокий прессинг'],
+    ["Raqib zonasida bosim, to'pni tez qaytarish + tezkor hujum", 'Прессинг в зоне соперника, быстрый возврат мяча + быстрая атака'],
+    ['a10', 'k11'], ['k16', 'k21'], ['b9']],
+]
+
+export const TEMPLATES: Template[] = ROWS.map(([id, ages, group, source, title, focus, warm, main, cool]) => ({
+  id, ages, group, source,
+  title: { uz: title[0], ru: title[1] }, focus: { uz: focus[0], ru: focus[1] },
+  phases: { warm, main, cool } as Record<Phase, string[]>,
+}))

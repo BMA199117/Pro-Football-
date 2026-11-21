@@ -63,3 +63,13 @@ export interface KnowledgeCard {
   tips: Text[]
   source: string
 }
+
+export interface Template {
+  id: string
+  ages: string
+  group: string
+  title: Text
+  focus: Text
+  phases: Record<Phase, string[]>
+  source: string
+}

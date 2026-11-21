@@ -34,7 +34,7 @@ export const LIBRARY: Drill[] = [
     name: { uz: 'Darvozabon: reaksiya', ru: 'Вратарь: реакция' },
     desc: { uz: "Murabbiy yaqin masofadan turli burchaklarga to'p tashlaydi.", ru: 'Тренер бросает мяч с близкого расстояния в разные углы.' },
     equip: { uz: "To'plar, qo'lqoplar", ru: 'Мячи, перчатки' } },
-  { id: 'b9', cat: 'phys', dia: 'warmup', age: 'U8–U16', min: 5,
+  { id: 'b9', cat: 'phys', dia: 'warmup', age: 'U8–U17', min: 10,
     name: { uz: "Cho'zilish va nafas", ru: 'Растяжка и дыхание' },
     desc: { uz: "Mashg'ulot oxirida sekin cho'zilish va qisqa xulosa.", ru: 'Спокойная растяжка и короткий разбор в конце.' },
     equip: { uz: '—', ru: '—' } },

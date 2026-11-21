@@ -194,3 +194,5 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .know-idea { margin: 0; font-size: 14.5px }
 .know-more { border-top: 1px solid var(--line); padding-top: 8px }
 @media (max-width: 820px) { .know-list { grid-template-columns: 1fr } .nav button { font-size: 10.5px } }
+.pick.tpl { align-items: center }
+.pick.tpl b { display: block }

@@ -3,15 +3,15 @@ import { Modal } from '../components/Modal'
 import { useT } from '../hooks'
 import { update, useData, setPrefs } from '../store'
 import { iso, uid } from '../dates'
-import type { Session } from '../types'
+import type { Session, Template } from '../types'
 
-export function SessionForm({ session, defaultDate, onClose }: { session?: Session; defaultDate?: string; onClose: () => void }) {
-  const { t } = useT()
+export function SessionForm({ session, defaultDate, template, onClose }: { session?: Session; defaultDate?: string; template?: Template; onClose: () => void }) {
+  const { t, L } = useT()
   const data = useData()
-  const [goal, setGoal] = useState(session?.goal ?? '')
+  const [goal, setGoal] = useState(session?.goal ?? (template ? L(template.title) : ''))
   const [date, setDate] = useState(session?.date ?? defaultDate ?? iso(new Date()))
   const [time, setTime] = useState(session?.time ?? '16:00')
-  const [group, setGroup] = useState(session?.group ?? data.groups[0] ?? 'U12')
+  const [group, setGroup] = useState(session?.group ?? (template && data.groups.includes(template.group) ? template.group : data.groups[0] ?? 'U12'))
   const [newGroup, setNewGroup] = useState('')
   const [notes, setNotes] = useState(session?.notes ?? '')
 
@@ -21,7 +21,8 @@ export function SessionForm({ session, defaultDate, onClose }: { session?: Sessi
     const id = session?.id ?? uid()
     update((d) => {
       const groups = d.groups.includes(g) ? d.groups : [...d.groups, g]
-      const base: Session = session ?? { id, date, time, group: g, goal, phases: { warm: [], main: [], cool: [] }, att: {} }
+      const phases = template ? { warm: [...template.phases.warm], main: [...template.phases.main], cool: [...template.phases.cool] } : { warm: [], main: [], cool: [] }
+      const base: Session = session ?? { id, date, time, group: g, goal, phases, att: {} }
       const next = { ...base, date, time, group: g, goal: goal.trim(), notes: notes.trim() }
       return { ...d, groups, sessions: session ? d.sessions.map((s) => (s.id === id ? next : s)) : [...d.sessions, next] }
     })
@@ -30,7 +31,7 @@ export function SessionForm({ session, defaultDate, onClose }: { session?: Sessi
   }
 
   return (
-    <Modal title={session ? t('edit') : t('newS')} onClose={onClose}>
+    <Modal title={session ? t('edit') : template ? `${t('fromTemplate')}: ${L(template.title)}` : t('newS')} onClose={onClose}>
       <form className="form" onSubmit={submit}>
         <label className="full">{t('goal')}<input id="fs-goal" value={goal} onChange={(e) => setGoal(e.target.value)} required autoFocus /></label>
         <label>{t('date')}<input id="fs-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required /></label>
