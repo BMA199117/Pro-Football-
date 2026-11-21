@@ -14,5 +14,10 @@ export const SOURCES: Record<string, { title: string; author: string }> = {
   press4w: { title: 'Выход из-под прессинга (Senim, 4 недели)', author: 'Senim Football Academy' },
   adidas1014: { title: 'Программа подготовки 10–14 лет (adidas, РФС, DFB)', author: 'adidas / РФС / DFB' },
   adidas1517: { title: 'Программа подготовки 15–17 лет (adidas, РФС, DFB)', author: 'adidas / РФС / DFB' },
+  epysa6: { title: 'U6 Training Program (6 haftalik reja)', author: 'G. Stephenson, M. Barr (EPYSA)' },
+  epysa8: { title: 'U8 Training Program', author: 'G. Stephenson, M. Barr (EPYSA)' },
+  epysa10: { title: 'U10 Training Program', author: 'G. Stephenson, M. Barr (EPYSA)' },
+  epysa12: { title: 'U12 Training Program', author: 'G. Stephenson, M. Barr (EPYSA)' },
+  fifa82: { title: 'FIFA. Часть 8.2 Физическая подготовка (содержание)', author: 'FIFA' },
   fifaPlan: { title: 'FIFA. План тренировки', author: 'FIFA' },
 }

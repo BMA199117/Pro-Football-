@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useT, useDrills, sessionMinutes, PHASE_COLOR } from '../hooks'
 import { update, useData, usePrefs, setPrefs } from '../store'
-import { Pitch } from '../components/Pitch'
+import { DrillPitch } from '../components/AnimatedPitch'
 import { Modal, ConfirmButton } from '../components/Modal'
 import { SessionForm } from './SessionForm'
 import { DrillDetail } from '../components/DrillDetail'
@@ -138,7 +138,7 @@ export function Plan() {
                   if (!d) return null
                   return (
                     <div className="drow" key={id + i}>
-                      <Pitch type={d.dia} maxHeight={44} />
+                      <DrillPitch id={d.id} type={d.dia} maxHeight={44} />
                       <button className="drow-main" onClick={() => setDetail(d)}><div className="n">{L(d.name)}</div><div className="m">{t(d.cat)} · {L(d.equip)}</div></button>
                       <span className="mins">{d.min}′</span>
                       <button className="x" aria-label={t('del')} onClick={() => editPhase(p, (ids) => ids.filter((_, j) => j !== i))}>×</button>
@@ -159,7 +159,7 @@ export function Plan() {
           <div className="list">
             {drills.map((d) => (
               <button key={d.id} className="pick" onClick={() => { editPhase(picking, (ids) => [...ids, d.id]); setPicking(null) }}>
-                <div style={{ width: 70, flex: 'none' }}><Pitch type={d.dia} maxHeight={40} /></div>
+                <div style={{ width: 70, flex: 'none' }}><DrillPitch id={d.id} type={d.dia} maxHeight={40} /></div>
                 <div style={{ flex: 1 }}><b>{L(d.name)}</b><div className="m">{t(d.cat)} · {d.min} {t('min')}</div></div>
               </button>
             ))}

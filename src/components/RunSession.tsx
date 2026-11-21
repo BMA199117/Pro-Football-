@@ -55,7 +55,7 @@ export function RunSession({ session, onClose }: { session: Session; onClose: ()
           </div>
           <h1>{L(step.drill!.name)}</h1>
           <div className="run-grid">
-            <div className="run-pitch"><AnimatedPitch type={step.drill!.dia} /></div>
+            <div className="run-pitch"><AnimatedPitch id={step.drill!.id} type={step.drill!.dia} /></div>
             <div className="run-side">
               <div className={'clock' + (left === 0 ? ' zero' : '')} aria-live="polite">{mm}:{ss}</div>
               <button className="btn big" onClick={() => setRunning(!running)}>{running ? t('pause') : left === (step.drill!.min * 60) ? '▶ ' + t('startTimer') : t('resume')}</button>

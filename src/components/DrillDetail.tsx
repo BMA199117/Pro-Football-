@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Modal } from './Modal'
 import { AnimatedPitch } from './AnimatedPitch'
+import { LineKey } from './BookPitch'
+import { BOOK_SCENES } from '../book'
 import { useT } from '../hooks'
 import { update, useData } from '../store'
 import { parse } from '../dates'
@@ -27,7 +29,8 @@ export function DrillDetail({ drill, onClose }: { drill: Drill; onClose: () => v
 
   return (
     <Modal title={L(drill.name)} onClose={onClose}>
-      <div className="detail-pitch"><AnimatedPitch type={drill.dia} /></div>
+      <div className="detail-pitch"><AnimatedPitch id={drill.id} type={drill.dia} /></div>
+      {BOOK_SCENES[drill.id] && <LineKey scene={BOOK_SCENES[drill.id]} label={(k) => t(({ run: 'kRun', drib: 'kDrib', pass: 'kPass', shot: 'kShot', lob: 'kLob' } as const)[k])} />}
       <div className="meta">
         <span className="chip">{t(drill.cat)}</span>
         <span className="chip">{drill.age}</span>

@@ -3,6 +3,8 @@ import { useT, useDrills } from '../hooks'
 import { update, useData } from '../store'
 import { DrillDetail } from '../components/DrillDetail'
 import { Pitch } from '../components/Pitch'
+import { DrillPitch } from '../components/AnimatedPitch'
+import { BOOK_SCENES } from '../book'
 import { Modal, ConfirmButton } from '../components/Modal'
 import { uid } from '../dates'
 import { CATEGORIES, type Category, type Diagram, type Drill } from '../types'
@@ -26,7 +28,8 @@ const DIAGRAMS: Diagram[] = ['pass', 'dribble', 'rondo', 'smallgame', 'shoot', '
 
 export function Drills() {
   const { t, L } = useT()
-  const drills = useDrills()
+  // drills drawn from the books first, so every card looks like its own exercise
+  const drills = [...useDrills()].sort((a, b) => Number(!BOOK_SCENES[a.id]) - Number(!BOOK_SCENES[b.id]))
   const [cat, setCat] = useState<Category | 'all'>('all')
   const [q, setQ] = useState('')
   const [adding, setAdding] = useState(false)
@@ -48,7 +51,7 @@ export function Drills() {
   const sections = band ? [{ band, list: shown }] : BANDS.map((b) => ({ band: b, list: base.filter((d) => BANDS.find((x) => fitsBand(d.age, x)) === b) })).filter((s) => s.list.length)
   const card = (d: Drill) => (
           <article className="card" key={d.id}>
-            <button className="card-open" onClick={() => setDetail(d)} aria-label={L(d.name)}><Pitch type={d.dia} maxHeight={110} /><span className="play-badge" aria-hidden="true">▶</span></button>
+            <button className="card-open" onClick={() => setDetail(d)} aria-label={L(d.name)}><DrillPitch id={d.id} type={d.dia} maxHeight={110} /><span className="play-badge" aria-hidden="true">▶</span></button>
             <div className="b">
               <button className="n link" onClick={() => setDetail(d)}>{favs.includes(d.id) && <span className="fav">★ </span>}{L(d.name)}</button>
               <p>{L(d.desc)}</p>
