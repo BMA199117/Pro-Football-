@@ -4,6 +4,8 @@ import { U8_SCENES } from './epysa-u8'
 import { U10_SCENES } from './epysa-u10'
 import { U12_SCENES } from './epysa-u12'
 import { FIFA82_SCENES } from './fifa82'
+import { RFS69_A } from './rfs69a'
+import { RFS69_B } from './rfs69b'
+import { RFS69_C } from './rfs69c'
 
-/** Drill id → the drill's own diagram and animation, drawn from the book. */
-export const BOOK_SCENES: Record<string, BookScene> = { ...U6_SCENES, ...U8_SCENES, ...U10_SCENES, ...U12_SCENES, ...FIFA82_SCENES }
+export const BOOK_SCENES: Record<string, BookScene> = { ...U6_SCENES, ...U8_SCENES, ...U10_SCENES, ...U12_SCENES, ...FIFA82_SCENES, ...RFS69_A, ...RFS69_B, ...RFS69_C }

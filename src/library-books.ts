@@ -1,5 +1,6 @@
 import type { Category, Diagram, Drill } from './types'
 import { EPYSA_ROWS } from './library-epysa'
+import { RFS_69 } from './library-rfs69'
 
 /**
  * Drills retold briefly from the coach's books (see sources.ts).
@@ -15,4 +16,4 @@ const toDrill = ([id, cat, dia, age, min, players, source, name, desc, equip, po
   points: points.map(([uz, ru]) => ({ uz, ru })),
 })
 
-export const BOOK_DRILLS: Drill[] = EPYSA_ROWS.map(toDrill)
+export const BOOK_DRILLS: Drill[] = [...RFS_69, ...EPYSA_ROWS].map(toDrill)
