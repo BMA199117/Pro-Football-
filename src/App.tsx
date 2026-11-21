@@ -18,9 +18,10 @@ const ICON: Record<Tab, React.ReactNode> = {
 const TABS: Tab[] = ['plan', 'drills', 'know', 'team', 'cal']
 
 export default function App() {
-  const { tab, lang } = usePrefs()
+  const { tab, lang, theme } = usePrefs()
   const { t } = useT()
   const [sync, setSync] = useState(false)
+  useEffect(() => { if (theme) document.documentElement.dataset.theme = theme; else delete document.documentElement.dataset.theme }, [theme])
   useEffect(() => { document.documentElement.lang = lang; document.title = t('appName') }, [lang, t])
   const Page = { plan: Plan, drills: Drills, team: Team, cal: Calendar, know: Knowledge }[tab]
   return (
@@ -34,7 +35,11 @@ export default function App() {
           ))}
         </nav>
         <div className="rail-foot">
-          <SyncBadge onClick={() => setSync(true)} />
+          <div className="row-ctl">
+            <SyncBadge onClick={() => setSync(true)} />
+            <button className="theme-btn" aria-label={t('theme')} title={t('theme')}
+              onClick={() => { const dark = theme ? theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; setPrefs({ theme: dark ? 'light' : 'dark' }) }}>◐</button>
+          </div>
           <div className="lang" role="group" aria-label="Til / Язык">
             {(['uz', 'ru'] as const).map((l) => (
               <button key={l} aria-pressed={lang === l} onClick={() => setPrefs({ lang: l })}>{l.toUpperCase()}</button>

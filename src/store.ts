@@ -43,7 +43,7 @@ export const useData = () => useSyncExternalStore(subscribe, getData)
 
 /* ---------- per-device preferences ---------- */
 export type Tab = 'plan' | 'drills' | 'team' | 'cal' | 'know'
-export interface Prefs { lang: Lang; tab: Tab; selected: string | null }
+export interface Prefs { lang: Lang; tab: Tab; selected: string | null; theme?: 'light' | 'dark' }
 let prefs: Prefs = { lang: 'uz', tab: 'plan', selected: null, ...(read<Prefs>(PREFS_KEY) ?? {}) }
 const prefListeners = new Set<() => void>()
 export function setPrefs(p: Partial<Prefs>) {
