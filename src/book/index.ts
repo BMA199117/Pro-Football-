@@ -7,5 +7,6 @@ import { FIFA82_SCENES } from './fifa82'
 import { RFS69_A } from './rfs69a'
 import { RFS69_B } from './rfs69b'
 import { RFS69_C } from './rfs69c'
+import { ADIDAS1014 } from './adidas1014'
 
-export const BOOK_SCENES: Record<string, BookScene> = { ...U6_SCENES, ...U8_SCENES, ...U10_SCENES, ...U12_SCENES, ...FIFA82_SCENES, ...RFS69_A, ...RFS69_B, ...RFS69_C }
+export const BOOK_SCENES: Record<string, BookScene> = { ...U6_SCENES, ...U8_SCENES, ...U10_SCENES, ...U12_SCENES, ...FIFA82_SCENES, ...RFS69_A, ...RFS69_B, ...RFS69_C, ...ADIDAS1014 }
