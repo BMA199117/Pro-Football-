@@ -2,3 +2,7 @@ node_modules
 dist
 .env
 .env.local
+
+# tsc build output
+src/**/*.js
+*.tsbuildinfo
