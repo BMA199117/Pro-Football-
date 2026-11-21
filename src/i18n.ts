@@ -1,7 +1,7 @@
 import type { Lang } from './types'
 
 const uz = {
-  appName: 'Murabbiy daftari', sub: "Mashg'ulotlar ilovasi",
+  appName: 'Pro Football', sub: "Mashg'ulotlar ilovasi",
   plan: "Mashg'ulotlar", drills: 'Mashqlar', team: 'Jamoa', cal: 'Kalendar',
   planSub: "Mashg'ulotni tanlang va bosqichlarga mashq qo'shing", newS: "Yangi mashg'ulot",
   warm: 'Razminka', main: 'Asosiy qism', cool: 'Yakun',
@@ -31,7 +31,7 @@ const uz = {
 }
 
 const ru: typeof uz = {
-  appName: 'Тетрадь тренера', sub: 'Приложение для тренировок',
+  appName: 'Pro Football', sub: 'Приложение для тренировок',
   plan: 'Тренировки', drills: 'Упражнения', team: 'Команда', cal: 'Календарь',
   planSub: 'Выберите тренировку и добавьте упражнения в блоки', newS: 'Новая тренировка',
   warm: 'Разминка', main: 'Основная часть', cool: 'Заминка',

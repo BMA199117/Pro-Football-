@@ -13,8 +13,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       manifest: {
-        name: 'Murabbiy daftari',
-        short_name: 'Murabbiy',
+        name: 'Pro Football',
+        short_name: 'Pro Football',
         description: "Futbol murabbiylari uchun mashg'ulot ilovasi",
         lang: 'uz',
         theme_color: '#1F6B4A',

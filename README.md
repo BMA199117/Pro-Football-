@@ -1,4 +1,4 @@
-# Murabbiy daftari (Pro-Football)
+# Pro Football
 
 Futbol murabbiylari uchun mashg'ulot ilovasi. Bolalar akademiyalari va havaskor jamoalar uchun.
 Telefonda ilova kabi o'rnatiladi (PWA), kompyuterda brauzerda ishlaydi, internetsiz ham ishlaydi.

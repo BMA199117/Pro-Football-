@@ -1,4 +1,4 @@
--- Murabbiy daftari: one JSON document per coach, synced between devices.
+-- Pro Football: one JSON document per coach, synced between devices.
 -- Run this once in Supabase: SQL Editor -> New query -> paste -> Run.
 
 create table if not exists public.coach_data (
