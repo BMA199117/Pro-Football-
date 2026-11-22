@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Modal } from '../components/Modal'
-import { saveItem, getContent, isBuiltin, resetItem, KINDS, type Entry, type ItemOf, type Kind, type SaveResult } from '../content'
+import { saveItem, getContent, isBuiltin, resetItem, setHidden, KINDS, type Entry, type ItemOf, type Kind, type SaveResult } from '../content'
 import { getEmails, getHistory, when, type HistoryRow } from './api'
 import { KIND_LABEL, describe } from './labels'
 import { SAVE_ERR } from './fields'
@@ -21,7 +21,7 @@ function titleOf(r: HistoryRow): string {
 function restore(r: HistoryRow): Promise<SaveResult> {
   if (r.deleted) return resetItem(r.kind, r.id)
   if (r.data) return saveItem(r.kind, r.data as ItemOf[Kind], r.hidden)
-  return import('../content').then((m) => m.setHidden(r.kind, r.id, r.hidden))
+  return setHidden(r.kind, r.id, r.hidden)
 }
 
 function Rows({ rows, emails, showKind, onRestored }: { rows: HistoryRow[]; emails: Map<string, string>; showKind: boolean; onRestored: (msg: string, err?: boolean) => void }) {
