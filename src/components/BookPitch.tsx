@@ -1,5 +1,5 @@
 import { useId, type ReactNode } from 'react'
-import { arcCtl, frameAt, marks, posAt, smooth, tracks, ballAt, type BookScene, type ConeColor, type Dir, type Item, type Mark, type Pt, type Team } from '../book/scene'
+import { arcCtl, bookSteps, frameAt, marks, posAt, smooth, tracks, ballAt, type BookScene, type ConeColor, type Dir, type Item, type Mark, type Pt, type Team } from '../book/scene'
 
 export const TEAM: Record<Team, { fill: string; stroke: string; text: string }> = {
   r: { fill: '#D9342B', stroke: '#fff', text: '#fff' },
@@ -208,7 +208,7 @@ export function BookStatic({ scene, maxHeight }: { scene: BookScene; maxHeight?:
   return (
     <Frame id={id} maxHeight={maxHeight}>
       {scene.field.map((it, i) => item(it, i, id + 'net'))}
-      <MarkPaths scene={scene} ms={marks(scene)} id={id} />
+      <MarkPaths scene={scene} ms={marks(scene, 0, bookSteps(scene) - 1)} id={id} />
       {scene.players.map((p) => playerDot(p.t, posAt(scene, p, 0), p.l, 'p' + p.id))}
       {start.map((b, i) => ballDot(b, 'b' + i))}
     </Frame>
@@ -230,7 +230,7 @@ export function BookFrame({ scene, t, maxHeight, step, stepOpacity = 1 }: { scen
   return (
     <Frame id={id} maxHeight={maxHeight}>
       {scene.field.map((it, i) => item(it, i, id + 'net'))}
-      {step !== undefined && step > 0 && <MarkPaths scene={scene} ms={marks(scene, 0, Math.min(step, scene.steps - 1))} id={id} opacity={0.28} />}
+      {step !== undefined && step > 0 && <MarkPaths scene={scene} ms={marks(scene, Math.max(0, step - 3), Math.min(step, scene.steps - 1))} id={id} opacity={0.28} />}
       {step !== undefined && step < scene.steps - 1 && stepOpacity > 0 && <MarkPaths scene={scene} ms={marks(scene, step, step + 1)} id={id} opacity={stepOpacity} />}
       {f.trails.map(([a, b, shot], i) => { const y = styleOf(scene)[shot ? 'shot' : 'pass']; return <line key={'t' + i} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={y.stroke} strokeOpacity={0.75} strokeWidth={y.width} strokeDasharray={y.dash} strokeLinecap="round" /> })}
       {f.players.filter(({ p }) => movers.has(p.id)).map(({ p, at }) => <circle key={'h' + p.id} cx={at[0]} cy={at[1]} r={6.6} fill="none" stroke="#FFE45C" strokeWidth={0.9} strokeOpacity={0.9} />)}
@@ -243,7 +243,7 @@ export function BookFrame({ scene, t, maxHeight, step, stepOpacity = 1 }: { scen
 /** The line key under a book diagram (only the line types this drill uses). */
 export function LineKey({ scene, label }: { scene: BookScene; label: (k: 'run' | 'drib' | 'pass' | 'shot' | 'lob') => string }) {
   const st = styleOf(scene)
-  const used = new Set(marks(scene).map((m) => m.kind))
+  const used = new Set(marks(scene, 0, bookSteps(scene) - 1).map((m) => m.kind))
   const kinds = (['run', 'drib', 'pass', 'shot', 'lob'] as const).filter((k) => used.has(k))
   if (!kinds.length) return null
   return (

@@ -3,7 +3,7 @@ import type { Diagram } from '../types'
 import { Field, Pitch } from './Pitch'
 import { SCENES, frame } from '../scenes'
 import { BOOK_SCENES } from '../book'
-import type { BookScene } from '../book/scene'
+import { bookSteps, type BookScene } from '../book/scene'
 import { narrate } from '../book/narrate'
 import { BookFrame, BookStatic } from './BookPitch'
 import { useT } from '../hooks'
@@ -81,7 +81,7 @@ function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; autoPlay
     <div className="apitch">
       <BookFrame scene={scene} t={pos.t} step={pos.step} stepOpacity={pos.op} maxHeight={maxHeight} />
       <div className="apitch-step" aria-live="polite">
-        {pos.k < 0 ? tr('ready') : pos.k >= moves ? tr('finalPos') : `${tr('stepN')} ${shown} / ${moves}`}
+        {pos.k < 0 ? tr('ready') : pos.k >= moves ? tr('finalPos') : `${tr('stepN')} ${shown} / ${moves}${pos.k >= bookSteps(scene) - 1 ? ' · ' + tr('cont') : ''}`}
       </div>
       <div className="apitch-cap" aria-live="polite">
         {pos.k < 0 || pos.k >= moves
@@ -138,12 +138,18 @@ export function DrillViews({ id, type, maxHeight }: { id?: string; type: Diagram
 /** The drill step by step in words (generated from the same data as the drawing). */
 function StepList({ scene }: { scene: BookScene }) {
   const { t, lang } = useT()
-  const story = narrate(scene, lang).filter((l) => l.length)
-  if (!story.length) return null
+  const story = narrate(scene, lang)
+  if (!story.some((l) => l.length)) return null
+  const b = bookSteps(scene) - 1
+  const li = (l: string[], k: number) => l.length ? <li key={k} value={k + 1}>{l.join(' · ')}</li> : null
   return (
     <details className="steps" open>
       <summary>{t('stepsTitle')}</summary>
-      <ol>{story.map((l, k) => <li key={k}>{l.join(' · ')}</li>)}</ol>
+      <ol>{story.slice(0, b).map((l, k) => li(l, k))}</ol>
+      {story.length > b && <>
+        <p className="steps-cont">{t('cont')}: <span>{t('contNote')}</span></p>
+        <ol>{story.slice(b).map((l, k) => li(l, k + b))}</ol>
+      </>}
     </details>
   )
 }

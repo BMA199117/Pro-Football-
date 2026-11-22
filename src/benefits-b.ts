@@ -25,7 +25,7 @@ export const BENEFITS_B: Record<string, Benefit> = {
   'e10-20': [['pass', 'team', 'support'], "Gol faqat yerdan pas bilan — aniq pas va sherik uchun ochilish rag'batlanadi.", 'Гол только передачей по земле — поощряет точный пас и открывание.'],
   'e10-21': [['defend', 'team', 'comm'], "To'pni olib gol ursa ikki ochko — juftlikda himoya: biri bosadi, ikkinchisi sug'urta qiladi.", 'Двойные очки за гол после отбора — оборона в паре: один давит, второй страхует.'],
   'e10-22': [['gk', 'react', 'vision'], "Darvozabon ko'z bilan bog'lanib to'p oladi — to'pni ushlash va o'yinchilar bilan muloqot.", 'Вратарь получает мяч после зрительного контакта — ловля и общение с игроками.'],
-  'e10-23': [['gk', 'position', 'react'], "Darvozabon ikki darvozani himoya qiladi — joy tanlash va tez siljish o'rganiladi.", 'Вратарь защищает двое ворот — учится выбору позиции и быстрому перемещению.'],
+  'e10-23': [['gk', 'position', 'react'], "Darvozabon ikki darvozani himoya qiladi — joy tanlash va tez harakatlanish o'rganiladi.", 'Вратарь защищает двое ворот — учится выбору позиции и быстрому перемещению.'],
   'e10-24': [['gk', 'shoot', 'react'], "Ko'p zarbali 4×4 — darvozabon har doim zarbaga tayyor turishni o'rganadi.", '4×4 с большим количеством ударов — вратарь учится всегда быть готовым.'],
   'e10-25': [['drib', 'vision', 'coord'], "Bir-biriga qarab yurib, to'qnashmasdan o'tish — boshni ko'tarish va to'pni yaqin olib yurish.", 'Вести навстречу друг другу и разойтись — поднятая голова и мяч у ноги.'],
   'e10-26': [['drib', 'decide', 'duel'], "Gol faqat olib o'tish bilan — 1×1 da dadil o'tish va bo'sh darvozani tanlash rag'batlanadi.", 'Гол только ведением — поощряет смелый обыгрыш 1×1 и выбор свободных ворот.'],

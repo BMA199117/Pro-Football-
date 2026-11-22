@@ -18,7 +18,7 @@ const TEAM_MANY: Record<Team, [string, string]> = {
 const W = {
   gk: ['darvozabon', 'вратарь'], coach: ['murabbiy', 'тренер'], player: ["o'yinchi", 'игрок'],
   pass: ['Pas', 'Пас'], lob: ['Oshirma', 'Передача верхом'], shot: ['Zarba', 'Удар'], drib: ["To'p bilan yurish", 'Ведение'],
-  run: ['Yugurish', 'Рывок'], move: ['Siljish', 'Перемещение'], space: ["bo'sh joyga", 'в свободную зону'],
+  run: ['Yugurish', 'Рывок'], move: ['Harakatlanish', 'Перемещение'], space: ["bo'sh joyga", 'в свободную зону'],
   get: ["To'pni oladi", 'Получает мяч'], players: ["o'yinchi", 'игрока'], start: ['Boshlanish', 'Начало'],
 } as const
 

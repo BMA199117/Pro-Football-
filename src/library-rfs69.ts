@@ -277,7 +277,7 @@ export const RFS_69: Row[] = [
     ["Maydon 10–15 × 10–12 m. Himoyachi juftlikda 2 kichik darvoza, hujumchida 1. Darvozalar oldida 2 m zona, unga hech kim kirmaydi. Hujumchi juftlik darvozalaridan biriga hujum qiladi; himoyachilar to'pni olib hujumchi darvozasiga uradi.",
      'Поле 10–15 × 10–12 м. У пары защитников двое малых ворот, у нападающего одни. Перед воротами зоны 2 м, куда нельзя заходить. Нападающий атакует ворота пары; защитники после отбора забивают в ворота нападающего.'],
     ['3 kichik darvoza, konuslar, to\'plar', '3 малых ворот, конусы, мячи'],
-    [['Himoyada birga siljing', 'Смещайтесь в обороне вместе'], ['Hujumchini chetga siqing', 'Прижимайте нападающего к краю'], ['O\'yin 20 soniyadan oshmaydi', 'Игра не дольше 20 секунд']]),
+    [['Himoyada birga harakatlaning', 'Смещайтесь в обороне вместе'], ['Hujumchini chetga siqing', 'Прижимайте нападающего к краю'], ['O\'yin 20 soniyadan oshmaydi', 'Игра не дольше 20 секунд']]),
   r('r69-62', 'tact', 'overload', 'U9', 12, '6–10', ['2 + darvozabon × 2: bosim', '2 + вратарь × 2: прессинг'],
     ["Maydon 25–30 × 12–15 m. Hujumchilarda 2 kichik darvoza, himoyachilarda darvozabonli 5 × 2 m darvoza. Hujumchilar kichik darvozalar yonida to'p bilan, himoyachilar o'rtada. Ikkala juftlik bir vaqtda bir-biriga qarab harakat qiladi: himoyachilar maydonni qisqartiradi va bosadi.",
      'Поле 25–30 × 12–15 м. У нападающих двое малых ворот, у защитников — ворота 5 × 2 м с вратарём. Нападающие с мячом у малых ворот, защитники в центре. Обе пары одновременно начинают движение навстречу: защитники сокращают пространство и прессингуют.'],

@@ -46,7 +46,7 @@ export const BENEFITS_D: Record<string, Benefit> = {
   'r69-46': [['team', 'defend', 'decide'], "2×2 vazifalar bilan — juftlikda hujum va himoya.", '2×2 с заданиями — атака и оборона в паре.'],
   'r69-47': [['team', 'decide', 'trans'], "To'rt darvozali 2×2 — o'yinni ochiq tomonga o'tkazish.", '2×2 на четверо ворот — перевод игры в открытую сторону.'],
   'r69-48': [['touch', 'coord', 'pass'], "Yon tomonga olib qabul qilish — keyingi harakatga tayyor birinchi teginish.", 'Приём с уходом в сторону — первое касание, готовящее следующее действие.'],
-  'r69-50': [['pass', 'vision', 'defend'], "O'rtadagi juftlik orqali yoruvchi pas — chiziqlar orasidan pas va himoyada birga siljish.", 'Проникающие передачи через среднюю пару — пас между линиями и совместное смещение в обороне.'],
+  'r69-50': [['pass', 'vision', 'defend'], "O'rtadagi juftlik orqali yoruvchi pas — chiziqlar orasidan pas va himoyada birga harakatlanish.", 'Проникающие передачи через среднюю пару — пас между линиями и совместное смещение в обороне.'],
   'r69-51': [['touch', 'coord', 'focus'], "To'r ustidan tennisbol — to'pni havoda qabul qilish va nazorat.", 'Теннисбол через сетку — приём верхового мяча и контроль.'],
   'r69-52': [['touch', 'team', 'coord'], "Juftlikda tennisbol — to'pni qabul qilish va sherikka uzatish.", 'Теннисбол в парах — приём и передача партнёру.'],
   'r69-53': [['duel', 'touch', 'drib'], "Pasdan keyin yuzma-yuz 1×1 — qabul qilib darhol o'tish.", '1×1 после передачи лицом — принять и сразу обыгрывать.'],

@@ -293,3 +293,5 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .skills { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .skills-l { font-size: 12px; color: var(--muted); margin-right: 2px; }
 .skill { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--surface); border: 1px solid color-mix(in srgb, var(--pitch) 40%, transparent); }
+.steps-cont { margin: 8px 0 2px; font-weight: 600; font-size: 13px; }
+.steps-cont span { font-weight: 400; color: var(--muted); }

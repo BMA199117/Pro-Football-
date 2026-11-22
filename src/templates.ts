@@ -79,7 +79,7 @@ const ROWS: Row[] = [
   ['u12w9', '11–12', 'U12', 'epysa12', ['9-hafta: darvozabon', 'Неделя 9: вратарь'],
     ["Darvozabonlar maydon o'yinchilari bilan, 4×4 darvozalarga", 'Вратари с полевыми, 4×4 на ворота'], ['e10-22'], ['e10-23', 'e10-24'], ['e12-20']],
   ['u12w10', '11–12', 'U12', 'epysa12', ['10-hafta: darvozabon va zarba', 'Неделя 10: вратарь и удар'],
-    ["Siljib ushlash, 2×1 darvozabonlar bilan, 4×4 katta darvozaga", 'Перемещение и ловля, 2×1 с вратарями, 4×4 на большие ворота'], ['e12-18'], ['e12-19', 'e10-24'], ['e12-20']],
+    ["Harakatlanib ushlash, 2×1 darvozabonlar bilan, 4×4 katta darvozaga", 'Перемещение и ловля, 2×1 с вратарями, 4×4 на большие ворота'], ['e12-18'], ['e12-19', 'e10-24'], ['e12-20']],
   // RFS 6–9 — one or two sessions per stage (Ball, +Goal, +Opponent, +Partner)
   ['r69p1', '5–6', 'RFS 6', 'rfs69', ["«To'p» bosqichi: harakat texnikasi", 'Этап «Мяч»: техника передвижения'],
     ["Yugurish, sakrash, to'xtash va burilish o'yinlarda", 'Бег, прыжки, остановки и повороты в играх'], ['r69-1'], ['r69-2', 'r69-3', 'r69-5'], ['r69-10']],

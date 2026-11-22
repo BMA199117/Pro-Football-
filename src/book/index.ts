@@ -1,4 +1,9 @@
-import type { BookScene } from './scene'
+import { extend, type BookScene, type More } from './scene'
+import { MORE_U6 } from './more-u6'
+import { MORE_U8 } from './more-u8'
+import { MORE_U10 } from './more-u10'
+import { MORE_U12 } from './more-u12'
+import { MORE_F82 } from './more-fifa82'
 import { U6_SCENES } from './epysa-u6'
 import { U8_SCENES } from './epysa-u8'
 import { U10_SCENES } from './epysa-u10'
@@ -11,4 +16,11 @@ import { ADIDAS1014 } from './adidas1014'
 import { ADIDAS1517 } from './adidas1517'
 import { SSG100 } from './ssg100'
 
-export const BOOK_SCENES: Record<string, BookScene> = { ...U6_SCENES, ...U8_SCENES, ...U10_SCENES, ...U12_SCENES, ...FIFA82_SCENES, ...RFS69_A, ...RFS69_B, ...RFS69_C, ...ADIDAS1014, ...ADIDAS1517, ...SSG100 }
+export const RAW: Record<string, BookScene> = { ...U6_SCENES, ...U8_SCENES, ...U10_SCENES, ...U12_SCENES, ...FIFA82_SCENES, ...RFS69_A, ...RFS69_B, ...RFS69_C, ...ADIDAS1014, ...ADIDAS1517, ...SSG100 }
+
+/** Continuations after the book moment (animation only; the drawing stays as in the book). */
+export const MORE: Record<string, More> = { ...MORE_U6, ...MORE_U8, ...MORE_U10, ...MORE_U12, ...MORE_F82 }
+
+export const BOOK_SCENES: Record<string, BookScene> = Object.fromEntries(
+  Object.entries(RAW).map(([id, sc]) => [id, MORE[id] ? extend(sc, MORE[id]) : sc]),
+)

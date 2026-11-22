@@ -74,7 +74,32 @@ export interface BookScene {
    * fifa: run = dashed, pass = solid (as in the FIFA manuals).
    */
   key?: 'epysa' | 'fifa'
+  /**
+   * Steps drawn in the book. When a scene is extended (see extend), the steps after
+   * these continue the drill in the animation only; the drawing stays as in the book.
+   */
+  book?: number
 }
+
+/**
+ * Continuation of a drill after the moment drawn in the book (next passes, rotation,
+ * the next pair starting), so the animation shows more of the drill in action.
+ * n: extra steps; p: extra positions per player id (others stay where they are);
+ * b: extra entries per ball track (a track past the existing ones is a new ball).
+ */
+export interface More { n: number; p: Record<string, Step[]>; b?: BallStep[][] }
+
+export function extend(sc: BookScene, m: More): BookScene {
+  const n0 = sc.steps, n = n0 + m.n
+  const players = sc.players.map((p) => (m.p[p.id] ? { ...p, p: [...pad(p.p, n0), ...m.p[p.id]] } : p))
+  const old = sc.balls ?? []
+  const balls = [...old, ...(m.b ?? []).slice(old.length).map(() => [] as BallStep[])].map((t, i) => {
+    const base = i < old.length ? pad(t, n0) : (Array(n0).fill(0) as BallStep[])
+    return m.b?.[i]?.length ? [...base, ...m.b[i]] : base
+  })
+  return { ...sc, steps: n, book: sc.book ?? n0, players, balls }
+}
+export const bookSteps = (sc: BookScene) => sc.book ?? sc.steps
 
 // ---------- helpers ----------
 
@@ -205,7 +230,30 @@ export function frameAt(sc: BookScene, t: number): Frame {
   const k = Math.max(0, Math.min(Math.floor(t), sc.steps - 1))
   const raw = k >= sc.steps - 1 ? 0 : clamp(t - k)
   const f = ease(raw)
+  const trs0 = tracks(sc)
   const players = sc.players.map((p) => ({ p, at: k >= sc.steps - 1 ? posAt(sc, p, k) : along(smooth(route(sc, p, k)), f) }))
+  // players who stand still in this step stay alive: defenders edge toward the ball,
+  // team-mates step sideways to open an angle (back on their mark by the end of the step)
+  if (k < sc.steps - 1 && raw > 0 && raw < 1) {
+    const ballNow = trs0.map((tr) => ballAt(sc, tr, k)).filter(Boolean) as Pt[]
+    const holder = trs0.map((tr) => (typeof tr[k] === 'string' ? tr[k] : typeof tr[k + 1] === 'string' ? tr[k + 1] : '')).find(Boolean) as string | undefined
+    const team = holder ? owner(sc, holder)?.t : undefined
+    const bump = Math.sin(Math.PI * raw)
+    for (const x of players) {
+      const p = x.p
+      if (p.t === 'c' || p.quiet || p.ball || !ballNow.length) continue
+      const r = route(sc, p, k)
+      if (dist(r[0], r[r.length - 1]) > 1.5 || r.length > 2) continue
+      if (trs0.some((tr) => tr[k] === p.id || tr[k + 1] === p.id)) continue
+      const b = ballNow.reduce((m, q) => (dist(q, x.at) < dist(m, x.at) ? q : m))
+      const d = dist(b, x.at)
+      if (d < 4 || d > 55) continue
+      const u: Pt = [(b[0] - x.at[0]) / d, (b[1] - x.at[1]) / d]
+      const side = (p.id.charCodeAt(p.id.length - 1) % 2 ? 1 : -1)
+      const v: Pt = team && p.t === team ? [-u[1] * side * 1.8, u[0] * side * 1.8] : [u[0] * 2.4, u[1] * 2.4]
+      x.at = [x.at[0] + v[0] * bump, x.at[1] + v[1] * bump]
+    }
+  }
   const atOf = (id: string) => players.find((x) => x.p.id === id)?.at
   const balls: Pt[] = [], trails: [Pt, Pt, boolean][] = []
   for (const tr of tracks(sc)) {

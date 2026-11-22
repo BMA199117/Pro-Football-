@@ -21,7 +21,7 @@ const ROWS: Row[] = [
      ["Bir xil harakatni turli variantda qildiring", 'Давайте выполнять одно действие по-разному']]],
   ['n3', 'method', 'press4w',
     ["Mavzuni bosqichma-bosqich o'rgating", 'Учите тему ступенями'],
-    ["Bosimdan chiqishni bir oyda, haftasiga ikki mashg'ulotda o'rgatish mumkin. Tartib muhim: avval qarashni, keyin oddiy siljishni, shundan keyingina aldamchi harakatni o'rgating. Oddiy narsasiz murakkabini o'rgatish foydasiz.",
+    ["Bosimdan chiqishni bir oyda, haftasiga ikki mashg'ulotda o'rgatish mumkin. Tartib muhim: avval qarashni, keyin oddiy harakatlanishni, shundan keyingina aldamchi harakatni o'rgating. Oddiy narsasiz murakkabini o'rgatish foydasiz.",
      'Выход из-под прессинга можно учить месяц, по два занятия в неделю. Важен порядок: сначала смотреть, потом простое смещение, и только потом обман. Учить сложное раньше простого бессмысленно.'],
     [["Har mashg'ulot oxirida 5 daqiqa bolalarga savol bering", 'В конце каждого занятия 5 минут вопросов детям'],
      ["Bosimsiz boshlang, keyin haqiqiy bosim qo'shing", 'Начинайте без давления, потом добавляйте настоящее']]],
