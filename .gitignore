@@ -6,3 +6,4 @@ dist
 # tsc build output
 src/**/*.js
 *.tsbuildinfo
+.env.*.local
