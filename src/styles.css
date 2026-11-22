@@ -304,3 +304,37 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .skill { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--surface); border: 1px solid color-mix(in srgb, var(--pitch) 40%, transparent); }
 .steps-cont { margin: 8px 0 2px; font-weight: 600; font-size: 13px; }
 .steps-cont span { font-weight: 400; color: var(--muted); }
+
+/* tactics board */
+.head-btns { display: flex; gap: 8px; flex-wrap: wrap }
+.board { position: fixed; inset: 0; z-index: 50; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; gap: 10px; padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); overflow: auto }
+.tb-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap }
+.tb-name { flex: 1 1 220px; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; background: var(--surface); font-size: 15px; font-weight: 600; color: inherit }
+.tb-top-btns { display: flex; gap: 6px; flex-wrap: wrap }
+.tb-main { display: grid; grid-template-columns: 1fr; gap: 12px; flex: 1; min-height: 0 }
+@media (min-width: 900px) { .tb-main { grid-template-columns: minmax(0, 1fr) 300px; align-items: start } }
+.tb-pitch { display: flex; flex-direction: column; gap: 6px; min-width: 0 }
+.tb-pitch svg.pitch { width: 100%; max-height: 70vh; border-radius: 10px; display: block }
+.tb-svg { cursor: crosshair; user-select: none; -webkit-user-select: none }
+.tb-hint { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.4 }
+.tb-side { display: flex; flex-direction: column; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px }
+.tb-h { margin: 6px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted) }
+.tb-tools { display: flex; flex-wrap: wrap; gap: 6px }
+.tb-tool { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--bg); color: inherit; border-radius: 8px; padding: 6px 9px; font-size: 13px; min-height: 36px }
+.tb-tool[aria-pressed="true"] { border-color: var(--pitch); background: color-mix(in srgb, var(--pitch) 16%, var(--surface)); font-weight: 600 }
+.tb-ic { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; font-size: 15px }
+.tb-steps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center }
+.tb-steps button { border: 1px solid var(--line); background: var(--bg); color: inherit; border-radius: 999px; min-width: 36px; height: 34px; padding: 0 12px; font-size: 13px; font-weight: 600 }
+.tb-steps button[aria-pressed="true"] { background: var(--pitch); border-color: var(--pitch); color: #fff }
+.tb-steps .tb-add { border-style: dashed }
+.tb-steps .tb-delstep { min-width: 34px; padding: 0; color: var(--muted) }
+.tb-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
+.tb-check { display: inline-flex; gap: 6px; align-items: center; font-size: 13px }
+.tb-count { margin: 4px 0 0; font-size: 12px }
+.tb-pitch .apitch { width: 100% }
+.fd-draw { display: flex; flex-direction: column; gap: 8px; align-items: flex-start }
+.fd-draw svg.pitch { width: 100%; border-radius: 8px }
+@media (max-width: 899px) {
+  /* the pitch stays in view while the tools scroll under it */
+  .tb-pitch { position: sticky; top: calc(-1 * max(10px, env(safe-area-inset-top))); z-index: 2; background: var(--bg); padding: 4px 0 6px }
+}

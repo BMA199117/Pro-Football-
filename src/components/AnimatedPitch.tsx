@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import type { Diagram } from '../types'
 import { Field, Pitch } from './Pitch'
 import { SCENES, frame } from '../scenes'
-import { BOOK_SCENES } from '../book'
+import { sceneOf } from '../scene-of'
 import { bookSteps, type BookScene } from '../book/scene'
 import { narrate } from '../book/narrate'
 import { BookFrame, BookStatic } from './BookPitch'
@@ -12,7 +12,7 @@ const reduceMotion = () => typeof window !== 'undefined' && window.matchMedia?.(
 
 /** Static diagram for a drill: the book drawing when we have it, else the generic one. */
 export function DrillPitch({ id, type, maxHeight }: { id?: string; type: Diagram; maxHeight?: number }) {
-  const book = id ? BOOK_SCENES[id] : undefined
+  const book = sceneOf(id)
   return book ? <BookStatic scene={book} maxHeight={maxHeight} /> : <Pitch type={type} maxHeight={maxHeight} />
 }
 
@@ -42,7 +42,7 @@ function at(sc: BookScene, s: number, slow: boolean) {
 }
 
 /** The book animation: step by step, with the arrows of each step shown before it plays. */
-function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; autoPlay: boolean; maxHeight?: number }) {
+export function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; autoPlay: boolean; maxHeight?: number }) {
   const { t: tr, lang } = useT()
   const story = narrate(scene, lang)
   const [playing, setPlaying] = useState(autoPlay && !reduceMotion())
@@ -105,7 +105,7 @@ function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; autoPlay
  * Stopped at the start it shows the static diagram with arrows.
  */
 export function AnimatedPitch({ id, type, autoPlay = true, maxHeight }: { id?: string; type: Diagram; autoPlay?: boolean; maxHeight?: number }) {
-  const book = id ? BOOK_SCENES[id] : undefined
+  const book = sceneOf(id)
   if (book) return <BookPlayer key={id} scene={book} autoPlay={autoPlay} maxHeight={maxHeight} />
   return <GenericPlayer type={type} autoPlay={autoPlay} maxHeight={maxHeight} />
 }
@@ -130,7 +130,7 @@ export function DrillViews({ id, type, maxHeight }: { id?: string; type: Diagram
         {view !== 'dia' && <figure className="view-anim"><AnimatedPitch id={id} type={type} maxHeight={maxHeight} />{view === 'both' && <figcaption>{t('vAnim')}</figcaption>}</figure>}
         {view !== 'anim' && <figure className="view-dia"><DrillPitch id={id} type={type} maxHeight={maxHeight} />{view === 'both' && <figcaption>{t('vDia')}</figcaption>}</figure>}
       </div>
-      {id && BOOK_SCENES[id] && <StepList scene={BOOK_SCENES[id]} />}
+      {sceneOf(id) && <StepList scene={sceneOf(id)!} />}
     </div>
   )
 }
