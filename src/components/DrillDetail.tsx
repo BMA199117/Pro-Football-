@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Modal } from './Modal'
 import { DrillViews } from './AnimatedPitch'
 import { LineKey } from './BookPitch'
-import { BOOK_SCENES } from '../book'
+import { sceneOf } from '../scene-of'
 import { useT } from '../hooks'
 import { update, useData } from '../store'
 import { parse } from '../dates'
@@ -10,16 +10,20 @@ import { PHASES, type Drill, type Phase } from '../types'
 import { SOURCES } from '../sources'
 import { BENEFITS } from '../benefits'
 import { SKILLS } from '../skills'
+import { DrillForm } from './DrillForm'
 
-export function DrillDetail({ drill, onClose }: { drill: Drill; onClose: () => void }) {
+export function DrillDetail({ drill: drill0, onClose }: { drill: Drill; onClose: () => void }) {
   const { t, L, months, lang } = useT()
-  const ben = BENEFITS[drill.id]
   const data = useData()
+  // a drill the coach edits here shows its new version at once
+  const drill = data.customDrills.find((x) => x.id === drill0.id) ?? drill0
+  const ben = BENEFITS[drill.id]
   const fav = (data.favorites ?? []).includes(drill.id)
   const upcoming = [...data.sessions].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
   const [sid, setSid] = useState(upcoming[0]?.id ?? '')
   const [phase, setPhase] = useState<Phase>('main')
   const [added, setAdded] = useState(false)
+  const [editing, setEditing] = useState(false)
 
   const toggleFav = () => update((d) => {
     const f = d.favorites ?? []
@@ -33,7 +37,7 @@ export function DrillDetail({ drill, onClose }: { drill: Drill; onClose: () => v
   return (
     <Modal title={L(drill.name)} onClose={onClose}>
       <DrillViews id={drill.id} type={drill.dia} />
-      {BOOK_SCENES[drill.id] && <LineKey scene={BOOK_SCENES[drill.id]} label={(k) => t(({ run: 'kRun', drib: 'kDrib', pass: 'kPass', shot: 'kShot', lob: 'kLob' } as const)[k])} />}
+      {sceneOf(drill.id) && <LineKey scene={sceneOf(drill.id)!} label={(k) => t(({ run: 'kRun', drib: 'kDrib', pass: 'kPass', shot: 'kShot', lob: 'kLob' } as const)[k])} />}
       <div className="meta">
         <span className="chip">{t(drill.cat)}</span>
         <span className="chip">{drill.age}</span>
@@ -73,7 +77,11 @@ export function DrillDetail({ drill, onClose }: { drill: Drill; onClose: () => v
           </div>
         </div>
       )}
-      <div className="row"><button className="btn ghost" onClick={onClose}>{t('close')}</button></div>
+      <div className="row">
+        {drill.custom && <button className="btn ghost" onClick={() => setEditing(true)}>✏️ {t('edit')}</button>}
+        <button className="btn ghost" onClick={onClose}>{t('close')}</button>
+      </div>
+      {editing && <DrillForm drill={drill} onClose={() => setEditing(false)} />}
     </Modal>
   )
 }

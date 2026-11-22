@@ -1,3 +1,5 @@
+import type { BookScene } from './book/scene'
+
 export type Lang = 'uz' | 'ru'
 export type Text = { uz: string; ru: string }
 export type Category = 'tech' | 'tact' | 'phys' | 'gk'
@@ -19,6 +21,8 @@ export interface Drill {
   /** Key of SOURCES when the drill comes from a book. */
   source?: string
   custom?: boolean
+  /** the coach's own drawing (tactics board), animated like the book drills */
+  scene?: BookScene
 }
 
 export interface Player {

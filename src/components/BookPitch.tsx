@@ -48,7 +48,7 @@ function goalShape(x: number, y: number, dir: Dir, w: number, k: string, net: st
   )
 }
 
-function item(it: Item, i: number, net: string): ReactNode {
+export function item(it: Item, i: number, net: string): ReactNode {
   const k = 'i' + i
   switch (it[0]) {
     case 'area': {
@@ -151,7 +151,7 @@ function trim(pts: Pt[], by: number): Pt[] {
   return out
 }
 
-function playerDot(t: Team, at: Pt, l: string | undefined, k: string) {
+export function playerDot(t: Team, at: Pt, l: string | undefined, k: string) {
   const c = TEAM[t]
   return (
     <g key={k} transform={`translate(${at[0].toFixed(2)} ${at[1].toFixed(2)})`}>
@@ -160,12 +160,12 @@ function playerDot(t: Team, at: Pt, l: string | undefined, k: string) {
     </g>
   )
 }
-const ballDot = (at: Pt, k: string) => <circle key={k} cx={at[0]} cy={at[1]} r={2.1} fill="#fff" stroke="#16231C" strokeWidth={0.8} />
+export const ballDot = (at: Pt, k: string) => <circle key={k} cx={at[0]} cy={at[1]} r={2.1} fill="#fff" stroke="#16231C" strokeWidth={0.8} />
 
 /** Pitch frame with grass and the defs shared by both views. */
-function Frame({ id, children, maxHeight }: { id: string; children: ReactNode; maxHeight?: number }) {
+export function Frame({ id, children, maxHeight, svg }: { id: string; children: ReactNode; maxHeight?: number; svg?: React.SVGProps<SVGSVGElement> & { ref?: React.Ref<SVGSVGElement> } }) {
   return (
-    <svg className="pitch" viewBox="0 0 200 110" style={{ maxHeight }} role="img" aria-hidden="true">
+    <svg className="pitch" viewBox="0 0 200 110" style={{ maxHeight }} role="img" aria-hidden="true" {...svg}>
       <defs>
         <marker id={id + 'w'} viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#fff" /></marker>
         <marker id={id + 'r'} viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0 0L10 5L0 10Z" fill={LINE.run} /></marker>
@@ -181,7 +181,7 @@ function Frame({ id, children, maxHeight }: { id: string; children: ReactNode; m
 
 
 /** Arrows of a drawing (runs, dribbles, passes, shots, lofted balls) in the book's line style. */
-function MarkPaths({ scene, ms, id, opacity = 1 }: { scene: BookScene; ms: Mark[]; id: string; opacity?: number }) {
+export function MarkPaths({ scene, ms, id, opacity = 1 }: { scene: BookScene; ms: Mark[]; id: string; opacity?: number }) {
   const st = styleOf(scene)
   return (
     <g opacity={opacity}>

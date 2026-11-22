@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { useT, useDrills } from '../hooks'
 import { update, useData } from '../store'
 import { DrillDetail } from '../components/DrillDetail'
-import { Pitch } from '../components/Pitch'
 import { DrillPitch } from '../components/AnimatedPitch'
 import { BOOK_SCENES } from '../book'
-import { Modal, ConfirmButton } from '../components/Modal'
+import { ConfirmButton } from '../components/Modal'
 import { uid } from '../dates'
-import { CATEGORIES, type Category, type Diagram, type Drill } from '../types'
+import { DrillForm } from '../components/DrillForm'
+import { Board } from '../components/Board'
+import { CATEGORIES, type Category, type Drill } from '../types'
 
 const CAT_COLOR: Record<Category, string> = { tech: 'var(--pitch)', tact: 'var(--blue)', phys: 'var(--cone)', gk: 'var(--purple)' }
 type Band = { id: string; label: string; from: number; to: number }
@@ -24,7 +25,6 @@ const ageList = (r: string) => {
   if (n.length < 2 || n[1] - n[0] > 3) return r
   return Array.from({ length: n[1] - n[0] + 1 }, (_, i) => 'U' + (n[0] + i)).join(', ')
 }
-const DIAGRAMS: Diagram[] = ['pass', 'dribble', 'rondo', 'smallgame', 'shoot', 'duel', 'overload', 'sprint', 'warmup', 'gk']
 
 export function Drills() {
   const { t, L } = useT()
@@ -33,6 +33,7 @@ export function Drills() {
   const [cat, setCat] = useState<Category | 'all'>('all')
   const [q, setQ] = useState('')
   const [adding, setAdding] = useState(false)
+  const [drawing, setDrawing] = useState(false)
   const [age, setAge] = useState('')
   const [view, setView] = useState<'base' | 'fav' | 'mine'>('base')
   const [onlyBooks, setOnlyBooks] = useState(false)
@@ -77,7 +78,10 @@ export function Drills() {
     <>
       <div className="head">
         <div><h1>{t('lib')}</h1><p className="sub">{t('libSub')}</p></div>
-        <button className="btn" onClick={() => setAdding(true)}>+ {t('own')}</button>
+        <div className="head-btns">
+          <button className="btn" onClick={() => setDrawing(true)}>✏️ {t('board')}</button>
+          <button className="btn ghost" onClick={() => setAdding(true)}>+ {t('own')}</button>
+        </div>
       </div>
       <div className="libtabs" role="group">
         {(['base', 'fav', 'mine'] as const).map((v) => (
@@ -107,44 +111,13 @@ export function Drills() {
       ))}
       {shown.length === 0 && <p className="empty">{t('noDrills')}</p>}
       {adding && <DrillForm onClose={() => setAdding(false)} />}
+      {drawing && <Board onClose={() => setDrawing(false)} onSave={(scene, name) => {
+        const both = { uz: name, ru: name }
+        const d: Drill = { id: uid(), cat: 'tact', dia: 'smallgame', age: 'U8–U17', min: 10, name: both, desc: { uz: '', ru: '' }, equip: { uz: '—', ru: '—' }, points: [], custom: true, scene }
+        update((x) => ({ ...x, customDrills: [d, ...x.customDrills] }))
+        setDrawing(false); setView('mine'); setDetail(d)
+      }} />}
       {detail && <DrillDetail drill={detail} onClose={() => setDetail(null)} />}
     </>
-  )
-}
-
-function DrillForm({ onClose }: { onClose: () => void }) {
-  const { t } = useT()
-  const [f, setF] = useState({ name: '', desc: '', cat: 'tech' as Category, dia: 'pass' as Diagram, min: 10, age: 'U10–U14', equip: '', points: '' })
-  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
-    setF({ ...f, [k]: k === 'min' ? Number(e.target.value) : e.target.value })
-  const both = (s: string) => ({ uz: s, ru: s })
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault()
-    update((d) => ({ ...d, customDrills: [{ id: uid(), cat: f.cat, dia: f.dia, age: f.age, min: f.min || 10, name: both(f.name.trim()), desc: both(f.desc.trim()), equip: both(f.equip.trim() || '—'), points: f.points.split('\n').map((x) => x.trim()).filter(Boolean).map(both), custom: true }, ...d.customDrills] }))
-    onClose()
-  }
-  return (
-    <Modal title={t('own')} onClose={onClose}>
-      <form className="form" onSubmit={submit}>
-        <label className="full">{t('name')}<input id="fd-name" value={f.name} onChange={set('name')} required autoFocus /></label>
-        <label className="full">{t('desc')}<textarea id="fd-desc" rows={3} value={f.desc} onChange={set('desc')} /></label>
-        <label>{t('cat')}<select id="fd-cat" value={f.cat} onChange={set('cat')}>{CATEGORIES.map((c) => <option key={c} value={c}>{t(c)}</option>)}</select></label>
-        <label>{t('min')}<input id="fd-min" type="number" min={1} value={f.min} onChange={set('min')} /></label>
-        <label>{t('age')}<input id="fd-age" value={f.age} onChange={set('age')} /></label>
-        <label>{t('equip')}<input id="fd-eq" value={f.equip} onChange={set('equip')} /></label>
-        <label className="full">{t('points')}<textarea id="fd-points" rows={3} value={f.points} onChange={set('points')} placeholder="1 qator = 1 maslahat" /></label>
-        <div className="full">
-          <div className="dia-pick">
-            {DIAGRAMS.map((d) => (
-              <button type="button" key={d} aria-pressed={f.dia === d} onClick={() => setF({ ...f, dia: d })}><Pitch type={d} maxHeight={50} /></button>
-            ))}
-          </div>
-        </div>
-        <div className="row full">
-          <button type="button" className="btn ghost" onClick={onClose}>{t('cancel')}</button>
-          <button className="btn">{t('save')}</button>
-        </div>
-      </form>
-    </Modal>
   )
 }
