@@ -56,7 +56,21 @@ export type Item =
   /** corner-style flag on a pole */
   | ['flag', number, number]
   /** coordination hoop */
-  | ['hoop', number, number]
+  | ['hoop', number, number, ConeColor?]
+  /** flat disc marker */
+  | ['disc', number, number, ConeColor?]
+  /** training mannequin */
+  | ['dummy', number, number]
+  /** training bib lying on the pitch */
+  | ['bib', number, number, ConeColor?]
+  /** small arch (mini hurdle) */
+  | ['arc', number, number]
+  /**
+   * a line drawn by the coach on the tactics board (not animated). style = type + end + colour + width:
+   * type s solid, d dashed, w wavy, c curved, e curved dashed; end a arrow, x cross, b stop bar, n none;
+   * colour k black, w white, r red, b blue, y yellow; width 1–4 (e.g. 'dak2')
+   */
+  | ['mark', number, number, number, number, string]
 export type Dir = 'l' | 'r' | 'u' | 'd'
 export type ConeColor = 'o' | 'y' | 'r' | 'b' | 'w'
 /** cones on the corners (c) or corners + middles (m) of an area */

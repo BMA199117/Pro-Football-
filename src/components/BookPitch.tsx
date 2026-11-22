@@ -48,6 +48,32 @@ function goalShape(x: number, y: number, dir: Dir, w: number, k: string, net: st
   )
 }
 
+const MARK_COL: Record<string, string> = { k: '#0E1C15', w: '#FFFFFF', r: '#FF4A3D', b: '#3D7FE6', y: '#F6D83A' }
+/** A line the coach drew on the board: solid, dashed, wavy or curved, ending in an arrow, a cross or a stop bar. */
+function markLine(it: Extract<Item, ['mark', ...unknown[]]>, k: string): ReactNode {
+  const [, x1, y1, x2, y2, st] = it
+  const type = st[0] ?? 's', endKind = st[1] ?? 'a', col = MARK_COL[st[2] ?? 'w'] ?? '#fff', w = [0.6, 0.9, 1.3, 1.8][Number(st[3] ?? 2) - 1] ?? 0.9
+  const a: Pt = [x1, y1], b: Pt = [x2, y2]
+  const len = Math.hypot(x2 - x1, y2 - y1) || 1
+  const ux = (x2 - x1) / len, uy = (y2 - y1) / len
+  let pts: Pt[]
+  if (type === 'w') pts = wavy([a, b])
+  else if (type === 'c' || type === 'e') { const c = arcCtl(a, b); pts = Array.from({ length: 25 }, (_, i) => { const t = i / 24, u = 1 - t; return [u * u * a[0] + 2 * u * t * c[0] + t * t * b[0], u * u * a[1] + 2 * u * t * c[1] + t * t * b[1]] as Pt }) }
+  else pts = [a, b]
+  // direction at the end (curves end at an angle)
+  const p0 = pts[Math.max(0, pts.length - 3)], ex = b[0] - p0[0], ey = b[1] - p0[1], el = Math.hypot(ex, ey) || 1
+  const dx = type === 's' || type === 'd' || type === 'w' ? ux : ex / el, dy = type === 's' || type === 'd' || type === 'w' ? uy : ey / el
+  const h = 2.2 + w * 1.2
+  const dash = type === 'd' || type === 'e' ? `${2.4 + w} ${1.6 + w * 0.6}` : undefined
+  const tip = endKind === 'a' ? <path d={`M${b[0]} ${b[1]}L${b[0] - dx * h - dy * h * 0.55} ${b[1] - dy * h + dx * h * 0.55}L${b[0] - dx * h + dy * h * 0.55} ${b[1] - dy * h - dx * h * 0.55}Z`} fill={col} />
+    : endKind === 'x' ? <path d={`M${b[0] - h * 0.6} ${b[1] - h * 0.6}L${b[0] + h * 0.6} ${b[1] + h * 0.6}M${b[0] - h * 0.6} ${b[1] + h * 0.6}L${b[0] + h * 0.6} ${b[1] - h * 0.6}`} stroke={col} strokeWidth={w * 1.1} strokeLinecap="round" />
+    : endKind === 'b' ? <path d={`M${b[0] - dy * h * 0.8} ${b[1] + dx * h * 0.8}L${b[0] + dy * h * 0.8} ${b[1] - dx * h * 0.8}`} stroke={col} strokeWidth={w * 1.2} strokeLinecap="round" />
+    : null
+  // the line stops short of an arrowhead so its end stays sharp
+  const body = endKind === 'a' ? trim(pts, h * 0.7) : pts
+  return <g key={k}><path d={toD(body)} fill="none" stroke={col} strokeWidth={w} strokeDasharray={dash} strokeLinecap="round" strokeLinejoin="round" />{tip}</g>
+}
+
 export function item(it: Item, i: number, net: string): ReactNode {
   const k = 'i' + i
   switch (it[0]) {
@@ -93,7 +119,18 @@ export function item(it: Item, i: number, net: string): ReactNode {
       </g>
     )
     case 'flag': return <g key={k}><line x1={it[1]} y1={it[2] + 3} x2={it[1]} y2={it[2] - 6} stroke="#fff" strokeWidth={0.8} /><path d={`M${it[1]} ${it[2] - 6}l5 1.6l-5 1.6z`} fill="#F6D83A" /></g>
-    case 'hoop': return <circle key={k} cx={it[1]} cy={it[2]} r={3.2} fill="none" stroke="#1C2A22" strokeWidth={0.8} />
+    case 'hoop': return <ellipse key={k} cx={it[1]} cy={it[2]} rx={3.8} ry={2.6} fill="none" stroke={it[3] ? CONE[it[3]] : '#1C2A22'} strokeWidth={0.9} />
+    case 'disc': return <g key={k}><ellipse cx={it[1]} cy={it[2] + 0.6} rx={2.6} ry={1.3} fill={CONE[it[3] ?? 'y']} stroke="rgba(0,0,0,.35)" strokeWidth={0.35} /><ellipse cx={it[1]} cy={it[2] + 0.1} rx={1} ry={0.45} fill="rgba(0,0,0,.25)" /></g>
+    case 'dummy': return (
+      <g key={k} transform={`translate(${it[1]} ${it[2]})`} stroke="rgba(0,0,0,.4)" strokeWidth={0.35}>
+        <circle cy={-6.2} r={1.5} fill="#F2C53D" />
+        <path d="M-2.4 -4.4H2.4L2 1.2H-2Z" fill="#F2C53D" />
+        <path d="M-1.6 1.2V4.6M1.6 1.2V4.6M-2.6 4.8H2.6" stroke="#5A4A12" strokeWidth={0.6} />
+      </g>
+    )
+    case 'bib': return <rect key={k} x={it[1] - 2} y={it[2] - 2.6} width={4} height={5.2} rx={0.8} fill={CONE[it[3] ?? 'y']} stroke="rgba(0,0,0,.35)" strokeWidth={0.35} transform={`rotate(-12 ${it[1]} ${it[2]})`} />
+    case 'arc': return <path key={k} d={`M${it[1] - 3.4} ${it[2] + 1.6}A3.4 3.6 0 0 1 ${it[1] + 3.4} ${it[2] + 1.6}`} fill="none" stroke="#F6D83A" strokeWidth={1} strokeLinecap="round" />
+    case 'mark': return markLine(it, k)
     case 'pitch': {
       const s = { stroke: '#fff', strokeOpacity: 0.8, strokeWidth: 0.8, fill: 'none' }
       if (it[1] === 'full') return (
