@@ -1,6 +1,6 @@
 import { usePrefs, useData } from './store'
 import { dict, tr, type Key } from './i18n'
-import { LIBRARY } from './library'
+import { useContent } from './content'
 import type { Drill, Phase, Session, Text } from './types'
 import { PHASES } from './types'
 
@@ -17,7 +17,8 @@ export function useT() {
 
 export function useDrills(): Drill[] {
   const data = useData()
-  return [...data.customDrills, ...LIBRARY]
+  const { drills } = useContent()
+  return [...data.customDrills, ...drills]
 }
 
 export function sessionMinutes(s: Session, drills: Drill[]) {

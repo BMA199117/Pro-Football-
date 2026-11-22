@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useT } from '../hooks'
-import { KNOWLEDGE, TOPICS } from '../knowledge'
-import { SOURCES } from '../sources'
+import { TOPICS } from '../knowledge'
+import { useContent } from '../content'
 import type { Topic } from '../types'
-import { DEV_AREA_LABELS, DEV_PRINCIPLES, DEV_SOURCES, DEV_STAGES, type DevArea, type DevText } from '../development'
+import { DEV_AREA_LABELS, DEV_SOURCES, type DevArea, type DevText } from '../development'
 
 const TOPIC_COLOR: Record<Topic, string> = { method: 'var(--pitch)', game: 'var(--blue)', kids: 'var(--cone)', physical: 'var(--purple)' }
 
@@ -12,6 +12,7 @@ export function Knowledge() {
   const [topic, setTopic] = useState<Topic | 'all'>('all')
   const [open, setOpen] = useState<string | null>(null)
   const [view, setView] = useState<'tips' | 'stages' | 'principles'>('tips')
+  const { cards: KNOWLEDGE, sources: SOURCES } = useContent()
   const shown = KNOWLEDGE.filter((k) => topic === 'all' || k.topic === topic)
   return (
     <>
@@ -75,8 +76,10 @@ function SourceLinks({ ids }: { ids: string[] }) {
 
 function Stages() {
   const { t, lang } = useT()
-  const [id, setId] = useState(DEV_STAGES[0].id)
+  const { stages: DEV_STAGES } = useContent()
+  const [id, setId] = useState(DEV_STAGES[0]?.id)
   const st = DEV_STAGES.find((s) => s.id === id) ?? DEV_STAGES[0]
+  if (!st) return null
   const L = (x: DevText) => D(lang, x)
   return (
     <>
@@ -118,6 +121,7 @@ function Stages() {
 function Principles() {
   const { t, lang } = useT()
   const [open, setOpen] = useState<string | null>(null)
+  const { principles: DEV_PRINCIPLES } = useContent()
   const L = (x: DevText) => D(lang, x)
   return (
     <div className="know-list">

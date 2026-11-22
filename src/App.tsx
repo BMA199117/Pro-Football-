@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { usePrefs, setPrefs, type Tab } from './store'
 import { useT } from './hooks'
 import { Plan } from './pages/Plan'
@@ -7,6 +7,10 @@ import { Team } from './pages/Team'
 import { Calendar } from './pages/Calendar'
 import { Knowledge } from './pages/Knowledge'
 import { SyncBadge, SyncPanel } from './components/SyncPanel'
+import { useIsAdmin } from './admin/api'
+
+const AdminApp = lazy(() => import('./admin/Admin'))
+const isAdminHash = () => location.hash.replace(/^#\/?/, '').startsWith('admin')
 
 const ICON: Record<Tab, React.ReactNode> = {
   plan: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 8h8M8 12h8M8 16h5" /></svg>,
@@ -18,10 +22,23 @@ const ICON: Record<Tab, React.ReactNode> = {
 const TABS: Tab[] = ['plan', 'drills', 'know', 'team', 'cal']
 
 export default function App() {
+  const [adminView, setAdminView] = useState(isAdminHash)
+  const { theme } = usePrefs()
+  useEffect(() => { if (theme) document.documentElement.dataset.theme = theme; else delete document.documentElement.dataset.theme }, [theme])
+  useEffect(() => {
+    const on = () => setAdminView(isAdminHash())
+    window.addEventListener('hashchange', on)
+    return () => window.removeEventListener('hashchange', on)
+  }, [])
+  if (adminView) return <Suspense fallback={<p className="muted" style={{ padding: 24 }}>…</p>}><AdminApp /></Suspense>
+  return <CoachApp />
+}
+
+function CoachApp() {
   const { tab, lang, theme } = usePrefs()
+  const admin = useIsAdmin()
   const { t } = useT()
   const [sync, setSync] = useState(false)
-  useEffect(() => { if (theme) document.documentElement.dataset.theme = theme; else delete document.documentElement.dataset.theme }, [theme])
   useEffect(() => { document.documentElement.lang = lang; document.title = t('appName') }, [lang, t])
   const Page = { plan: Plan, drills: Drills, team: Team, cal: Calendar, know: Knowledge }[tab]
   return (
@@ -35,6 +52,7 @@ export default function App() {
           ))}
         </nav>
         <div className="rail-foot">
+          {admin && <a className="admin-link" href="#admin" title="Admin panel">⚙<span className="slabel"> Admin panel</span></a>}
           <div className="row-ctl">
             <SyncBadge onClick={() => setSync(true)} />
             <button className="theme-btn" aria-label={t('theme')} title={t('theme')}

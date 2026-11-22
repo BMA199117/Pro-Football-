@@ -158,6 +158,15 @@ function onSignedIn(id: string, email: string | null) {
   set({ email, status: 'syncing' })
   listen(id)
   syncNow()
+  touch()
+}
+
+/** Tell the server the coach opened the app today (for the admin's activity view). At most once an hour. */
+let touchedAt = 0
+function touch() {
+  if (!supabase || Date.now() - touchedAt < 3_600_000) return
+  touchedAt = Date.now()
+  supabase.rpc('touch').then(() => {}, () => { touchedAt = 0 })
 }
 
 function onSignedOut() {
@@ -182,7 +191,7 @@ export function initSync() {
   })
   window.addEventListener('online', () => syncNow())
   window.addEventListener('offline', () => { if (userId) set({ status: 'offline' }) })
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncNow() })
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { syncNow(); if (userId) touch() } })
 }
 
 /* ---------- account actions (return null on success, or an error key for the UI) ---------- */

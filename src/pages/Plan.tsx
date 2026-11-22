@@ -9,13 +9,15 @@ import { RunSession } from '../components/RunSession'
 import { sampleData } from '../sample'
 import { parse, weekdayIndex } from '../dates'
 import { PHASES, type Drill, type Phase, type Template } from '../types'
-import { TEMPLATES, TEMPLATE_AGES } from '../templates'
+import { useContent } from '../content'
 
 export function Plan() {
   const { t, L, days, months } = useT()
   const data = useData()
   const { selected } = usePrefs()
   const drills = useDrills()
+  const { plans: TEMPLATES, planAges } = useContent()
+  const TEMPLATE_AGES = planAges.filter((a) => TEMPLATES.some((x) => x.ages === a))
   const byId = new Map(drills.map((d) => [d.id, d]))
   const [form, setForm] = useState<'new' | 'edit' | null>(null)
   const [picking, setPicking] = useState<Phase | null>(null)

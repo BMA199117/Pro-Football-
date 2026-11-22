@@ -3,7 +3,7 @@ import { useT, useDrills } from '../hooks'
 import { update, useData } from '../store'
 import { DrillDetail } from '../components/DrillDetail'
 import { DrillPitch } from '../components/AnimatedPitch'
-import { BOOK_SCENES } from '../book'
+import { useContent } from '../content'
 import { ConfirmButton } from '../components/Modal'
 import { uid } from '../dates'
 import { DrillForm } from '../components/DrillForm'
@@ -29,7 +29,8 @@ const ageList = (r: string) => {
 export function Drills() {
   const { t, L } = useT()
   // drills drawn from the books first, so every card looks like its own exercise
-  const drills = [...useDrills()].sort((a, b) => Number(!BOOK_SCENES[a.id]) - Number(!BOOK_SCENES[b.id]))
+  const { scene } = useContent()
+  const drills = [...useDrills()].sort((a, b) => Number(a.custom || !scene(a.id)) - Number(b.custom || !scene(b.id)))
   const [cat, setCat] = useState<Category | 'all'>('all')
   const [q, setQ] = useState('')
   const [adding, setAdding] = useState(false)

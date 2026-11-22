@@ -7,8 +7,7 @@ import { useT } from '../hooks'
 import { update, useData } from '../store'
 import { parse } from '../dates'
 import { PHASES, type Drill, type Phase } from '../types'
-import { SOURCES } from '../sources'
-import { BENEFITS } from '../benefits'
+import { useContent } from '../content'
 import { SKILLS } from '../skills'
 import { DrillForm } from './DrillForm'
 
@@ -17,7 +16,8 @@ export function DrillDetail({ drill: drill0, onClose }: { drill: Drill; onClose:
   const data = useData()
   // a drill the coach edits here shows its new version at once
   const drill = data.customDrills.find((x) => x.id === drill0.id) ?? drill0
-  const ben = BENEFITS[drill.id]
+  const { benefit, sources: SOURCES } = useContent()
+  const ben = benefit(drill.id)
   const fav = (data.favorites ?? []).includes(drill.id)
   const upcoming = [...data.sessions].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
   const [sid, setSid] = useState(upcoming[0]?.id ?? '')

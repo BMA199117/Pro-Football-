@@ -50,6 +50,23 @@ ulash kerak. Email + parol bilan kirish xatsiz ishlaydi.
 
 Kalitlar bo'lmasa ham ilova ishlaydi, faqat ma'lumot shu qurilmada saqlanadi.
 
+## Administrator paneli
+
+Manzil: sayt manzili oxiriga `#admin` qo'shing (masalan `https://.../Pro-Football-/#admin`). Admin bo'lgan hisob bilan kirilganda ilova menyusida ham «⚙ Admin panel» tugmasi chiqadi.
+
+Imkoniyatlar:
+- **Kontent**: mashqlar (chizma va animatsiya Taktik doskada), tayyor rejalar, Bilim kartalari, yosh bosqichlari, tamoyillar, kitoblar. Har birini qo'shish, tahrirlash, o'chirish (murabbiylardan yashiriladi, qaytarish mumkin), kitobdagi asl holiga qaytarish. Qoralama: saqlanadi, lekin murabbiylar hali ko'rmaydi.
+- **Kuzatish**: murabbiylar soni, kunlik faollik, yangi ro'yxatdan o'tganlar, mashg'ulotlar soni; murabbiylar ro'yxati (CSV), hisobni o'chirish; adminlarni qo'shish/olib tashlash.
+- **Tarix**: har bir o'zgarish yoziladi, eski holatni bir tugma bilan tiklash mumkin. Zaxira nusxa (JSON).
+
+Qanday ishlaydi: ichki kontent kodda qoladi (`src/library*.ts`, `src/knowledge.ts`, ...). Admin o'zgarishlari Supabase `content_items` jadvaliga yoziladi va ilova ularni ichki kontent ustiga qo'yadi (`src/content.ts`). Hamma o'qiy oladi, faqat adminlar yoza oladi (RLS). O'zgarish murabbiylarga darhol (realtime) yetadi va qurilmada saqlanadi.
+
+O'rnatish: `supabase/schema.sql` dan keyin `supabase/admin.sql` ni SQL Editor'da ishga tushiring, so'ng birinchi adminni qo'shing:
+
+```sql
+insert into public.admins (user_id) select id from auth.users where lower(email) = lower('SIZNING@EMAIL') on conflict do nothing;
+```
+
 ## Internetga joylash (GitHub Pages, bepul)
 
 Repo'da **Settings → Pages → Source: GitHub Actions** ni tanlang. `main` ga har push qilinganda
