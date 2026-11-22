@@ -15,7 +15,7 @@ function write(key: string, v: unknown) {
 /* ---------- synced data ---------- */
 let data: AppData = read<AppData>(DATA_KEY) ?? emptyData()
 const listeners = new Set<() => void>()
-let onLocalChange: ((d: AppData) => void) | null = null
+let onLocalChange: ((prev: AppData, next: AppData) => void) | null = null
 
 const notify = () => listeners.forEach((l) => l())
 const subscribe = (l: () => void) => { listeners.add(l); return () => listeners.delete(l) }
@@ -24,10 +24,11 @@ export const getData = () => data
 
 /** Apply a local edit: stamps updatedAt, saves, and asks sync to push. */
 export function update(fn: (d: AppData) => AppData) {
+  const prev = data
   data = { ...fn(data), updatedAt: Date.now() }
   write(DATA_KEY, data)
   notify()
-  onLocalChange?.(data)
+  onLocalChange?.(prev, data)
 }
 
 /** Replace with data that came from the server (no push back). */
@@ -37,7 +38,10 @@ export function replaceFromRemote(d: AppData) {
   notify()
 }
 
-export function setLocalChangeHandler(fn: (d: AppData) => void) { onLocalChange = fn }
+export function setLocalChangeHandler(fn: (prev: AppData, next: AppData) => void) { onLocalChange = fn }
+
+/** Forget this device's copy (after signing out; the account keeps everything). */
+export const clearLocal = () => replaceFromRemote(emptyData())
 
 export const useData = () => useSyncExternalStore(subscribe, getData)
 

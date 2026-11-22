@@ -28,14 +28,25 @@ npm run build    # dist/ papkasiga
 
 ## Sinxronlashni yoqish (Supabase, bepul)
 
+Murabbiy hisobiga kiradi (email + parol, yoki emailga keladigan 6 xonali kod). Shundan keyin
+mashg'ulotlar, o'yinchilar, guruhlar, o'z mashqlari (chizmalari bilan) va sevimlilar telefon va
+kompyuterda bir xil bo'ladi. Har bir yozuv alohida birlashadi: internetsiz qilingan o'zgarishlar
+internet qaytganda yuboriladi, bir yozuv ikki joyda o'zgartirilsa, keyingisi qoladi.
+
 1. [supabase.com](https://supabase.com) da bepul loyiha yarating.
-2. **SQL Editor** da `supabase/schema.sql` faylini ishga tushiring.
-3. **Authentication → URL Configuration** bo'limida *Site URL* ga ilova manzilini yozing
-   (masalan `https://bma199117.github.io/Pro-Football-/`).
-4. **Project Settings → API** dan `Project URL` va `anon public` kalitini oling.
-5. GitHub repo'da **Settings → Secrets and variables → Actions** ga ikkita secret qo'shing:
-   `VITE_SUPABASE_URL` va `VITE_SUPABASE_ANON_KEY`.
-   Lokal ishlash uchun ularni `.env` fayliga yozing (`.env.example` ga qarang).
+2. **SQL Editor** da `supabase/schema.sql` faylini ishga tushiring (qayta ishga tushirish xavfsiz).
+3. **Authentication → Sign In / Providers → Email**: *Confirm email* ni o'chiring (shunda ro'yxatdan
+   o'tish darhol ishlaydi), *Email OTP Length* = 6.
+4. **Authentication → Emails → Templates**: *Magic Link* shabloniga `supabase/email/code.html`,
+   *Confirm signup* shabloniga `supabase/email/confirm.html` ni qo'ying (xatda kod ko'rinadi).
+5. **Authentication → URL Configuration**: *Site URL* ga ilova manzilini yozing.
+6. **Project Settings → API** dan `Project URL` va `anon public` (publishable) kalitni oling va
+   GitHub repo'da **Settings → Secrets and variables → Actions** ga `VITE_SUPABASE_URL` va
+   `VITE_SUPABASE_ANON_KEY` qilib qo'shing. Lokal ishlash uchun `.env.local` ga yozing (`.env.example` ga qarang).
+
+Supabase'ning o'z pochta xizmati soatiga bir nechta xat yuboradi va asosan loyiha a'zolariga.
+Ko'p murabbiylar emailga kod bilan kirishi uchun ilovani ochishdan oldin o'z SMTP (masalan Resend)
+ulash kerak. Email + parol bilan kirish xatsiz ishlaydi.
 
 Kalitlar bo'lmasa ham ilova ishlaydi, faqat ma'lumot shu qurilmada saqlanadi.
 
