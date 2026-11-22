@@ -22,6 +22,7 @@ export const SOURCES: Record<string, { title: string; author: string }> = {
   epysa8: { title: 'U8 Training Program', author: 'G. Stephenson, M. Barr (EPYSA)' },
   epysa10: { title: 'U10 Training Program', author: 'G. Stephenson, M. Barr (EPYSA)' },
   epysa12: { title: 'U12 Training Program', author: 'G. Stephenson, M. Barr (EPYSA)' },
+  afc24: { title: 'AFC Grassroots Charter Regulations 2024 (loyiha)', author: 'AFC (Osiyo futbol konfederatsiyasi)' },
   fifa82: { title: 'FIFA. Часть 8.2 Физическая подготовка (содержание)', author: 'FIFA' },
   fifaPlan: { title: 'FIFA. План тренировки', author: 'FIFA' },
 }
