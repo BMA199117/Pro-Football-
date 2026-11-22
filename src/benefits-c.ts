@@ -1,0 +1,33 @@
+import type { Benefit } from './skills'
+
+/** Why each FIFA 8.2 physical-preparation drill (15–17) is useful. */
+export const BENEFITS_C: Record<string, Benefit> = {
+  'f82-1': [['endur', 'speed', 'coord'], "Uch zonada har xil tempdagi yugurish — aerob chidamlilik va tempni o'zgartirish qobiliyati, o'yindagi kabi.", 'Бег в разном темпе в трёх зонах — аэробная выносливость и смена темпа, как в игре.'],
+  'f82-2': [['endur', 'pass', 'touch'], "Chidamlilik to'p bilan rivojlanadi — charchoqda ham aniq pas va qabul saqlanadi.", 'Выносливость развивается с мячом — точный пас и приём сохраняются и при утомлении.'],
+  'f82-3': [['endur', 'team', 'position'], "Fartlek o'yin shaklida — jamoa sxemasi va to'pni saqlash bilan birga tempni o'zgartirish.", 'Фартлек в игровой форме — смена темпа вместе со схемой команды и удержанием мяча.'],
+  'f82-4': [['endur', 'trans', 'team'], "6×6 uch jamoa bilan — yuqori intensivlikdagi o'yin, dam bilan almashadi; o'yin chidamliligi.", '6×6 тремя командами — интенсивная игра с чередованием отдыха; игровая выносливость.'],
+  'f82-5': [['endur', 'pass', 'focus'], "Texnik intervallar — aerob quvvat yuqori pulsda aniq pas berish bilan birga oshadi.", 'Технические интервалы — аэробная мощность растёт вместе с точной передачей на высоком пульсе.'],
+  'f82-6': [['power', 'speed', 'endur'], "Portlovchi sakrash va sprint — sakrovchanlik, start tezligi va takroriy harakatlarga chidamlilik.", 'Взрывные прыжки и спринт — прыгучесть, стартовая скорость и выносливость к повторным усилиям.'],
+  'f82-7': [['endur', 'pass', 'touch'], "Stansiyalarda yugurish va texnika — charchoqda texnikani saqlash.", 'Бег и техника по станциям — сохранение техники при утомлении.'],
+  'f82-8': [['speed', 'position', 'team'], "Pozitsiyada pas va signal bilan tezlanish — o'z pozitsiyasidagi real yugurishlarga o'xshaydi.", 'Пас на позициях и ускорения по сигналу — похоже на реальные рывки на своей позиции.'],
+  'f82-9': [['endur', 'drib', 'team'], "Qanot darvozalariga 8×9 — kenglikdan foydalanish va katta hajmdagi yugurish.", '8×9 на фланговые ворота — использование ширины и большой объём бега.'],
+  'f82-10': [['endur', 'pass', 'position'], "Uch zonali 7×7 egalik — to'pni saqlash va maydonni to'g'ri egallash, yuqori yuklama ostida.", 'Владение 7×7 в трёх зонах — удержание мяча и правильное расположение под нагрузкой.'],
+  'f82-11': [['endur', 'shoot', 'decide'], "5×5 aerob quvvat — himoya va hujum zonasida turli shartlar, tez qaror.", '5×5 на аэробную мощность — разные условия в зонах защиты и атаки, быстрые решения.'],
+  'f82-12': [['endur', 'duel', 'trans'], "4×4 maksimal intensivlik — kurash, tez o'tish va yuqori pulsni ushlab turish.", '4×4 максимальной интенсивности — борьба, быстрые переходы, удержание высокого пульса.'],
+  'f82-13': [['coord', 'agil', 'speed'], "10 fishkali yo'nalish — oldinga, yonga, orqaga harakatlar; oyoq ishi va koordinatsiya.", 'Маршрут из 10 фишек — движения вперёд, вбок, назад; работа ног и координация.'],
+  'f82-14': [['speed', 'coord', 'react'], "Tezlikka tayyorlov — yugurish texnikasi va start tezlanishi juftlikda musobaqa bilan.", 'Подготовка к скорости — техника бега и стартовое ускорение в соревновании пар.'],
+  'f82-15': [['speed', 'agil', 'react'], "Quvlash yo'nalishi — yo'nalishni tez o'zgartirish va reaksiya, o'yindagi kabi.", 'Маршрут преследования — быстрая смена направления и реакция, как в игре.'],
+  'f82-16': [['speed', 'touch', 'pass'], "Tezlikda to'p bilan ishlash — yuqori tezlikda pas va qabul.", 'Скорость с мячом — передача и приём на высокой скорости.'],
+  'f82-17': [['speed', 'shoot', 'drib'], "Tez yugurishdan keyin zarba — charchoq va tezlikda yakunlash.", 'Удар после скоростного рывка — завершение на скорости.'],
+  'f82-18': [['speed', 'cross', 'shoot'], "O'yin vaziyatida tezlik — pas, oshirma va zarba tez bajariladi.", 'Скорость в игровой ситуации — передача, навес и удар выполняются быстро.'],
+  'f82-19': [['speed', 'shoot', 'react'], "Keskin yugurishdan keyin zarba — tezlikda zarba texnikasi.", 'Удар с рывка — техника удара на скорости.'],
+  'f82-20': [['trans', 'speed', 'team'], "Signal bilan 10 soniyada qarshi hujum — tez o'tish va sprint takrorlari.", 'Контратака за 10 секунд по сигналу — быстрый переход и повторные спринты.'],
+  'f82-21': [['endur', 'pass', 'press'], "4×2 bir teginishda laktat intervallar — charchoqda ham tez pas va pressing.", 'Лактатные интервалы 4×2 в одно касание — быстрый пас и прессинг при утомлении.'],
+  'f82-22': [['agil', 'drib', 'shoot'], "Slalom va zarba — chaqqonlik va yo'nalish o'zgartirishdan keyin aniq zarba.", 'Слалом и удар — ловкость и точный удар после смены направления.'],
+  'f82-23': [['duel', 'endur', 'defend'], "1×1 laktat chidamlilik — kurashni qayta-qayta yuqori intensivlikda o'tkazish.", '1×1 на лактатную выносливость — повторные единоборства на высокой интенсивности.'],
+  'f82-24': [['duel', 'pass', 'endur'], "2×2 qo'shimcha o'yinchilar bilan — kichik maydonda yuqori yuklama, bir teginishda pas.", '2×2 с дополнительными игроками — высокая нагрузка на малой площади, пас в одно касание.'],
+  'f82-25': [['coord', 'power', 'agil'], "Umumiy koordinatsiya stansiyasi — sakrashlar va muvozanat; jarohatning oldini oladi.", 'Станция общей координации — прыжки и баланс; профилактика травм.'],
+  'f82-26': [['coord', 'drib', 'touch'], "To'pni nazorat qilish stansiyasi — turli masofadagi slalomda to'pni boshqarish.", 'Станция контроля мяча — управление мячом в слаломе на разных расстояниях.'],
+  'f82-27': [['coord', 'speed', 'pass'], "Tezlik va hamjihatlik — ikki o'yinchi bir vaqtda harakat qilib, pasni vaqtida beradi.", 'Скорость и согласованность — двое действуют одновременно и вовремя отдают пас.'],
+  'f82-28': [['react', 'shoot', 'speed'], "Reaksiya va zarba — tez-tez kelayotgan to'plarga zarba, darvozabon oldida.", 'Реакция и удар — удары по быстро поступающим мячам, против вратаря.'],
+}

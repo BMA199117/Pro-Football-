@@ -8,9 +8,12 @@ import { update, useData } from '../store'
 import { parse } from '../dates'
 import { PHASES, type Drill, type Phase } from '../types'
 import { SOURCES } from '../sources'
+import { BENEFITS } from '../benefits'
+import { SKILLS } from '../skills'
 
 export function DrillDetail({ drill, onClose }: { drill: Drill; onClose: () => void }) {
-  const { t, L, months } = useT()
+  const { t, L, months, lang } = useT()
+  const ben = BENEFITS[drill.id]
   const data = useData()
   const fav = (data.favorites ?? []).includes(drill.id)
   const upcoming = [...data.sessions].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
@@ -39,6 +42,13 @@ export function DrillDetail({ drill, onClose }: { drill: Drill; onClose: () => v
         <button className={'star' + (fav ? ' on' : '')} onClick={toggleFav} aria-pressed={fav} aria-label={t('favs')}>★</button>
       </div>
       {L(drill.desc) && <p className="lead">{L(drill.desc)}</p>}
+      {ben && (
+        <div className="benefit">
+          <h3 className="label">💡 {t('why')}</h3>
+          <p>{lang === 'ru' ? ben[2] : ben[1]}</p>
+          <div className="skills"><span className="skills-l">{t('develops')}:</span>{ben[0].map((k) => <span key={k} className="skill">{SKILLS[k][lang === 'ru' ? 1 : 0]}</span>)}</div>
+        </div>
+      )}
       <p className="sub"><b>{t('equip')}:</b> {L(drill.equip)}</p>
       {drill.source && SOURCES[drill.source] && (
         <p className="source">📖 {t('source')}: {SOURCES[drill.source].author}, «{SOURCES[drill.source].title}»</p>

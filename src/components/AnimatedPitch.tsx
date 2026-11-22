@@ -4,6 +4,7 @@ import { Field, Pitch } from './Pitch'
 import { SCENES, frame } from '../scenes'
 import { BOOK_SCENES } from '../book'
 import type { BookScene } from '../book/scene'
+import { narrate } from '../book/narrate'
 import { BookFrame, BookStatic } from './BookPitch'
 import { useT } from '../hooks'
 
@@ -42,7 +43,8 @@ function at(sc: BookScene, s: number, slow: boolean) {
 
 /** The book animation: step by step, with the arrows of each step shown before it plays. */
 function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; autoPlay: boolean; maxHeight?: number }) {
-  const { t: tr } = useT()
+  const { t: tr, lang } = useT()
+  const story = narrate(scene, lang)
   const [playing, setPlaying] = useState(autoPlay && !reduceMotion())
   const [slow, setSlow] = useState(false)
   const [s, setS] = useState(0)
@@ -80,6 +82,11 @@ function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; autoPlay
       <BookFrame scene={scene} t={pos.t} step={pos.step} stepOpacity={pos.op} maxHeight={maxHeight} />
       <div className="apitch-step" aria-live="polite">
         {pos.k < 0 ? tr('ready') : pos.k >= moves ? tr('finalPos') : `${tr('stepN')} ${shown} / ${moves}`}
+      </div>
+      <div className="apitch-cap" aria-live="polite">
+        {pos.k < 0 || pos.k >= moves
+          ? <span className="muted">{pos.k < 0 ? tr('ready') : tr('finalPos')}</span>
+          : <><b>{pos.k + 1}.</b> {(story[pos.k] ?? []).join(' · ') || '—'}</>}
       </div>
       <div className="apitch-bar"><i style={{ width: `${Math.min(100, (s / total) * 100)}%` }} /></div>
       <div className="apitch-ctl">
@@ -123,7 +130,21 @@ export function DrillViews({ id, type, maxHeight }: { id?: string; type: Diagram
         {view !== 'dia' && <figure className="view-anim"><AnimatedPitch id={id} type={type} maxHeight={maxHeight} />{view === 'both' && <figcaption>{t('vAnim')}</figcaption>}</figure>}
         {view !== 'anim' && <figure className="view-dia"><DrillPitch id={id} type={type} maxHeight={maxHeight} />{view === 'both' && <figcaption>{t('vDia')}</figcaption>}</figure>}
       </div>
+      {id && BOOK_SCENES[id] && <StepList scene={BOOK_SCENES[id]} />}
     </div>
+  )
+}
+
+/** The drill step by step in words (generated from the same data as the drawing). */
+function StepList({ scene }: { scene: BookScene }) {
+  const { t, lang } = useT()
+  const story = narrate(scene, lang).filter((l) => l.length)
+  if (!story.length) return null
+  return (
+    <details className="steps" open>
+      <summary>{t('stepsTitle')}</summary>
+      <ol>{story.map((l, k) => <li key={k}>{l.join(' · ')}</li>)}</ol>
+    </details>
   )
 }
 
