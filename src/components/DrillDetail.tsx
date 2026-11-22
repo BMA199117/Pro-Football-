@@ -11,8 +11,9 @@ import { SOURCES } from '../sources'
 import { BENEFITS } from '../benefits'
 import { SKILLS } from '../skills'
 import { DrillForm } from './DrillForm'
+import { DrillShare } from './DrillShare'
 
-export function DrillDetail({ drill: drill0, onClose }: { drill: Drill; onClose: () => void }) {
+export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onClose: () => void; top?: React.ReactNode }) {
   const { t, L, months, lang } = useT()
   const data = useData()
   // a drill the coach edits here shows its new version at once
@@ -36,6 +37,7 @@ export function DrillDetail({ drill: drill0, onClose }: { drill: Drill; onClose:
 
   return (
     <Modal title={L(drill.name)} onClose={onClose}>
+      {top}
       <DrillViews id={drill.id} type={drill.dia} />
       {sceneOf(drill.id) && <LineKey scene={sceneOf(drill.id)!} label={(k) => t(({ run: 'kRun', drib: 'kDrib', pass: 'kPass', shot: 'kShot', lob: 'kLob' } as const)[k])} />}
       <div className="meta">
@@ -63,6 +65,7 @@ export function DrillDetail({ drill: drill0, onClose }: { drill: Drill; onClose:
           <ul className="points">{drill.points.map((p, i) => <li key={i}>{L(p)}</li>)}</ul>
         </div>
       )}
+      <DrillShare drill={drill} />
       {upcoming.length > 0 && (
         <div className="add-to">
           <h3 className="label">{t('addTo')}</h3>

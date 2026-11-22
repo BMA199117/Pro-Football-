@@ -1,4 +1,5 @@
 import type { BookScene } from './book/scene'
+import type { SeasonPlan } from './season'
 
 export type Lang = 'uz' | 'ru'
 export type Text = { uz: string; ru: string }
@@ -53,6 +54,8 @@ export interface AppData {
   players: Player[]
   customDrills: Drill[]
   favorites?: string[]
+  /** the coach's season plans (programme + start date) */
+  seasons?: SeasonPlan[]
 }
 
 export const PHASES: Phase[] = ['warm', 'main', 'cool']
