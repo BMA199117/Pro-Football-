@@ -10,6 +10,7 @@ import { TEMPLATES } from '../templates'
 import { ConfirmButton } from '../components/Modal'
 import { SessionForm } from './SessionForm'
 import { SEASON_AGES, SEASON_PROGRAMS, defaultStart, microcycle, planWeeks, programOf, type PlanWeek, type SeasonPlan, type SeasonProgram } from '../season'
+import { allGroups } from '../groups'
 import type { Template } from '../types'
 
 /** Season plan: the book's programme laid out on the calendar, month by month, week by week. */
@@ -93,7 +94,7 @@ function NewSeason({ onSaved }: { onSaved: (id: string) => void }) {
           <label>{t('seasonStart')}<input id="ss-start" type="date" value={start} onChange={(e) => setStart(e.target.value)} required /></label>
           <label>{t('group')}
             <input id="ss-group" list="ss-groups" value={group} onChange={(e) => setGroup(e.target.value)} />
-            <datalist id="ss-groups">{data.groups.map((g) => <option key={g} value={g} />)}</datalist>
+            <datalist id="ss-groups">{allGroups(data.groups).map((g) => <option key={g} value={g} />)}</datalist>
           </label>
           {prog.blockWeeks && (
             <label>{t('blockLen')}

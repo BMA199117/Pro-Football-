@@ -4,6 +4,7 @@ import { useT } from '../hooks'
 import { update, useData, setPrefs } from '../store'
 import { iso, uid } from '../dates'
 import type { Session, Template } from '../types'
+import { allGroups, groupForAges } from '../groups'
 
 export function SessionForm({ session, defaultDate, template, goal: goal0, onClose }: { session?: Session; defaultDate?: string; template?: Template; goal?: string; onClose: () => void }) {
   const { t, L } = useT()
@@ -11,7 +12,7 @@ export function SessionForm({ session, defaultDate, template, goal: goal0, onClo
   const [goal, setGoal] = useState(session?.goal ?? goal0 ?? (template ? L(template.title) : ''))
   const [date, setDate] = useState(session?.date ?? defaultDate ?? iso(new Date()))
   const [time, setTime] = useState(session?.time ?? '16:00')
-  const [group, setGroup] = useState(session?.group ?? (template && data.groups.includes(template.group) ? template.group : data.groups[0] ?? 'U12'))
+  const [group, setGroup] = useState(session?.group ?? groupForAges(template?.ages) ?? data.groups[0] ?? 'U12')
   const [newGroup, setNewGroup] = useState('')
   const [notes, setNotes] = useState(session?.notes ?? '')
 
@@ -38,7 +39,7 @@ export function SessionForm({ session, defaultDate, template, goal: goal0, onClo
         <label>{t('time')}<input id="fs-time" type="time" value={time} onChange={(e) => setTime(e.target.value)} /></label>
         <label>{t('group')}
           <select id="fs-group" value={group} onChange={(e) => setGroup(e.target.value)}>
-            {data.groups.map((g) => <option key={g}>{g}</option>)}
+            {allGroups(data.groups).map((g) => <option key={g}>{g}</option>)}
           </select>
         </label>
         <label>{t('newGroup')}<input id="fs-newgroup" value={newGroup} onChange={(e) => setNewGroup(e.target.value)} placeholder="U14" /></label>
