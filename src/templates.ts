@@ -120,15 +120,15 @@ const ROWS: Row[] = [
   ['s100p2', '13–14', '13', 'ssg100', ["O'yinni o'tkazish", 'Перевод игры'],
     ["To'rt darvoza, qanot zonalari orqali o'tkazish, orqama-orqa darvozalar, olti darvoza", 'Четверо ворот, перевод через фланговые зоны, ворота спина к спине, шесть ворот'], ['s100-70'], ['s100-69', 's100-76'], ['s100-73']],
   ['s100p3', '13–14', '13', 'ssg100', ['Yakunlash', 'Завершение'],
-    ["Yuqori burchakka zarba, jarima maydonchasida bombardir, uzoqdan zarba, burilib hujum", 'Удар в девятку, бомбардир в штрафной, дальний удар, «разверни и зажги»'], ['s100-123'], ['s100-116', 's100-120'], ['s100-119']],
+    ["Yuqori burchakka zarba, jarima maydonida bombardir, uzoqdan zarba, burilib hujum", 'Удар в девятку, бомбардир в штрафной, дальний удар, «разверни и зажги»'], ['s100-123'], ['s100-116', 's100-120'], ['s100-119']],
   ['s100p4', '15–17', '15', 'ssg100', ["Bosimdan chiqib o'yin boshlash", 'Розыгрыш против прессинга'],
     ["Tayanch orqali boshlash, darvozadan 5×4, 3×3 yuqori pressing to'lqinlari, darvozabon orqali", 'Розыгрыш через опорного, 5×4 от ворот, волны 3×3, через вратаря'], ['s100-64'], ['s100-60', 's100-66'], ['s100-62']],
   ['s100p5', '15–17', '15', 'ssg100', ["Pozitsion o'yin va uchinchi o'yinchi", 'Позиционная игра и третий игрок'],
     ["4×4+3, 10-raqam diagonal cho'ntakda, uchinchiga yugurish, kombinatsiyalar yo'lagi", '4×4+3, №10 в диагональном кармане, забегание на третьего, коридор для комбинаций'], ['s100-87'], ['s100-90', 's100-84'], ['s100-91']],
   ['s100p6', '15–17', '15', 'ssg100', ['Pressing va kontrpressing', 'Прессинг и контрпрессинг'],
-    ["2×2 yo'naltirish, kontrpressing 4×2→4×6, to'rtlik bloklari, yuqori pressingda gol ikki", '2×2 направлять игру, контрпрессинг 4×2→4×6, блоки по четыре, высокий прессинг — гол за два'], ['s100-131'], ['s100-145', 's100-133'], ['s100-141']],
+    ["2×2 yo'naltirish, kontrpressing 4×2→4×6, to'rtlik bloklari, yuqori pressingda gol 2 ochko", '2×2 направлять игру, контрпрессинг 4×2→4×6, блоки по четыре, высокий прессинг — гол 2 очка'], ['s100-131'], ['s100-145', 's100-133'], ['s100-141']],
   ['s100p7', '15–17', '15', 'ssg100', ['Himoya va o\'tish', 'Оборона и переход'],
-    ["Kvadratni qo'riqlash, ozchilikda himoya, shaxsiy vasiylik, qanotga qarshi hujum", 'Охранять квадрат, защита в меньшинстве, персональная опека, выход на фланг'], ['s100-132'], ['s100-137', 's100-140'], ['s100-126']],
+    ["Kvadratni qo'riqlash, ozchilikda himoya, shaxsiy vasiylik, qanot orqali qarshi hujum", 'Охранять квадрат, защита в меньшинстве, персональная опека, выход на фланг'], ['s100-132'], ['s100-137', 's100-140'], ['s100-126']],
   ['s100p8', '15–17', '16', 'ssg100', ["O'yin vaziyatlari va hisob", 'Игровые ситуации и счёт'],
     ["Chiqib ketish o'yini, doimiy son ustunligi, 10 to'p, 2–0 yoki 0–2", 'Игра на вылет, постоянный перегруз, 10 мячей, 2–0 или 0–2'], ['s100-114'], ['s100-154', 's100-150'], ['s100-153']],
   // adidas / RFS 15–17 — group tactics
@@ -205,7 +205,7 @@ const ROWS: Row[] = [
     ["Qachon bosishni tanish, zonalarda kontrpressing, olingan to'pni uzatish, signal bo'yicha yuqori pressing, yo'qotgan zahoti bosim", 'Когда прессинговать, контрпрессинг по зонам, перевод отобранного мяча, высокий прессинг по сигналу, давление сразу после потери'],
     ['ad-7'], ['ad-9', 'vp-33a', 'vp-33b'], ['ad-8'], ['f82-40']],
   ['pro17', 'Pro', 'Pro', 'artDef', ['Himoya tashkiloti: ixchamlik va jarima maydoni', 'Организация обороны: компактность и штрафная'],
-    ["Simeone ixchamligi, qanot almashishiga qarshi, past blokdan pressing (Mourinho), qarshi hujumga qarshi, oshirmalarni himoya qilish", 'Компактность Симеоне, защита от смены фланга, прессинг из низкого блока (Моуринью), защита от контратаки, защита от навесов'],
+    ["Simeone ixchamligi, qanot almashishiga qarshi, past blokdan pressing (Mourinyu), qarshi hujumga qarshi, oshirmalarni himoya qilish", 'Компактность Симеоне, защита от смены фланга, прессинг из низкого блока (Моуринью), защита от контратаки, защита от навесов'],
     ['ad-15'], ['ad-17', 'ad-13', 'ad-23'], ['ad-26'], ['f82-40']],
 ]
 

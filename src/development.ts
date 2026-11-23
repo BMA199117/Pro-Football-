@@ -81,7 +81,7 @@ export const DEV_STAGES: DevStage[] = [
       ],
       tactical: [
         ["Qaysi darvozaga hujum qilamiz, to'pni yo'qotsak — qaytarib olamiz", 'Куда атакуем; потеряли мяч — отбираем'],
-        ["1ga1 va kichik o'yinlarda o'zi qaror qilish", 'Сам принимает решения в 1×1 и маленьких играх'],
+        ["1×1 va kichik o'yinlarda o'zi qaror qilish", 'Сам принимает решения в 1×1 и маленьких играх'],
       ],
       physical: [
         ["Asosiy harakatlar: yugurish, sakrash, muvozanat, yo'nalish o'zgartirish", 'Базовые движения: бег, прыжки, равновесие, смена направления'],
@@ -153,7 +153,7 @@ export const DEV_STAGES: DevStage[] = [
       ["Natijani emas, harakatni maqtang", 'Хвалите усилие, а не результат'],
     ],
     coachAvoid: [
-      ["Har bir harakatni to'xtatib tuzatish (ortiqcha murabbiylik)", 'Останавливать и поправлять каждое действие (перетренированность словами)'],
+      ["Har bir harakatni to'xtatib tuzatish (ortiqcha murabbiylik)", 'Останавливать и поправлять каждое действие (чрезмерный контроль тренера)'],
       ["Faqat kuchli bolalarni o'ynatish", 'Выпускать только сильных'],
     ],
     heading: ["10–12 yoshda boshlang'ich o'rgatish: raqibsiz, yaqin masofadan, yengil to'p bilan. \"Yoshim — bosh zarbalarim\": masalan 10 yoshli bola haftasiga 10 tadan ko'p emas.", 'С 10–12 лет начальное обучение: без соперника, с близкого расстояния, лёгким мячом. «Мой возраст — мои удары»: например 10-летний не больше 10 в неделю.'],
@@ -185,7 +185,7 @@ export const DEV_STAGES: DevStage[] = [
       ],
       mental: [
         ["Mas'uliyat: o'z rivojlanishi uchun uy vazifalari", 'Ответственность: домашние задания для своего развития'],
-        ["Etakchilik, jamoaviylik, bosim ostida ishonch", 'Лидерство, командность, уверенность под давлением'],
+        ["Yetakchilik, jamoaviylik, bosim ostida ishonch", 'Лидерство, командность, уверенность под давлением'],
       ],
     },
     formats: [
@@ -231,7 +231,7 @@ export const DEV_STAGES: DevStage[] = [
       ],
       mental: [
         ["Maqsad qo'yish, o'z o'yinini tahlil qilish", 'Ставить цели, анализировать свою игру'],
-        ["G'alaba va mag'lubiyatni to'g'ri qabul qilish, etakchilik", 'Правильно принимать победы и поражения, лидерство'],
+        ["G'alaba va mag'lubiyatni to'g'ri qabul qilish, yetakchilik", 'Правильно принимать победы и поражения, лидерство'],
       ],
     },
     formats: [
@@ -350,7 +350,7 @@ export const DEV_PRINCIPLES: DevPrinciple[] = [
     idea: ["Bir murabbiyga to'g'ri keladigan o'yinchilar qancha kam bo'lsa, har biri shuncha ko'p e'tibor oladi. Kuchli federatsiyalarda 9–11 yoshda bir murabbiyga taxminan 10 bola to'g'ri keladi.", 'Чем меньше игроков на тренера, тем больше внимания каждому. В сильных федерациях в 9–11 лет на тренера приходится около 10 детей.'],
     tips: [
       ["Katta guruhni 2–3 kichik maydonga bo'ling, yordamchi yoki ota-onani jalb qiling", 'Делите большую группу на 2–3 поля, привлекайте помощника или родителя'],
-      ["O'yinchilarga uy vazifasi bering (masalan, 100 ta jonglyor)", 'Давайте домашние задания (например, 100 набиваний)'],
+      ["O'yinchilarga uy vazifasi bering (masalan, to'pni 100 marta yerga tushirmay o'ynatish)", 'Давайте домашние задания (например, 100 набиваний)'],
     ],
     sources: ['fifaTrain'],
   },
