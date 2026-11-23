@@ -13,6 +13,8 @@ import type { Key } from '../i18n'
 
 /** move, pass, shot, lob, del, line, add:<team> or add:<kit key> */
 type Tool = string
+/** the bottom bar's panels */
+type Pop = null | 'players' | 'kit' | 'text' | 'field' | 'color'
 type Hit = { kind: 'p'; id: string } | { kind: 'b'; i: number } | { kind: 'i'; i: number }
 
 const PLAYER_TOOLS: [Team, Key][] = [['r', 'bRed'], ['b', 'bBlue'], ['y', 'bYellow'], ['w', 'bWhite'], ['o', 'bOrange'], ['g', 'bGrey'], ['k', 'bKeeper'], ['c', 'bCoach']]
@@ -124,6 +126,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
   const [text, setText] = useState('')
   /** the field item last tapped or moved, whose size the size buttons change */
   const [selItem, setSelItem] = useState<number | null>(null)
+  const [pop, setPop] = useState<Pop>(null)
   /** size given to new equipment */
   const [kitSize, setKitSize] = useState(1)
   const addItem = (it: Item) => { commit(withField(sc, [...fieldPairs(sc), [it, kitSize]])); setSelItem(sc.field.length) }
@@ -284,11 +287,6 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
     : tool === 'add:text' ? 'bHintText'
     : 'bHintAdd'
   const selBall = sel !== null && ballsP[sel] ? ballAt(sc, ballsP[sel], s) : null
-  const toolBtn = (v: Tool, label: string, icon: React.ReactNode) => (
-    <button type="button" key={v} className="tb-tool" aria-pressed={tool === v} onClick={() => { setTool(v); setPreview(false) }} title={label}>
-      <span className="tb-ic" aria-hidden="true">{icon}</span><span>{label}</span>
-    </button>
-  )
   const kitBtn = (v: Tool, label: string, icon: React.ReactNode) => (
     <button type="button" key={v} className="tb-kitbtn" aria-pressed={tool === v} onClick={() => { setTool(v); setPreview(false) }} title={label} aria-label={label}>{icon}</button>
   )
@@ -298,6 +296,45 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
   const ballIc = <svg viewBox="-5 -5 10 10" width="24" height="24">{soccerBall(0, 0, 4, "b", false)}</svg>
   const lineIc = (st: string) => <svg viewBox="0 0 30 12" width="34" height="14"><rect width="30" height="12" rx="2.5" fill="#2E8B57" />{item(['mark', 3, 8, 26, 5, st], 0, fid + 'net')}</svg>
   const arrowIc = (dash?: string, curve?: boolean) => <svg viewBox="0 0 20 12" width="20" height="12"><path d={curve ? 'M2 10Q10 -2 17 8' : 'M2 6H16'} fill="none" stroke="currentColor" strokeWidth="1.6" strokeDasharray={dash} /><path d={curve ? 'M14 9l4 0l-1-4z' : 'M15 3l4 3l-4 3z'} fill="currentColor" /></svg>
+
+  const pick = (v: Tool) => { setTool(v); setPreview(false); setPop(null) }
+  const popBtn = (k: Pop, label: string, icon: React.ReactNode, active: boolean) => (
+    <button type="button" className="tbb-big" aria-pressed={pop === k || active} aria-expanded={pop === k} onClick={() => { setPreview(false); setPop(pop === k ? null : k) }}>
+      <span className="tbb-bigic" aria-hidden="true">{icon}</span><span>{label}</span>
+    </button>
+  )
+  const actBtn = (v: Tool, label: string, icon: React.ReactNode) => (
+    <button type="button" className="tbb-act" aria-pressed={!preview && tool === v} onClick={() => pick(v)} title={label}>
+      <span className="tbb-actic" aria-hidden="true">{icon}</span><span>{label}</span>
+    </button>
+  )
+  const lineSet = (patch: Partial<typeof line>) => { setLine({ ...line, ...patch }); pick('line') }
+  const isLine = !preview && tool === 'line'
+  const playersIc = <svg viewBox="0 0 30 22" width="34" height="26"><circle cx="10" cy="11" r="7" fill={TEAM.r.fill} stroke="#fff" strokeWidth="1.6" /><circle cx="21" cy="11" r="7" fill={TEAM.b.fill} stroke="#fff" strokeWidth="1.6" /></svg>
+  const kitBig = <svg viewBox="-9 -7 18 14" width="34" height="26">{item(['cone', 3.5, 0.5, 'o'], 0, fid + 'net')}{soccerBall(-3.5, 2, 3.2, 'kb', false)}</svg>
+  const fieldIc = <svg viewBox="0 0 30 20" width="34" height="24"><rect x="1" y="1" width="28" height="18" rx="2" fill="#5F9B3C" stroke="#fff" strokeWidth="1.2" /><path d="M15 1V19" stroke="#fff" strokeWidth="1.2" /><circle cx="15" cy="10" r="3.4" fill="none" stroke="#fff" strokeWidth="1.2" /></svg>
+  const sizeRow = (label: string, cur: number, min: number, max: number, set: (v: number) => void) => (
+    <div className="tb-size">
+      <span>{label}</span>
+      <button type="button" className="tb-tool" aria-label={t('bSmaller')} disabled={cur <= min} onClick={() => set(Math.max(min, Math.round((cur - 0.1) * 10) / 10))}>−</button>
+      <input type="range" min={min} max={max} step={0.1} value={cur} aria-label={label} onChange={(e) => set(Number(e.target.value))} />
+      <button type="button" className="tb-tool" aria-label={t('bBigger')} disabled={cur >= max} onClick={() => set(Math.min(max, Math.round((cur + 0.1) * 10) / 10))}>+</button>
+      <b>{Math.round(cur * 100)}%</b>
+    </div>
+  )
+  const kitSizeRow = () => {
+    const one = selItem !== null && sc.field[selItem] ? selItem : null
+    const cur = one !== null ? sc.fs?.[one] ?? 1 : kitSize
+    const set = (v: number) => {
+      v = clampSize(v)
+      if (one !== null) { commit(withField(sc, fieldPairs(sc).map(([it, z], i) => [it, i === one ? v : z]))); return }
+      // nothing picked: every piece of equipment and the balls, and new equipment too
+      setKitSize(v)
+      const sizes = sizesOf(sc).map((z, i) => (SCALABLE.has(sc.field[i][0]) ? v : z))
+      commit({ ...withField(sc, sc.field.map((it, i) => [it, sizes[i]])), bs: v === 1 ? undefined : v })
+    }
+    return <>{sizeRow(t(one !== null ? 'bSizeOne' : 'bSizeAll'), cur, 0.5, 2, set)}<p className="tb-note">{t(one !== null ? 'bSizeHintOne' : 'bSizeHintAll')}</p></>
+  }
 
   return (
     <div className="board" role="dialog" aria-modal="true" aria-label={t('board')}>
@@ -310,104 +347,103 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
         </div>
       </div>
 
-      <div className="tb-main">
-        <div className="tb-pitch">
-          {preview ? (
-            <BookPlayer key={JSON.stringify(sc).length + ':' + sc.steps} scene={sc} autoPlay maxHeight={undefined} />
-          ) : (
-            <Frame id={fid} svg={{ ref: svgRef, onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: up, className: 'pitch tb-svg', style: { touchAction: 'none' }, 'aria-hidden': false, 'aria-label': t('board') }}>
-              {sc.field.map((it, i) => fieldItem(it, i, fid + 'net', sc.fs?.[i]))}
-              {selItem !== null && sc.field[selItem] && !preview && (() => { const it = sc.field[selItem]; const [x, y] = it[0] === 'ladder' ? [((it[1] as number) + (it[3] as number)) / 2, ((it[2] as number) + (it[4] as number)) / 2] : [it[1] as number, it[2] as number]; return <circle cx={x} cy={y} r={(it[0] === 'goal' ? 13 : it[0] === 'ladder' ? 10 : 6.5) * (sc.fs?.[selItem] ?? 1)} fill="none" stroke="#FFE45C" strokeWidth={0.6} strokeDasharray="1.6 1.2" pointerEvents="none" /> })()}
-              {all && sc.steps > 1 && <MarkPaths scene={sc} ms={marks(sc, 0, sc.steps - 1)} id={fid} opacity={0.35} />}
-              {s > 0 && <>
-                {sc.players.map((p) => { const a = posAt(sc, p, s - 1), b = posAt(sc, p, s); return dist(a, b) > 1.5 ? <circle key={'g' + p.id} cx={a[0]} cy={a[1]} r={4.4 * (sc.ps ?? 1)} fill={TEAM[p.t].fill} opacity={0.3} /> : null })}
-                <MarkPaths scene={sc} ms={marks(sc, s - 1, s)} id={fid} />
-              </>}
-              {selBall && (tool === 'pass' || tool === 'shot' || tool === 'lob') && <circle cx={selBall[0]} cy={selBall[1]} r={4.6} fill="none" stroke="#FFE45C" strokeWidth={1} />}
-              {draft && dist(draft[0], draft[1]) > 1 && item(['mark', ...draft[0], ...draft[1], line.type + line.end + line.col + line.w], 999, fid + 'net')}
-              {sc.players.map((p) => playerDot(p.t, posAt(sc, p, s), p.l, 'p' + p.id, sc.ps))}
-              {ballsP.map((tr, i) => { const b = ballAt(sc, tr, s); return b ? ballDot(b, 'b' + i, sc.bs) : null })}
-            </Frame>
-          )}
-          <p className="tb-hint">{preview ? t('bHintPreview') : t(hintKey)}</p>
+      <div className="tb-stage" onPointerDown={() => pop && setPop(null)}>
+        {preview ? (
+          <div className="tb-play"><BookPlayer key={JSON.stringify(sc).length + ':' + sc.steps} scene={sc} autoPlay maxHeight={undefined} /></div>
+        ) : (
+          <Frame id={fid} svg={{ ref: svgRef, onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: up, className: 'pitch tb-svg', style: { touchAction: 'none' }, 'aria-hidden': false, 'aria-label': t('board') }}>
+            {sc.field.map((it, i) => fieldItem(it, i, fid + 'net', sc.fs?.[i]))}
+            {selItem !== null && sc.field[selItem] && (() => { const it = sc.field[selItem]; const [x, y] = it[0] === 'ladder' ? [((it[1] as number) + (it[3] as number)) / 2, ((it[2] as number) + (it[4] as number)) / 2] : [it[1] as number, it[2] as number]; return <circle cx={x} cy={y} r={(it[0] === 'goal' ? 13 : it[0] === 'ladder' ? 10 : 6.5) * (sc.fs?.[selItem] ?? 1)} fill="none" stroke="#FFE45C" strokeWidth={0.6} strokeDasharray="1.6 1.2" pointerEvents="none" /> })()}
+            {all && sc.steps > 1 && <MarkPaths scene={sc} ms={marks(sc, 0, sc.steps - 1)} id={fid} opacity={0.35} />}
+            {s > 0 && <>
+              {sc.players.map((p) => { const a = posAt(sc, p, s - 1), b = posAt(sc, p, s); return dist(a, b) > 1.5 ? <circle key={'g' + p.id} cx={a[0]} cy={a[1]} r={4.4 * (sc.ps ?? 1)} fill={TEAM[p.t].fill} opacity={0.3} /> : null })}
+              <MarkPaths scene={sc} ms={marks(sc, s - 1, s)} id={fid} />
+            </>}
+            {selBall && (tool === 'pass' || tool === 'shot' || tool === 'lob') && <circle cx={selBall[0]} cy={selBall[1]} r={4.6} fill="none" stroke="#FFE45C" strokeWidth={1} />}
+            {draft && dist(draft[0], draft[1]) > 1 && item(['mark', ...draft[0], ...draft[1], line.type + line.end + line.col + line.w], 999, fid + 'net')}
+            {sc.players.map((p) => playerDot(p.t, posAt(sc, p, s), p.l, 'p' + p.id, sc.ps))}
+            {ballsP.map((tr, i) => { const b = ballAt(sc, tr, s); return b ? ballDot(b, 'b' + i, sc.bs) : null })}
+          </Frame>
+        )}
+        <p className="tb-hint">{preview ? t('bHintPreview') : t(hintKey)}</p>
+      </div>
+
+      {!preview && (
+        <div className="tb-steps" role="group" aria-label={t('stepsTitle')}>
+          {Array.from({ length: sc.steps }, (_, k) => (
+            <button type="button" key={k} aria-pressed={s === k} onClick={() => setS(k)}>{k === 0 ? t('bStart') : `${k}`}</button>
+          ))}
+          <button type="button" className="tb-add" onClick={addStep}>+ {t('bStep')}</button>
+          {sc.steps > 1 && s > 0 && <button type="button" className="tb-delstep" onClick={delStep} aria-label={t('bDelStep')}>✕</button>}
+          <label className="tb-check"><input type="checkbox" checked={all} onChange={(e) => setAll(e.target.checked)} /> {t('bAll')}</label>
+          <span className="tb-count">{sc.players.length} {t('bPl')} · {balls.length} {t('bBl')} · {sc.steps - 1} {t('bSt')}</span>
         </div>
+      )}
 
-        <div className="tb-side">
-          <div className="tb-steps" role="group" aria-label={t('stepsTitle')}>
-            {Array.from({ length: sc.steps }, (_, k) => (
-              <button type="button" key={k} aria-pressed={!preview && s === k} onClick={() => { setS(k); setPreview(false) }}>{k === 0 ? t('bStart') : `${k}`}</button>
-            ))}
-            <button type="button" className="tb-add" onClick={() => { addStep(); setPreview(false) }}>+ {t('bStep')}</button>
-            {sc.steps > 1 && s > 0 && !preview && <button type="button" className="tb-delstep" onClick={delStep} aria-label={t('bDelStep')}>✕</button>}
-          </div>
-          <div className="tb-row">
-            <button type="button" className="btn small" aria-pressed={preview} onClick={() => setPreview(!preview)} disabled={sc.steps < 2}>{preview ? '✏️ ' + t('bEdit') : '▶ ' + t('bPlay')}</button>
-            <label className="tb-check"><input type="checkbox" checked={all} onChange={(e) => setAll(e.target.checked)} /> {t('bAll')}</label>
-          </div>
-
-          <h3 className="tb-h">{t('bAct')}</h3>
-          <div className="tb-tools">
-            {toolBtn('move', t('bMove'), '✋')}
-            {toolBtn('pass', t('bPass'), arrowIc('3 2'))}
-            {toolBtn('shot', t('bShot'), arrowIc('0.5 2'))}
-            {toolBtn('lob', t('bLob'), arrowIc(undefined, true))}
-            {toolBtn('del', t('del'), '🗑')}
-          </div>
-          <h3 className="tb-h">{t('bPlayers')}</h3>
-          <div className="tb-tools">{PLAYER_TOOLS.map(([team, k]) => toolBtn(`add:${team}`, t(k), dot(team)))}</div>
-          <div className="tb-size">
-            <span>{t('bSize')}</span>
-            <button type="button" className="tb-tool" aria-label={t('bSmaller')} disabled={(sc.ps ?? 1) <= 0.6} onClick={() => commit({ ...sc, ps: Math.max(0.6, Math.round(((sc.ps ?? 1) - 0.1) * 10) / 10) })}>−</button>
-            <input type="range" min={0.6} max={1.6} step={0.1} value={sc.ps ?? 1} aria-label={t('bSize')} onChange={(e) => commit({ ...sc, ps: Number(e.target.value) })} />
-            <button type="button" className="tb-tool" aria-label={t('bBigger')} disabled={(sc.ps ?? 1) >= 1.6} onClick={() => commit({ ...sc, ps: Math.min(1.6, Math.round(((sc.ps ?? 1) + 0.1) * 10) / 10) })}>+</button>
-            <b>{Math.round((sc.ps ?? 1) * 100)}%</b>
-          </div>
-          <h3 className="tb-h">{t('bKit')}</h3>
-          <div className="tb-tools tb-kit">
-            {kitBtn('add:ball', t('bBall'), ballIc)}
-            {KIT.map((k) => kitBtn('add:' + k.key, t(k.label) + (k.col ? ' · ' + t(k.col) : ''), kitIc(k)))}
-            {kitBtn('add:text', t('bText'), <b className="tb-T">T</b>)}
-          </div>
-          {(() => {
-            const one = selItem !== null && sc.field[selItem] ? selItem : null
-            const cur = one !== null ? sc.fs?.[one] ?? 1 : kitSize
-            const set = (v: number) => {
-              v = clampSize(v)
-              if (one !== null) { commit(withField(sc, fieldPairs(sc).map(([it, z], i) => [it, i === one ? v : z]))); return }
-              // nothing picked: every piece of equipment and the balls, and new equipment too
-              setKitSize(v)
-              const sizes = sizesOf(sc).map((z, i) => (SCALABLE.has(sc.field[i][0]) ? v : z))
-              commit({ ...withField(sc, sc.field.map((it, i) => [it, sizes[i]])), bs: v === 1 ? undefined : v })
-            }
-            return (
-              <div className="tb-size">
-                <span>{t(one !== null ? 'bSizeOne' : 'bSizeAll')}</span>
-                <button type="button" className="tb-tool" aria-label={t('bSmaller')} disabled={cur <= 0.5} onClick={() => set(cur - 0.1)}>−</button>
-                <input type="range" min={0.5} max={2} step={0.1} value={cur} aria-label={t(one !== null ? 'bSizeOne' : 'bSizeAll')} onChange={(e) => set(Number(e.target.value))} />
-                <button type="button" className="tb-tool" aria-label={t('bBigger')} disabled={cur >= 2} onClick={() => set(cur + 0.1)}>+</button>
-                <b>{Math.round(cur * 100)}%</b>
+      <div className="tb-dock">
+        {pop && (
+          <div className="tb-pop" role="dialog" aria-label={pop}>
+            {pop === 'players' && <>
+              <div className="tb-pophead"><b>{t('bPlayers')}</b><button type="button" className="tb-x" onClick={() => setPop(null)} aria-label={t('cancel')}>✕</button></div>
+              <div className="tb-tools">{PLAYER_TOOLS.map(([team, k]) => (
+                <button type="button" key={team} className="tb-tool" aria-pressed={tool === `add:${team}`} onClick={() => pick(`add:${team}`)}><span className="tb-ic">{dot(team)}</span><span>{t(k)}</span></button>
+              ))}</div>
+              {sizeRow(t('bSize'), sc.ps ?? 1, 0.6, 1.6, (v) => commit({ ...sc, ps: v }))}
+            </>}
+            {pop === 'kit' && <>
+              <div className="tb-pophead"><b>{t('bKit')}</b><button type="button" className="tb-x" onClick={() => setPop(null)} aria-label={t('cancel')}>✕</button></div>
+              <div className="tb-kit">
+                {kitBtn('add:ball', t('bBall'), ballIc)}
+                {KIT.map((k) => kitBtn('add:' + k.key, t(k.label) + (k.col ? ' · ' + t(k.col) : ''), kitIc(k)))}
               </div>
-            )
-          })()}
-          <p className="tb-note">{t(selItem !== null ? 'bSizeHintOne' : 'bSizeHintAll')}</p>
-          {tool === 'add:text' && <input id="tb-text" className="tb-text" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('bTextPh')} aria-label={t('bText')} />}
-          <h3 className="tb-h">{t('bLines')}</h3>
-          <div className="tb-tools">{toolBtn('line', t('bDraw'), lineIc(line.type + line.end + line.col + line.w))}</div>
-          {tool === 'line' && (
-            <div className="tb-lines">
-              <div className="tb-tools">{L_TYPES.map(([v, k]) => <button type="button" key={v} className="tb-tool" aria-pressed={line.type === v} title={t(k)} aria-label={t(k)} onClick={() => setLine({ ...line, type: v })}>{lineIc(v + 'n' + line.col + line.w)}</button>)}</div>
-              <div className="tb-tools">{L_ENDS.map(([v, k]) => <button type="button" key={v} className="tb-tool" aria-pressed={line.end === v} title={t(k)} aria-label={t(k)} onClick={() => setLine({ ...line, end: v })}>{lineIc('s' + v + line.col + line.w)}</button>)}</div>
-              <div className="tb-tools">{L_COLS.map(([v, k, c]) => <button type="button" key={v} className="tb-sw" aria-pressed={line.col === v} title={t(k)} aria-label={t(k)} onClick={() => setLine({ ...line, col: v })}><i style={{ background: c }} /></button>)}</div>
-              <div className="tb-tools">{[1, 2, 3, 4].map((w) => <button type="button" key={w} className="tb-sw" aria-pressed={line.w === w} aria-label={t('lWidth') + ' ' + w} onClick={() => setLine({ ...line, w })}><i className="tb-w" style={{ width: 3 + w * 3, height: 3 + w * 3 }} /></button>)}</div>
-            </div>
-          )}
-          <h3 className="tb-h">{t('bField')}</h3>
-          <div className="tb-tools">
-            {(['full', 'right', 'free'] as const).map((f) => (
-              <button type="button" key={f} className="tb-tool" aria-pressed={fieldNow === f} onClick={() => setField(f)}><span>{t(f === 'full' ? 'bFull' : f === 'right' ? 'bHalf' : 'bFree')}</span></button>
-            ))}
+              {kitSizeRow()}
+            </>}
+            {pop === 'text' && <>
+              <div className="tb-pophead"><b>{t('bText')}</b><button type="button" className="tb-x" onClick={() => setPop(null)} aria-label={t('cancel')}>✕</button></div>
+              <input id="tb-text" className="tb-text" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('bTextPh')} aria-label={t('bText')} onKeyDown={(e) => { if (e.key === 'Enter') pick('add:text') }} />
+              <button type="button" className="btn small" onClick={() => pick('add:text')} disabled={!text.trim()}>{t('bTextPlace')}</button>
+            </>}
+            {pop === 'field' && <>
+              <div className="tb-pophead"><b>{t('bField')}</b><button type="button" className="tb-x" onClick={() => setPop(null)} aria-label={t('cancel')}>✕</button></div>
+              <div className="tb-tools">
+                {(['full', 'right', 'free'] as const).map((f) => (
+                  <button type="button" key={f} className="tb-tool" aria-pressed={fieldNow === f} onClick={() => { setField(f); setPop(null) }}><span>{t(f === 'full' ? 'bFull' : f === 'right' ? 'bHalf' : 'bFree')}</span></button>
+                ))}
+              </div>
+            </>}
+            {pop === 'color' && <>
+              <div className="tb-pophead"><b>{t('bColor')}</b><button type="button" className="tb-x" onClick={() => setPop(null)} aria-label={t('cancel')}>✕</button></div>
+              <div className="tb-tools">{L_COLS.map(([v, k, c]) => <button type="button" key={v} className="tb-sw" aria-pressed={line.col === v} title={t(k)} aria-label={t(k)} onClick={() => lineSet({ col: v })}><i style={{ background: c }} /></button>)}</div>
+            </>}
           </div>
-          <p className="tb-count muted">{sc.players.length} {t('bPl')} · {balls.length} {t('bBl')} · {sc.steps - 1} {t('bSt')}</p>
+        )}
+
+        <div className="tb-bar" role="toolbar" aria-label={t('board')}>
+          <div className="tbb-group tbb-mode">
+            <button type="button" aria-pressed={!preview} onClick={() => setPreview(false)}>✏️<span>{t('bModeEdit')}</span></button>
+            <button type="button" aria-pressed={preview} disabled={sc.steps < 2} onClick={() => { setPop(null); setPreview(true) }} title={sc.steps < 2 ? t('bHintStart') : undefined}>▶<span>{t('bModeAnim')}</span></button>
+          </div>
+          <div className="tbb-group">
+            {actBtn('move', t('bMove'), '✋')}
+            {actBtn('pass', t('bPass'), arrowIc('3 2'))}
+            {actBtn('shot', t('bShot'), arrowIc('0.5 2'))}
+            {actBtn('lob', t('bLob'), arrowIc(undefined, true))}
+          </div>
+          <div className={'tbb-group tbb-lines' + (isLine ? ' on' : '')} role="group" aria-label={t('bLines')}>
+            <div className="tbb-grid tbb-g3">{L_TYPES.map(([v, k]) => <button type="button" key={v} aria-pressed={isLine && line.type === v} title={t(k)} aria-label={t(k)} onClick={() => lineSet({ type: v })}>{lineIc(v + 'n' + line.col + line.w)}</button>)}</div>
+            <div className="tbb-grid tbb-g2">{L_ENDS.map(([v, k]) => <button type="button" key={v} aria-pressed={isLine && line.end === v} title={t(k)} aria-label={t(k)} onClick={() => lineSet({ end: v })}>{lineIc('s' + v + line.col + line.w)}</button>)}</div>
+            <div className="tbb-grid tbb-w">{[1, 2, 3, 4].map((w) => <button type="button" key={w} aria-pressed={isLine && line.w === w} aria-label={t('lWidth') + ' ' + w} onClick={() => lineSet({ w })}><i style={{ width: 2 + w * 2.5, height: 2 + w * 2.5 }} /></button>)}</div>
+            <button type="button" className="tbb-color" aria-label={t('bColor')} aria-expanded={pop === 'color'} onClick={() => setPop(pop === 'color' ? null : 'color')}><i style={{ background: L_COLS.find((c) => c[0] === line.col)?.[2] }} /></button>
+          </div>
+          <div className="tbb-group">
+            {actBtn('del', t('del'), '🧽')}
+          </div>
+          <div className="tbb-group">
+            {popBtn('players', t('bPlayers'), playersIc, tool.length === 5 && tool.startsWith('add:'))}
+            {popBtn('kit', t('bKit'), kitBig, tool.startsWith('add:') && tool.length > 5 && tool !== 'add:text')}
+            {popBtn('text', t('bText'), <b className="tbb-T">T</b>, tool === 'add:text')}
+            {popBtn('field', t('bField'), fieldIc, false)}
+          </div>
         </div>
       </div>
     </div>

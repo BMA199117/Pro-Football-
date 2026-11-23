@@ -307,18 +307,82 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 
 /* tactics board */
 .head-btns { display: flex; gap: 8px; flex-wrap: wrap }
-.board { position: fixed; inset: 0; z-index: 50; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; gap: 10px; padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); overflow: auto }
+.board { position: fixed; inset: 0; z-index: 50; background: #161A18; color: var(--ink); display: flex; flex-direction: column; overflow: hidden; padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left) }
+.board .tb-top { padding: 8px 10px; background: var(--bg) }
+.tb-stage { flex: 1 1 auto; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center; padding: 6px; overflow: hidden }
+.tb-stage svg.pitch { width: 100%; height: 100%; max-width: 100%; max-height: 100%; display: block; border-radius: 8px }
+.tb-play { width: 100%; max-height: 100%; overflow: auto }
+.tb-play .apitch { width: 100% }
+.tb-stage { flex-direction: column; gap: 4px }
+.tb-stage .tb-hint { flex: none; max-width: min(96%, 760px); margin: 0; color: #b9c2bd; font-size: 12px; line-height: 1.35; text-align: center; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden }
+.tb-stage svg.pitch { flex: 1 1 auto; min-height: 0 }
+.board .tb-steps { flex: none; padding: 6px 10px; background: #1E2321; color: #e8ece9; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: thin }
+.board .tb-steps button { background: #2C322F; border-color: #3B423E; color: #e8ece9; flex: none }
+.board .tb-steps button[aria-pressed="true"] { background: var(--pitch); border-color: var(--pitch); color: #fff }
+.board .tb-check, .board .tb-count { flex: none; white-space: nowrap; color: #b9c2bd; font-size: 12.5px; margin: 0 }
+.tb-dock { flex: none; position: relative; background: #1E2321; border-top: 1px solid #2E3431; padding-bottom: env(safe-area-inset-bottom) }
+.tb-bar { display: flex; align-items: stretch; gap: 4px; overflow-x: auto; padding: 6px 8px; scrollbar-width: thin; color: #e8ece9 }
+.tbb-group { display: flex; align-items: stretch; gap: 4px; padding-right: 8px; margin-right: 4px; border-right: 1px solid #343B37; flex: none }
+.tbb-group:last-child { border-right: 0 }
+.tb-bar button { font: inherit; color: inherit; cursor: pointer }
+.tbb-mode { flex-direction: column; gap: 3px }
+.tbb-mode button { display: flex; align-items: center; gap: 6px; border: 0; border-radius: 8px; padding: 4px 10px; background: transparent; color: #b9c2bd; font-size: 12.5px; min-height: 26px }
+.tbb-mode button[aria-pressed="true"] { background: #2F6FB0; color: #fff }
+.tbb-mode button:disabled { opacity: .45; cursor: default }
+.tbb-act, .tbb-big { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 58px; border: 0; border-radius: 10px; background: transparent; padding: 4px 6px; font-size: 11.5px; color: #dfe5e1 }
+.tbb-big { min-width: 70px }
+.tbb-act[aria-pressed="true"], .tbb-big[aria-pressed="true"] { background: #2F6FB0; color: #fff }
+.tbb-act:hover, .tbb-big:hover { background: #2C322F }
+.tbb-act[aria-pressed="true"]:hover, .tbb-big[aria-pressed="true"]:hover { background: #2F6FB0 }
+.tbb-actic { font-size: 20px; line-height: 1; height: 24px; display: inline-flex; align-items: center }
+.tbb-actic svg { width: 26px; height: 16px }
+.tbb-bigic { height: 28px; display: inline-flex; align-items: center }
+.tbb-T { font: 800 26px/1 Georgia, serif; color: #fff }
+.tbb-lines { gap: 6px; align-items: center; border-radius: 10px; padding-left: 4px }
+.tbb-lines.on { background: rgba(47,111,176,.18) }
+.tbb-grid { display: grid; gap: 3px }
+.tbb-g3 { grid-template-columns: repeat(3, auto) }
+.tbb-g2 { grid-template-columns: repeat(2, auto) }
+.tbb-w { grid-template-columns: repeat(2, 22px) }
+.tbb-grid button { border: 1px solid transparent; border-radius: 6px; background: transparent; padding: 1px; display: inline-flex; align-items: center; justify-content: center; min-height: 22px }
+.tbb-grid button svg { display: block; width: 30px; height: 12px }
+.tbb-grid button[aria-pressed="true"] { border-color: #FFE45C; background: #2C322F }
+.tbb-w button i { display: block; border-radius: 50%; background: #fff }
+.tbb-color { width: 40px; height: 40px; border: 2px solid #fff !important; border-radius: 8px; background: #2C322F; padding: 4px; align-self: center }
+.tbb-color i { display: block; width: 100%; height: 100%; border-radius: 4px }
+.tb-pop { position: absolute; left: 8px; right: 8px; bottom: 100%; margin-bottom: 8px; max-width: 560px; margin-left: auto; margin-right: auto; max-height: min(60vh, 460px); overflow: auto; background: #232826; color: #e8ece9; border: 1px solid #343B37; border-radius: 14px; padding: 10px 12px 12px; box-shadow: 0 10px 30px rgba(0,0,0,.45); display: flex; flex-direction: column; gap: 8px; z-index: 3 }
+.tb-pophead { display: flex; align-items: center; justify-content: space-between }
+.tb-x { border: 0; background: #2C322F; color: #e8ece9; width: 30px; height: 30px; border-radius: 8px }
+.tb-pop .tb-tool { background: #2C322F; border-color: #3B423E; color: #e8ece9 }
+.tb-pop .tb-tool[aria-pressed="true"] { border-color: #FFE45C; background: #353C38 }
+.tb-pop .tb-size, .tb-pop .tb-note { color: #b9c2bd }
+.tb-pop .tb-size .tb-tool { color: #e8ece9 }
+.tb-pop .tb-kit { padding: 0; background: transparent }
+.tb-pop .tb-text { background: #161A18; color: #fff; border-color: #3B423E; font-size: 15px }
+@media (max-width: 640px) { .tbb-act { min-width: 50px } .tbb-big { min-width: 60px } .board .tb-top { padding: 6px 8px } .board .tb-top .tb-name { flex-basis: 100% } }
+@media (max-width: 640px) and (orientation: portrait) {
+  .tb-bar { flex-wrap: wrap; justify-content: center; row-gap: 6px; overflow-x: visible }
+  .tbb-group { border-right: 0; padding-right: 0; margin-right: 0 }
+  .tbb-mode { flex-direction: row; width: 100%; justify-content: center }
+  .tbb-mode button { flex: 1; justify-content: center; min-height: 32px }
+}
+@media (max-height: 520px) {
+  .board .tb-top { padding: 4px 8px; flex-wrap: nowrap }
+  .board .tb-top .tb-name { padding: 5px 8px; font-size: 14px; flex-basis: auto }
+  .board .tb-top .btn.small { padding: 5px 9px; font-size: 12.5px }
+  .board .tb-steps { padding: 3px 8px }
+  .board .tb-steps button { height: 28px }
+  .board .tb-count, .tb-stage .tb-hint { display: none }
+  .tbb-act > span:last-child, .tbb-big > span:last-child { display: none }
+  .tbb-act, .tbb-big { min-width: 44px }
+  .tb-bar { padding: 4px 6px }
+  .tb-stage { padding: 4px }
+}
 .tb-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap }
 .tb-name { flex: 1 1 220px; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; background: var(--surface); font-size: 15px; font-weight: 600; color: inherit }
 .tb-top-btns { display: flex; gap: 6px; flex-wrap: wrap }
-.tb-main { display: grid; grid-template-columns: 1fr; gap: 12px; flex: 1; min-height: 0 }
-@media (min-width: 900px) { .tb-main { grid-template-columns: minmax(0, 1fr) 300px; align-items: start } }
-.tb-pitch { display: flex; flex-direction: column; gap: 6px; min-width: 0 }
-.tb-pitch svg.pitch { width: 100%; max-height: 70vh; border-radius: 10px; display: block }
 .tb-svg { cursor: crosshair; user-select: none; -webkit-user-select: none }
 .tb-hint { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.4 }
-.tb-side { display: flex; flex-direction: column; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px }
-.tb-h { margin: 6px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted) }
 .tb-tools { display: flex; flex-wrap: wrap; gap: 6px }
 .tb-tool { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--bg); color: inherit; border-radius: 8px; padding: 6px 9px; font-size: 13px; min-height: 36px }
 .tb-tool[aria-pressed="true"] { border-color: var(--pitch); background: color-mix(in srgb, var(--pitch) 16%, var(--surface)); font-weight: 600 }
@@ -328,16 +392,10 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .tb-steps button[aria-pressed="true"] { background: var(--pitch); border-color: var(--pitch); color: #fff }
 .tb-steps .tb-add { border-style: dashed }
 .tb-steps .tb-delstep { min-width: 34px; padding: 0; color: var(--muted) }
-.tb-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
 .tb-check { display: inline-flex; gap: 6px; align-items: center; font-size: 13px }
 .tb-count { margin: 4px 0 0; font-size: 12px }
-.tb-pitch .apitch { width: 100% }
 .fd-draw { display: flex; flex-direction: column; gap: 8px; align-items: flex-start }
 .fd-draw svg.pitch { width: 100%; border-radius: 8px }
-@media (max-width: 899px) {
-  /* the pitch stays in view while the tools scroll under it */
-  .tb-pitch { position: sticky; top: calc(-1 * max(10px, env(safe-area-inset-top))); z-index: 2; background: var(--bg); padding: 4px 0 6px }
-}
 
 /* ---------- admin panel ---------- */
 .admin-link { display: flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; background: rgba(0,0,0,.18); border-radius: 8px; padding: 7px 10px; font-size: 12.5px; font-weight: 600 }
@@ -445,7 +503,6 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .tb-sw i { display: block; width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,.3) }
 .tb-sw i.tb-w { background: #fff }
 .tb-sw[aria-pressed="true"] { outline: 2.5px solid #FFE45C; outline-offset: 1px }
-@media (min-width: 900px) { .tb-pitch { position: sticky; top: 0 } }
 
 /* ---------- season plan ---------- */
 .season-new .ages button { padding-right: 12px; min-width: 0 }
