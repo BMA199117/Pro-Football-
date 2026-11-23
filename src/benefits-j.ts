@@ -29,4 +29,5 @@ export const BENEFITS_J: Record<string, Benefit> = {
   'bc-89': [['duel', 'drib', 'react'], "Gavjum maydonda 1×1 tez qaror, atrofni kuzatish va yakunlashni birga rivojlantiradi.", 'В тесной зоне 1×1 развивает быстроту решений, обзор и завершение.'],
   'bc-93': [['drib', 'vision', 'trans'], "Bo'sh joyni ko'rib, to'p bilan unga kirish va hujum yo'nalishini tez o'zgartirish o'rganiladi.", 'Учатся видеть свободную зону, врываться в неё с мячом и быстро менять направление атаки.'],
   'bc-105': [['shoot', 'coord', 'touch'], "Zarba texnikasi oddiydan murakkabga: qo'ldan, keyin yarim volley, so'ng uzoqroqdan — ikkala oyoq bilan.", 'Техника удара от простого к сложному: с рук, с полулёта, затем дальше — обеими ногами.'],
+  'bc-109': [['shoot', 'speed', 'coord'], "Harakatdagi to'pga yoysimon yugurib kelib zarba berish — o'yindagi eng ko'p uchraydigan zarba vaziyati.", 'Удар по движущемуся мячу после дугообразного забега — частая игровая ситуация.'],
 }

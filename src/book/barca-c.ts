@@ -74,8 +74,27 @@ const bc105: BookScene = {
     : ['r' + i, ['l', near(a, b)], 'l' + i, ['l', near(b, a)]]))),
 }
 
-export const BC_C: Record<string, BookScene> = { 'bc-89': bc89, 'bc-93': bc93, 'bc-105': bc105 }
+// p109 Deep arched run to open the shooting angle: pass between the poles, run round the mannequin, shoot first time
+const d109 = persp([[300, 333], [790, 333], [115, 845], [965, 845]], [25, 18, 175, 92])
+const dm = (q: Px) => { const a = d109.pt(q); return ['dummy', a[0], a[1]] as never }
+const bc109: BookScene = {
+  ...S, steps: 3,
+  field: [d109.area(''), d109.goal([545, 335], 'd', 16), d109.goal([545, 840], 'u', 16), d109.pole([230, 500]), d109.pole([233, 570]), d109.pole([862, 485]), d109.pole([866, 560]),
+    dm([280, 545]), dm([300, 520]), dm([788, 505]), dm([813, 548]), d109.ball([815, 385]), d109.ball([455, 828])],
+  players: [
+    d109.pl('gt', 'k', undefined, [[560, 385], [560, 385], [585, 370]]), d109.pl('gb', 'k', undefined, [[545, 735], [545, 735], [520, 740]]),
+    d109.pl('a', 'b', undefined, [[205, 548], [[260, 600], [330, 605]], [[420, 590], [488, 550]]]),
+    d109.pl('b', 'b', undefined, [[885, 548], [[840, 515], [780, 510]], [[700, 515], [632, 550]]]),
+    d109.pl('q1', 'b', undefined, [[155, 545]]), d109.pl('q2', 'b', undefined, [[132, 598]]), d109.pl('q3', 'b', undefined, [[240, 430]]),
+    d109.pl('q4', 'b', undefined, [[862, 430]]), d109.pl('q5', 'b', undefined, [[888, 485]]), d109.pl('q6', 'b', undefined, [[942, 600]]),
+  ],
+  balls: d109.balls([['a', [470, 548], [490, 550], ['s', [598, 338]]], ['b', [650, 550], [630, 552], ['s', [430, 832]]]]),
+}
+
+export const BC_C: Record<string, BookScene> = { 'bc-89': bc89, 'bc-93': bc93, 'bc-105': bc105, 'bc-109': bc109 }
 export const MORE_BC_C: Record<string, More> = {
+  // the next player from each queue goes; the shooters switch sides
+  'bc-109': replay(bc109, { a: 'q1', b: 'q5', gt: 'gt', gb: 'gb' }),
   // the pairs keep striking to each other (half-volleys)
   'bc-105': d105.more(2, {}, pairs105.map(([a, b, ltr], i) => (ltr ? ['l' + i, ['l', near(b, a)]] : ['r' + i, ['l', near(a, b)]]) as never)),
   // new duel in every pair: the defender now has the ball
