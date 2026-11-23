@@ -224,6 +224,26 @@ const PRO_UNITS: SeasonUnit[] = [
     focus: T("Boshqa sport turlari, uzlukli yugurish yo'lagi, o'z vazni bilan umumiy tonus (haftasiga 1–2), egiluvchanlik.", 'Другие виды спорта, прерывистая полоса препятствий, общий тонус весом тела (1–2 раза в неделю), гибкость.') },
 ]
 
+
+/* ---------- Verheijen, football periodisation: 6-week cycles, conditioning through football ---------- */
+const vh = (n: number, kind: 'prep' | 'comp', uz: string, ru: string, fuz: string, fru: string): SeasonUnit =>
+  ({ id: `vh-${n}`, kind, weeks: 1, title: T(`${n}-hafta: ${uz}`, `Неделя ${n}: ${ru}`), focus: T(fuz, fru) })
+const VH_GAMES_BIG = ["Katta o'yinlar 11×11 / 8×8", 'Большие игры 11×11 / 8×8']
+const VH_UNITS: SeasonUnit[] = [
+  vh(1, 'prep', VH_GAMES_BIG[0], VH_GAMES_BIG[1], "1-sikl. Seshanba: portlovchi tayyorlov mashqlari 7 × 50 m (70%, dam 50 s), so'ng kondision o'yinlar 11×11/8×8: 2 × 12 daqiqa, o'yinlar orasida 2 daqiqa. Shanba: 9 × 30 m (90%) va yana 2 × 12 daqiqa.", 'Цикл 1. Вторник: взрывные подготовительные упражнения 7 × 50 м (70 %, отдых 50 с), затем кондиционные игры 11×11/8×8: 2 × 12 мин, пауза 2 мин. Суббота: 9 × 30 м (90 %) и снова 2 × 12 мин.'),
+  vh(2, 'prep', VH_GAMES_BIG[0], VH_GAMES_BIG[1], "Seshanba: 10 × 20 m (100%, dam 20 s), kondision o'yinlar 11×11/8×8: 2 × 13 daqiqa. Shanba: o'rtoqlik o'yini.", 'Вторник: 10 × 20 м (100 %, отдых 20 с), кондиционные игры 11×11/8×8: 2 × 13 мин. Суббота: товарищеский матч.'),
+  vh(3, 'prep', "O'rta o'yinlar 7×7 / 5×5", 'Средние игры 7×7 / 5×5', "Seshanba: qisqa sprintlar, dam kam: 2 seriya × 6 × 15 m, sprintlar orasida 10 s, seriyalar orasida 4 daqiqa. Kondision o'yinlar 7×7/5×5: 4 × 4 daqiqa, orasida 2 daqiqa.", 'Вторник: короткие спринты с минимальным отдыхом: 2 серии × 6 × 15 м, 10 с между спринтами, 4 мин между сериями. Кондиционные игры 7×7/5×5: 4 × 4 мин, пауза 2 мин.'),
+  vh(4, 'prep', "O'rta o'yinlar 7×7 / 5×5", 'Средние игры 7×7 / 5×5', "Seshanba: 2 × 7 × 15 m (dam 10 s / 4 daqiqa). Kondision o'yinlar 7×7/5×5: 4 × 4,5 daqiqa.", 'Вторник: 2 × 7 × 15 м (отдых 10 с / 4 мин). Кондиционные игры 7×7/5×5: 4 × 4,5 мин.'),
+  vh(5, 'prep', "Kichik o'yinlar 4×4 / 3×3", 'Малые игры 4×4 / 3×3', "Seshanba: start va tezlanish, dam ko'p: 6 × 5 m (dam 30 s), 4 × 15 m (45 s), 2 × 25 m (60 s). Kondision o'yinlar 4×4/3×3: 2 seriya × 6 × 1 daqiqa, o'yinlar orasida 2 daqiqa.", 'Вторник: старт и ускорение с максимальным отдыхом: 6 × 5 м (отдых 30 с), 4 × 15 м (45 с), 2 × 25 м (60 с). Кондиционные игры 4×4/3×3: 2 серии × 6 × 1 мин, пауза 2 мин.'),
+  vh(6, 'prep', "Kichik o'yinlar 4×4 / 3×3", 'Малые игры 4×4 / 3×3', "Seshanba: 7 × 5 m, 4 × 15 m, 2 × 25 m. Kondision o'yinlar 4×4/3×3: 2 × 6 × 1 daqiqa, orasida 1,5 daqiqa (dam qisqaradi).", 'Вторник: 7 × 5 м, 4 × 15 м, 2 × 25 м. Кондиционные игры 4×4/3×3: 2 × 6 × 1 мин, пауза 1,5 мин (отдых сокращается).'),
+  vh(7, 'comp', VH_GAMES_BIG[0], VH_GAMES_BIG[1], "2-sikl (liga boshlandi). Seshanba: 8 × 40 m (80%, dam 40 s), kondision o'yinlar 11×11/8×8: 2 × 13 daqiqa. Shanba: liga o'yini.", 'Цикл 2 (лига началась). Вторник: 8 × 40 м (80 %, отдых 40 с), кондиционные игры 11×11/8×8: 2 × 13 мин. Суббота: игра лиги.'),
+  vh(8, 'comp', VH_GAMES_BIG[0], VH_GAMES_BIG[1], "Seshanba: 9 × 30 m (90%, dam 30 s), kondision o'yinlar 11×11/8×8: 2 × 14 daqiqa.", 'Вторник: 9 × 30 м (90 %, отдых 30 с), кондиционные игры 11×11/8×8: 2 × 14 мин.'),
+  vh(9, 'comp', "O'rta o'yinlar 7×7 / 5×5", 'Средние игры 7×7 / 5×5', "Seshanba: 2 × 7 × 15 m (dam 10 s / 4 daqiqa), kondision o'yinlar 7×7/5×5: 4 × 4,5 daqiqa.", 'Вторник: 2 × 7 × 15 м (отдых 10 с / 4 мин), кондиционные игры 7×7/5×5: 4 × 4,5 мин.'),
+  vh(10, 'comp', "O'rta o'yinlar 7×7 / 5×5", 'Средние игры 7×7 / 5×5', "Seshanba: 2 × 8 × 15 m, kondision o'yinlar 7×7/5×5: 4 × 5 daqiqa.", 'Вторник: 2 × 8 × 15 м, кондиционные игры 7×7/5×5: 4 × 5 мин.'),
+  vh(11, 'comp', "Kichik o'yinlar 4×4 / 3×3", 'Малые игры 4×4 / 3×3', "Seshanba: 7 × 5 m, 4 × 15 m, 2 × 25 m (dam 30/45/60 s), kondision o'yinlar 4×4/3×3: 2 × 6 × 1 daqiqa, orasida 1,5 daqiqa.", 'Вторник: 7 × 5 м, 4 × 15 м, 2 × 25 м (отдых 30/45/60 с), кондиционные игры 4×4/3×3: 2 × 6 × 1 мин, пауза 1,5 мин.'),
+  vh(12, 'comp', "Kichik o'yinlar 4×4 / 3×3", 'Малые игры 4×4 / 3×3', "Seshanba: 7 × 5 m, 5 × 15 m, 2 × 25 m, kondision o'yinlar 4×4/3×3: 2 × 6 × 1 daqiqa, orasida 1 daqiqa. Keyin yangi 6 haftalik sikl yuqoriroq bosqichdan boshlanadi.", 'Вторник: 7 × 5 м, 5 × 15 м, 2 × 25 м, кондиционные игры 4×4/3×3: 2 × 6 × 1 мин, пауза 1 мин. Затем новый 6-недельный цикл со следующей ступени.'),
+]
+
 export const SEASON_PROGRAMS: SeasonProgram[] = [
   // ---- EPYSA ----
   { id: 'epysa6', source: 'epysa6', ages: '5–6', startMonth: 8, title: T('EPYSA U6: haftalik reja', 'EPYSA U6: план по неделям'),
@@ -346,6 +366,17 @@ export const SEASON_PROGRAMS: SeasonProgram[] = [
       T("Tezlik haftasiga 2 marta: hafta boshida bajarish tezligi, oxirida reaksiya va chaqqonlik. Tezlik mashg'ulotning boshida, dam olgandan keyin.", 'Скорость 2 раза в неделю: в начале недели скорость выполнения, в конце — реакция и живость. Скорость — в начале тренировки, после отдыха.'),
       T("Laktat ish 4–5 haftalik tayyorgarlikdan keyin boshlanadi va o'yindan 3 kun oldin o'tkazilmaydi; uglevodga boy ovqat kerak.", 'Лактатная работа начинается после 4–5 недель подготовки и не проводится за 3 дня до матча; нужна богатая углеводами диета.'),
       T("Kuch mashqidan keyin texnik ish ayniqsa samarali.", 'Техническая работа особенно эффективна после силовой.'),
+    ] },
+  // ---- Verheijen, football periodisation (adult teams; one league match a week) ----
+  { id: 'verheijen', source: 'verheijen', ages: 'Pro', startMonth: 6, perWeek: "3 + o'yin / 3 + игра",
+    title: T("Verheyen: futbol periodizatsiyasi (6 haftalik sikllar)", 'Верхейен: футбольная периодизация (6-недельные циклы)'),
+    summary: T("Jismoniy tayyorgarlik futbolning o'zi orqali: haftada bitta kondision mashg'ulot (seshanba). 1–2-haftalar katta o'yinlar, 3–4 o'rta, 5–6 kichik o'yinlar; har haftada yuklama bir pog'ona oshadi. Kitobdagi 1-sikl (tayyorgarlik) va 2-sikl (liga) jadvali.", 'Физическая подготовка через сам футбол: одна кондиционная тренировка в неделю (вторник). Недели 1–2 — большие игры, 3–4 — средние, 5–6 — малые; каждую неделю нагрузка растёт на одну ступень. Расписание цикла 1 (подготовка) и цикла 2 (лига) из книги.'),
+    units: VH_UNITS, rules: [
+      T("Fitnes — futbol tilida: «chidamlilik» emas, «90 daqiqa davomida yuqori sur'atda harakatni takrorlay olish». Har bir yuklama futbol harakati orqali beriladi.", 'Фитнес — футбольным языком: не «выносливость», а «умение повторять высокоинтенсивные действия все 90 минут». Любая нагрузка даётся через футбольное действие.'),
+      T("6 haftalik sikl: 1–2-haftalar 11×11/8×8 (o'yin uzunligi oshadi), 3–4-haftalar 7×7/5×5, 5–6-haftalar 4×4/3×3 (dam qisqaradi). Keyingi sikl yuqoriroq pog'onadan boshlanadi (kitobdagi 21 pog'onali jadval).", '6-недельный цикл: недели 1–2 — 11×11/8×8 (растёт длина игры), 3–4 — 7×7/5×5, 5–6 — 4×4/3×3 (сокращается отдых). Следующий цикл начинается со ступени выше (таблица из 21 ступени).'),
+      T("Sprintlar ham bosqichma-bosqich: 1–2-haftalar portlovchi tayyorlov mashqlari (6 × 60 m 60% dan 10 × 20 m 100% gacha), 3–4-haftalar dam kam qisqa sprintlar (15 m), 5–6-haftalar dam ko'p start va tezlanish (5/15/25 m).", 'Спринты тоже по ступеням: недели 1–2 — взрывные подготовительные упражнения (от 6 × 60 м на 60 % до 10 × 20 м на 100 %), 3–4 — короткие спринты (15 м) с минимальным отдыхом, 5–6 — старт и ускорение (5/15/25 м) с максимальным отдыхом.'),
+      T("Haftada bitta o'yin bo'lsa: kondision mashg'ulot seshanba kuni. Haftada ikki o'yin bo'lsa: kondision kun o'yinlar orasidagi eng uzun tanaffusga qo'yiladi, qolgan kunlar tiklanish va yuklamasi kam o'yinlar (masalan, 7×7/5×5: 4 × 2 daqiqa).", 'При одной игре в неделю кондиционная тренировка — во вторник. При двух играх кондиционный день ставят в самый длинный промежуток между матчами, остальные дни — восстановление и игры с недогрузкой (например, 7×7/5×5: 4 × 2 мин).'),
+      T("Yuklamani birdan oshirmang: bir pog'onadan sakrab o'tish jarohat va charchoq xavfini oshiradi.", 'Не повышайте нагрузку скачком: пропуск ступеней повышает риск травм и переутомления.'),
     ] },
   // ---- FIFA ----
   { id: 'fifa-year', source: 'fifaPlan', ages: '15–17', startMonth: 7,
