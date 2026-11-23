@@ -43,7 +43,7 @@ const ROWS: Row[] = [
   // EPYSA U10 — game: 7×7 by formation
   ['u10w1', '9–10', 'U10', 'epysa10', ["1-hafta: dribling va 1×1", 'Неделя 1: дриблинг и 1×1'],
     ["Fintlar, oxirgi zonaga olib kirish, katta va kichik darvozalar", 'Финты, проход в конечную зону, большие и малые ворота'], ['e10-1'], ['e10-2', 'e10-3'], ['e10-28']],
-  ['u10w2', '9–10', 'U10', 'epysa10', ["2-hafta: ko'pchilikda hujum", 'Неделя 2: атака в большинстве'],
+  ['u10w2', '9–10', 'U10', 'epysa10', ["2-hafta: son ustunligida hujum", 'Неделя 2: атака в большинстве'],
     ["2×0 kombinatsiya, 3×2, 5×5 darvozalarga", 'Комбинация 2×0, 3×2, 5×5 на ворота'], ['e10-4'], ['e10-5', 'e10-6'], ['e10-28']],
   ['u10w3', '9–10', 'U10', 'epysa10', ['3-hafta: pas va birinchi teginish', 'Неделя 3: передача и первое касание'],
     ["Ketma-ket paslar, 3×3+1, 4×4 qarshi darvozalar bilan", 'Последовательные передачи, 3×3+1, 4×4 с контрворотами'], ['e10-7'], ['e10-8', 'e10-9'], ['e10-28']],
@@ -62,7 +62,7 @@ const ROWS: Row[] = [
   ['u10w10', '9–10', 'U10', 'epysa10', ['10-hafta: festival', 'Неделя 10: фестиваль'],
     ["4×4 festivali: to'rt xil o'yin", 'Фестиваль 4×4: четыре игры'], [], ['e10-27'], ['e10-28']],
   // EPYSA U12 — game: 9×9 / 8×8 by formation
-  ['u12w1', '11–12', 'U12', 'epysa12', ["1-hafta: ko'pchilikda hujum", 'Неделя 1: атака в большинстве'],
+  ['u12w1', '11–12', 'U12', 'epysa12', ["1-hafta: son ustunligida hujum", 'Неделя 1: атака в большинстве'],
     ["Devor bilan kombinatsiya, 3×2, 7×7 katta va kichik darvozalar", 'Комбинация со стенкой, 3×2, 7×7 на большие и малые ворота'], ['e10-4'], ['e10-5', 'e12-1'], ['e12-20']],
   ['u12w2', '11–12', 'U12', 'epysa12', ['2-hafta: dribling zonalarda', 'Неделя 2: дриблинг по зонам'],
     ["Zonani almashtirish, dribling bilan gol, 5×5 uch zonada", 'Смена зон, гол ведением, 5×5 в трёх зонах'], ['e12-2'], ['e12-3', 'e12-4'], ['e12-20']],
@@ -96,7 +96,7 @@ const ROWS: Row[] = [
   ['r69p6', '7–8', 'RFS 8', 'rfs69', ["«+ raqib»: 1×1 va zarba", 'Этап «+ соперник»: 1×1 и удар'],
     ["Yondan quvlovchi himoyachi, start 1×1, ikki darvozabon", 'Защитник сбоку, старты 1×1, два вратаря'], ['r69-26'], ['r69-36', 'r69-39'], ['r69-41']],
   ['r69p7', '9–10', 'RFS 9', 'rfs69', ["«+ sherik»: pas va 2×1", 'Этап «+ партнёр»: пас и 2×1'],
-    ["Aniq pas, ko'pchilikda hujum, 2×2 to'rt darvozaga", 'Точный пас, атака в большинстве, 2×2 в четверо ворот'], ['r69-43'], ['r69-44', 'r69-45'], ['r69-47']],
+    ["Aniq pas, son ustunligida hujum, 2×2 to'rt darvozaga", 'Точный пас, атака в большинстве, 2×2 в четверо ворот'], ['r69-43'], ['r69-44', 'r69-45'], ['r69-47']],
   ['r69p8', '9–10', 'RFS 9', 'rfs69', ["«+ sherik»: 2×2 va bosh bilan o'yin", 'Этап «+ партнёр»: 2×2 и игра головой'],
     ["Bosh bilan pas, 2×2 chiziqni egallash, 2×1 uchta darvozaga", 'Передачи головой, 2×2 взятие линии, 2×1 в трое ворот'], ['r69-69'], ['r69-57', 'r69-64'], ['r69-65']],
   // adidas / RFS 10–14 — sessions from the block exercises
