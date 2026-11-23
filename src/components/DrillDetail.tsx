@@ -10,6 +10,7 @@ import { parse } from '../dates'
 import { PHASES, type Drill, type Phase } from '../types'
 import { useContent } from '../content'
 import { SKILLS } from '../skills'
+import { ageText } from '../ages'
 import { DrillForm } from './DrillForm'
 import { DrillShare } from './DrillShare'
 
@@ -44,7 +45,7 @@ export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onC
       {sceneOf(drill.id) && <LineKey scene={sceneOf(drill.id)!} label={(k) => t(({ run: 'kRun', drib: 'kDrib', pass: 'kPass', shot: 'kShot', lob: 'kLob' } as const)[k])} />}
       <div className="meta">
         <span className="chip">{t(drill.cat)}</span>
-        <span className="chip">{drill.age}</span>
+        <span className="chip">{ageText(drill.age, t('proAges'))}</span>
         <span className="chip cone">{drill.min} {t('min')}</span>
         {drill.players && <span className="chip">{t('playersCount')}: {drill.players}</span>}
         <button className={'star' + (fav ? ' on' : '')} onClick={toggleFav} aria-pressed={fav} aria-label={t('favs')}>★</button>

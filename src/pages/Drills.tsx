@@ -4,6 +4,8 @@ import { update, useData } from '../store'
 import { DrillDetail } from '../components/DrillDetail'
 import { DrillPitch } from '../components/AnimatedPitch'
 import { useContent } from '../content'
+import { BODY } from '../body'
+import { ageRange, ageText } from '../ages'
 import { ConfirmButton } from '../components/Modal'
 import { uid } from '../dates'
 import { DrillForm } from '../components/DrillForm'
@@ -18,6 +20,7 @@ const BANDS: Band[] = [
   { id: 'u12', label: 'U11–U12', from: 11, to: 12 },
   { id: 'u14', label: 'U13–U14', from: 13, to: 14 },
   { id: 'u17', label: 'U15–U17', from: 15, to: 17 },
+  { id: 'pro', label: '', from: 18, to: 99 },
 ]
 /** "U9–U12" → "U9, U10, U11, U12" (long ranges stay short) */
 const ageList = (r: string) => {
@@ -30,7 +33,7 @@ export function Drills() {
   const { t, L } = useT()
   // drills drawn from the books first, so every card looks like its own exercise
   const { scene } = useContent()
-  const drills = [...useDrills()].sort((a, b) => Number(a.custom || !scene(a.id)) - Number(b.custom || !scene(b.id)))
+  const drills = [...useDrills()].sort((a, b) => Number(a.custom || !(scene(a.id) || BODY[a.id])) - Number(b.custom || !(scene(b.id) || BODY[b.id])))
   const [cat, setCat] = useState<Category | 'all'>('all')
   const [q, setQ] = useState('')
   const [adding, setAdding] = useState(false)
@@ -40,15 +43,14 @@ export function Drills() {
   const [onlyBooks, setOnlyBooks] = useState(false)
   const [detail, setDetail] = useState<Drill | null>(null)
   const favs = useData().favorites ?? []
-  const range = (r: string): [number, number] => {
-    const n = r.match(/\d+/g)?.map(Number) ?? []
-    return n.length ? [n[0], n[1] ?? n[0]] : [0, 99]
-  }
-  const fitsBand = (r: string, b: Band) => { const [a, z] = range(r); return a <= b.to && z >= b.from }
+  const fitsBand = (r: string, b: Band) => { const [a, z] = ageRange(r); return a <= b.to && z >= b.from }
+  const bandLabel = (b: Band) => (b.id === 'pro' ? t('proBand') : b.label)
+  const bandYears = (b: Band) => (b.to >= 99 ? `${b.from}+` : `${b.from}–${b.to}`)
   const base = drills.filter((d) => (cat === 'all' || d.cat === cat) && (view !== 'fav' || favs.includes(d.id)) && (view !== 'mine' || !!d.custom) && (!onlyBooks || !!d.source) &&
     (q === '' || (d.name.uz + ' ' + d.name.ru).toLowerCase().includes(q.toLowerCase())))
   const band = BANDS.find((b) => b.id === age)
-  const shown = band ? base.filter((d) => fitsBand(d.age, band)) : base
+  // the professional band shows the drills made only for adults first
+  const shown = band ? base.filter((d) => fitsBand(d.age, band)).sort((a, b) => band.id === 'pro' ? Number(a.age !== 'Pro') - Number(b.age !== 'Pro') : 0) : base
   // "all ages": one section per age band, each drill under the youngest band it suits
   const sections = band ? [{ band, list: shown }] : BANDS.map((b) => ({ band: b, list: base.filter((d) => BANDS.find((x) => fitsBand(d.age, x)) === b) })).filter((s) => s.list.length)
   const card = (d: Drill) => (
@@ -59,7 +61,7 @@ export function Drills() {
               <p>{L(d.desc)}</p>
               <dl className="facts">
                 {d.players && <><dt>{t('playersCount')}</dt><dd>{d.players}</dd></>}
-                <dt>{t('ageCat')}</dt><dd>{ageList(d.age)}</dd>
+                <dt>{t('ageCat')}</dt><dd>{ageText(ageList(d.age), t('proAges'))}</dd>
                 <dt>{t('equip')}</dt><dd>{L(d.equip)}</dd>
               </dl>
               <div className="meta">
@@ -93,7 +95,7 @@ export function Drills() {
         <button aria-pressed={age === ''} onClick={() => setAge('')}>{t('allAges')}<small>{base.length}</small></button>
         {BANDS.filter((b) => b.id === age || drills.some((d) => fitsBand(d.age, b))).map((b) => (
           <button key={b.id} aria-pressed={age === b.id} onClick={() => setAge(b.id)}>
-            {b.label}<span className="yrs">{b.from}–{b.to} {t('years')}</span><small>{base.filter((d) => fitsBand(d.age, b)).length}</small>
+            {bandLabel(b)}<span className="yrs">{bandYears(b)} {t('years')}</span><small>{base.filter((d) => fitsBand(d.age, b)).length}</small>
           </button>
         ))}
       </div>
@@ -106,7 +108,7 @@ export function Drills() {
       </div>
       {sections.map(({ band: b, list }) => (
         <section key={b.id} className="band">
-          <h2 className="band-h">{b.label} <span>· {b.from}–{b.to} {t('years')} · {list.length} {t('drillsN')}</span></h2>
+          <h2 className="band-h">{bandLabel(b)} <span>· {bandYears(b)} {t('years')} · {list.length} {t('drillsN')}</span></h2>
           <div className="cards">{list.map(card)}</div>
         </section>
       ))}

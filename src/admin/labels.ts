@@ -11,7 +11,7 @@ export const KIND_LABEL: Record<Kind, { many: string; one: string; add: string }
 }
 
 export const CAT_UZ: Record<Category, string> = { tech: 'Texnika', tact: 'Taktika', phys: 'Jismoniy', gk: 'Darvozabon' }
-export const TOPIC_UZ: Record<Topic, string> = { method: 'Uslubiyat', game: "O'yin g'oyalari", kids: 'Bolalar bilan ishlash', physical: 'Jismoniy tayyorgarlik' }
+export const TOPIC_UZ: Record<Topic, string> = { method: 'Uslubiyat', game: "O'yin g'oyalari", kids: 'Bolalar bilan ishlash', physical: 'Jismoniy tayyorgarlik', pro: 'Professional: taktika' }
 
 /** Title + one line under it, for lists. */
 export function describe<K extends Kind>(kind: K, x: ItemOf[K]): [string, string] {

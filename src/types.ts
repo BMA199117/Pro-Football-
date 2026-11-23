@@ -63,7 +63,7 @@ export interface AppData {
 export const PHASES: Phase[] = ['warm', 'main', 'cool']
 export const CATEGORIES: Category[] = ['tech', 'tact', 'phys', 'gk']
 
-export type Topic = 'method' | 'game' | 'kids' | 'physical'
+export type Topic = 'method' | 'game' | 'kids' | 'physical' | 'pro'
 export interface KnowledgeCard {
   id: string
   topic: Topic

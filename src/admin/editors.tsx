@@ -42,7 +42,7 @@ const SourcePick = ({ value, onChange }: { value: string; onChange: (v: string) 
   )
 }
 
-const AGE_HINTS = ['U6', 'U6–U8', 'U7–U8', 'U8–U9', 'U9–U10', 'U9–U12', 'U10–U11', 'U11–U12', 'U12–U14', 'U13–U14', 'U13–U17', 'U14–U15', 'U15–U17']
+const AGE_HINTS = ['U6', 'U6–U8', 'U7–U8', 'U8–U9', 'U9–U10', 'U9–U12', 'U10–U11', 'U11–U12', 'U12–U14', 'U13–U14', 'U13–U17', 'U14–U15', 'U15–U17', 'U15+', 'Pro']
 const DIAGRAMS: Diagram[] = ['pass', 'dribble', 'rondo', 'smallgame', 'shoot', 'duel', 'overload', 'sprint', 'warmup', 'gk']
 
 /* =============================================================== drill */
