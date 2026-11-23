@@ -108,6 +108,16 @@ function markLine(it: Extract<Item, ['mark', ...unknown[]]>, k: string): ReactNo
   return <g key={k}><path d={toD(body)} fill="none" stroke={col} strokeWidth={w} strokeDasharray={dash} strokeLinecap="round" strokeLinejoin="round" />{tip}</g>
 }
 
+/** Equipment the coach can make bigger or smaller on the board. */
+export const SCALABLE = new Set(['cone', 'disc', 'dummy', 'pole', 'hurdle', 'arc', 'ladder', 'hoop', 'bib', 'mini', 'goal', 'flag', 'ball', 'text', 'traffic'])
+const anchorOf = (it: Item): Pt => (it[0] === 'ladder' ? [((it[1] as number) + (it[3] as number)) / 2, ((it[2] as number) + (it[4] as number)) / 2] : [it[1] as number, it[2] as number])
+/** A field item drawn at its size (scaled around its own position). */
+export function fieldItem(it: Item, i: number, net: string, size = 1): ReactNode {
+  if (size === 1 || !SCALABLE.has(it[0])) return item(it, i, net)
+  const [x, y] = anchorOf(it)
+  return <g key={'s' + i} transform={`translate(${x} ${y}) scale(${size}) translate(${-x} ${-y})`}>{item(it, i, net)}</g>
+}
+
 export function item(it: Item, i: number, net: string): ReactNode {
   const k = 'i' + i
   switch (it[0]) {
@@ -240,7 +250,7 @@ export function playerDot(t: Team, at: Pt, l: string | undefined, k: string, siz
     </g>
   )
 }
-export const ballDot = (at: Pt, k: string) => soccerBall(at[0], at[1], 2.6, k)
+export const ballDot = (at: Pt, k: string, size = 1) => soccerBall(at[0], at[1], 2.6 * size, k)
 
 /** Pitch frame with grass and the defs shared by both views. */
 export function Frame({ id, children, maxHeight, svg }: { id: string; children: ReactNode; maxHeight?: number; svg?: React.SVGProps<SVGSVGElement> & { ref?: React.Ref<SVGSVGElement> } }) {
@@ -291,10 +301,10 @@ export function BookStatic({ scene, maxHeight }: { scene: BookScene; maxHeight?:
   const start = trs.map((t) => ballAt(scene, t, 0) ?? (() => { const k = t.findIndex((b) => b !== 0); return k >= 0 ? ballAt(scene, t, k) : null })()).filter(Boolean) as Pt[]
   return (
     <Frame id={id} maxHeight={maxHeight}>
-      {scene.field.map((it, i) => item(it, i, id + 'net'))}
+      {scene.field.map((it, i) => fieldItem(it, i, id + 'net', scene.fs?.[i]))}
       <MarkPaths scene={scene} ms={marks(scene, 0, bookSteps(scene) - 1)} id={id} />
       {scene.players.map((p) => playerDot(p.t, posAt(scene, p, 0), p.l, 'p' + p.id, scene.ps))}
-      {start.map((b, i) => ballDot(b, 'b' + i))}
+      {start.map((b, i) => ballDot(b, 'b' + i, scene.bs))}
     </Frame>
   )
 }
@@ -313,13 +323,13 @@ export function BookFrame({ scene, t, maxHeight, step, stepOpacity = 1 }: { scen
   }
   return (
     <Frame id={id} maxHeight={maxHeight}>
-      {scene.field.map((it, i) => item(it, i, id + 'net'))}
+      {scene.field.map((it, i) => fieldItem(it, i, id + 'net', scene.fs?.[i]))}
       {step !== undefined && step > 0 && <MarkPaths scene={scene} ms={marks(scene, Math.max(0, step - 3), Math.min(step, scene.steps - 1))} id={id} opacity={0.28} />}
       {step !== undefined && step < scene.steps - 1 && stepOpacity > 0 && <MarkPaths scene={scene} ms={marks(scene, step, step + 1)} id={id} opacity={stepOpacity} />}
       {f.trails.map(([a, b, shot], i) => { const y = styleOf(scene)[shot ? 'shot' : 'pass']; return <line key={'t' + i} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={y.stroke} strokeOpacity={0.75} strokeWidth={y.width} strokeDasharray={y.dash} strokeLinecap="round" /> })}
       {f.players.filter(({ p }) => movers.has(p.id)).map(({ p, at }) => <circle key={'h' + p.id} cx={at[0]} cy={at[1]} r={6.6 * (scene.ps ?? 1)} fill="none" stroke="#FFE45C" strokeWidth={0.9} strokeOpacity={0.9} />)}
       {f.players.map(({ p, at }) => playerDot(p.t, at, p.l, 'p' + p.id, scene.ps))}
-      {f.balls.map((b, i) => ballDot(b, 'b' + i))}
+      {f.balls.map((b, i) => ballDot(b, 'b' + i, scene.bs))}
     </Frame>
   )
 }
