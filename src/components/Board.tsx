@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { ballAt, marks, posAt, type BallStep, type BookScene, type ConeColor, type Item, type Pt, type Step, type Team } from '../book/scene'
-import { Frame, MarkPaths, TEAM, ballDot, item, playerDot } from './BookPitch'
+import { Frame, MarkPaths, TEAM, ballDot, item, playerDot, soccerBall } from './BookPitch'
 import { BookPlayer } from './AnimatedPitch'
 import { useT } from '../hooks'
 import type { Key } from '../i18n'
@@ -18,9 +18,10 @@ type Hit = { kind: 'p'; id: string } | { kind: 'b'; i: number } | { kind: 'i'; i
 const PLAYER_TOOLS: [Team, Key][] = [['r', 'bRed'], ['b', 'bBlue'], ['y', 'bYellow'], ['w', 'bWhite'], ['o', 'bOrange'], ['g', 'bGrey'], ['k', 'bKeeper'], ['c', 'bCoach']]
 type Kit = { key: string; label: Key; col?: Key; make: (x: number, y: number) => Item; box?: number }
 const COLS: [ConeColor, Key][] = [['y', 'cYellow'], ['r', 'cRed'], ['b', 'cBlue']]
+const CONE_COLS: [ConeColor, Key][] = [['o', 'cOrange'], ...COLS]
 /** equipment on the board; each one is drawn with the same shapes as the book diagrams */
 const KIT: Kit[] = [
-  ...COLS.map(([c, col]): Kit => ({ key: 'cone' + c, label: 'bCone', col, make: (x, y) => ['cone', x, y, c], box: 9 })),
+  ...CONE_COLS.map(([c, col]): Kit => ({ key: 'cone' + c, label: 'bCone', col, make: (x, y) => ['cone', x, y, c], box: 9 })),
   ...COLS.map(([c, col]): Kit => ({ key: 'disc' + c, label: 'bDisc', col, make: (x, y) => ['disc', x, y, c], box: 8 })),
   { key: 'dummy', label: 'bDummy', make: (x, y) => ['dummy', x, y], box: 16 },
   { key: 'pole', label: 'bPole', make: (x, y) => ['pole', x, y], box: 13 },
@@ -40,7 +41,7 @@ const L_TYPES: [string, Key][] = [['s', 'lSolid'], ['d', 'lDashed'], ['w', 'lWav
 const L_ENDS: [string, Key][] = [['a', 'lArrow'], ['x', 'lCross'], ['b', 'lBar'], ['n', 'lNone']]
 const L_COLS: [string, Key, string][] = [['w', 'cWhite', '#fff'], ['k', 'cBlack', '#0E1C15'], ['r', 'cRed', '#FF4A3D'], ['b', 'cBlue', '#3D7FE6'], ['y', 'cYellow', '#F6D83A']]
 
-export const blankScene = (): BookScene => ({ steps: 1, field: [['pitch', 'full']], players: [], balls: [] })
+export const blankScene = (): BookScene => ({ steps: 1, field: [['pitch', 'full'], ['goal', 4, 55, 'r', 12], ['goal', 196, 55, 'l', 12]], players: [], balls: [] })
 
 const padTo = <T,>(a: T[], n: number): T[] => (a.length >= n ? a : [...a, ...Array(n - a.length).fill(a[a.length - 1])])
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b)
@@ -274,8 +275,8 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
   )
   const dot = (team: Team) => <svg viewBox="-6 -6 12 12" width="18" height="18"><circle r={4.6} fill={TEAM[team].fill} stroke={team === 'w' || team === 'y' ? '#1C2A22' : '#fff'} strokeWidth={1.2} /></svg>
   /** a small picture of a kit item, drawn with the board's own shapes */
-  const kitIc = (k: Kit) => { const r = (k.box ?? 16) / 2; return <svg viewBox={`${-r} ${-r} ${r * 2} ${r * 2}`} width="26" height="26"><g>{item(k.make(0, 0), 0, fid + 'net')}</g></svg> }
-  const ballIc = <svg viewBox="-6 -6 12 12" width="18" height="18"><circle r={3.6} fill="#fff" stroke="#16231C" strokeWidth={1} /></svg>
+  const kitIc = (k: Kit) => { const r = (k.box ?? 16) / 2; const it = k.make(0, 0); const shown = (it[0] === 'goal' || it[0] === 'mini') ? ([it[0], 0, -r * 0.25, 'u', it[0] === 'goal' ? 22 : 11] as Item) : it; return <svg viewBox={`${-r} ${-r} ${r * 2} ${r * 2}`} width="26" height="26"><g>{item(shown, 0, fid + 'net')}</g></svg> }
+  const ballIc = <svg viewBox="-5 -5 10 10" width="24" height="24">{soccerBall(0, 0, 4, "b", false)}</svg>
   const lineIc = (st: string) => <svg viewBox="0 0 30 12" width="34" height="14"><rect width="30" height="12" rx="2.5" fill="#2E8B57" />{item(['mark', 3, 8, 26, 5, st], 0, fid + 'net')}</svg>
   const arrowIc = (dash?: string, curve?: boolean) => <svg viewBox="0 0 20 12" width="20" height="12"><path d={curve ? 'M2 10Q10 -2 17 8' : 'M2 6H16'} fill="none" stroke="currentColor" strokeWidth="1.6" strokeDasharray={dash} /><path d={curve ? 'M14 9l4 0l-1-4z' : 'M15 3l4 3l-4 3z'} fill="currentColor" /></svg>
 

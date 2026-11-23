@@ -329,9 +329,12 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
   /* the pitch stays in view while the tools scroll under it */
   .tb-pitch { position: sticky; top: calc(-1 * max(10px, env(safe-area-inset-top))); z-index: 2; background: var(--bg); padding: 4px 0 6px }
 }
-.tb-kit { gap: 5px }
-.tb-kitbtn { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 9px; background: #2E8B57; padding: 0 }
-.tb-kitbtn[aria-pressed="true"] { outline: 2.5px solid #FFE45C; outline-offset: 1px }
+.tb-kit { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 6px; padding: 8px; background: #232826; border-radius: 12px }
+.tb-kitbtn { height: 52px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 9px; background: #3A403D; padding: 0; transition: background .12s }
+.tb-kitbtn:hover { background: #4A514D }
+.tb-kitbtn svg { width: 36px; height: 36px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)) }
+.tb-kitbtn .tb-T { color: #fff; font-size: 20px }
+.tb-kitbtn[aria-pressed="true"] { background: #4A514D; outline: 2.5px solid #FFE45C; outline-offset: 0 }
 .tb-T { color: #fff; font-size: 18px; font-weight: 800 }
 .tb-text { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--bg); color: inherit }
 .tb-lines { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 10px; background: var(--bg) }
