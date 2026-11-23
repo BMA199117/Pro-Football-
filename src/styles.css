@@ -565,36 +565,38 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 @media print {
   @page { size: A4; margin: 12mm }
   body > *:not(.print-sheet) { display: none !important }
-  html, body { background: #fff !important; color: #111 !important }
   .print-sheet { display: block; font: 11pt/1.4 system-ui, sans-serif; color: #111 }
-  .print-sheet h1 { font-size: 18pt; margin: 0 0 2mm }
-  .print-sheet h2 { font-size: 12pt; margin: 4mm 0 2mm }
-  .print-sheet p { margin: 0 0 2mm }
-  .ps-meta, .ps-small, .ps-foot { color: #444; font-size: 9.5pt }
-  .ps-main { max-width: 150mm; margin: 3mm 0 }
-  .ps-main svg, .ps-steps svg { width: 100%; height: auto; max-height: none !important }
-  .ps-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm }
-  .ps-steps figure { margin: 0; break-inside: avoid }
-  .ps-steps figcaption { font-size: 8.5pt; margin-top: 1mm }
-  .print-sheet section { break-inside: avoid-page }
-  .print-sheet .linekey { display: flex; gap: 4mm; list-style: none; padding: 0; margin: 0 0 2mm; font-size: 9pt }
-  .print-sheet .linekey li { display: flex; align-items: center; gap: 1.5mm }
-  .ps-foot { margin-top: 6mm; border-top: 1px solid #ccc; padding-top: 2mm }
-  * { -webkit-print-color-adjust: exact; print-color-adjust: exact }
   .print-sheet:has(~ .print-sheet) { display: none !important }
-  .ks-meta { width: 100%; border-collapse: collapse; margin: 2mm 0 3mm; font-size: 10pt }
-  .ks-meta th, .ks-meta td { border: 1px solid #bbb; padding: 1.2mm 2mm; text-align: left }
-  .ks-meta th { background: #eef3ef; width: 22%; font-weight: 600 }
-  .ks-phase h2 { border-bottom: 2px solid #2f6b4f; padding-bottom: 1mm; color: #2f6b4f }
-  .ks-drill { display: grid; grid-template-columns: 72mm 1fr; gap: 4mm; margin: 0 0 4mm; break-inside: avoid-page }
-  .ks-pic svg { width: 100%; height: auto; max-height: none !important }
-  .ks-text h3 { font-size: 11.5pt; margin: 0 0 1mm }
-  .ks-text p { font-size: 10pt }
-  .ks-text ul { margin: 1mm 0 0 4mm; padding: 0; font-size: 9.5pt }
-  .ks-min { float: right; font-weight: 700 }
-  .ks-notes { break-inside: avoid-page }
-  .ks-line { border-bottom: 1px solid #bbb; height: 8mm }
+  html, body { background: #fff !important; color: #111 !important }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact }
 }
+/* the same look for the PDF file (drawn on screen, off to the side) */
+.print-sheet h1 { font-size: 18pt; margin: 0 0 2mm }
+.print-sheet h2 { font-size: 12pt; margin: 4mm 0 2mm }
+.print-sheet p { margin: 0 0 2mm }
+.ps-meta, .ps-small, .ps-foot { color: #444; font-size: 9.5pt }
+.ps-main { max-width: 150mm; margin: 3mm 0 }
+.ps-main svg, .ps-steps svg { width: 100%; height: auto; max-height: none !important }
+.ps-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm }
+.ps-steps figure { margin: 0; break-inside: avoid }
+.ps-steps figcaption { font-size: 8.5pt; margin-top: 1mm }
+.print-sheet section { break-inside: avoid-page }
+.print-sheet .linekey { display: flex; gap: 4mm; list-style: none; padding: 0; margin: 0 0 2mm; font-size: 9pt }
+.print-sheet .linekey li { display: flex; align-items: center; gap: 1.5mm }
+.ps-foot { margin-top: 6mm; border-top: 1px solid #ccc; padding-top: 2mm }
+.ks-meta { width: 100%; border-collapse: collapse; margin: 2mm 0 3mm; font-size: 10pt }
+.ks-meta th, .ks-meta td { border: 1px solid #bbb; padding: 1.2mm 2mm; text-align: left }
+.ks-meta th { background: #eef3ef; width: 22%; font-weight: 600 }
+.ks-phase h2 { border-bottom: 2px solid #2f6b4f; padding-bottom: 1mm; color: #2f6b4f }
+.ks-drill { display: grid; grid-template-columns: 72mm 1fr; gap: 4mm; margin: 0 0 4mm; break-inside: avoid-page }
+.ks-pic svg { width: 100%; height: auto; max-height: none !important }
+.ks-text h3 { font-size: 11.5pt; margin: 0 0 1mm }
+.ks-text p { font-size: 10pt }
+.ks-text ul { margin: 1mm 0 0 4mm; padding: 0; font-size: 9.5pt }
+.ks-min { float: right; font-weight: 700 }
+.ks-notes { break-inside: avoid-page }
+.ks-line { border-bottom: 1px solid #bbb; height: 8mm }
+.print-sheet.pdf-render { display: block; position: fixed; left: -12000px; top: 0; width: 186mm; padding: 0; background: #fff; font: 11pt/1.4 system-ui, sans-serif; color: #111; z-index: -1 }
 
 /* ---- body exercises (strength, stability, stretching) ---- */
 .body-stage { display: block; width: 100%; height: auto; border-radius: 8px }

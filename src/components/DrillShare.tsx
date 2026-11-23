@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
+import { pdfName, sheetToPdf } from '../pdf'
 import { createPortal } from 'react-dom'
 import { DrillPitch } from './AnimatedPitch'
 import { BookFrame, LineKey } from './BookPitch'
@@ -16,17 +17,22 @@ import type { Drill } from '../types'
 /** "PDF / print" and "send a link" for a drill. */
 export function DrillShare({ drill }: { drill: Drill }) {
   const { t } = useT()
-  // the sheet stays in the page (hidden on screen) once made: some phones fire "afterprint" before the dialog is done
-  const [printing, setPrinting] = useState(0)
+  const [busy, setBusy] = useState(false)
   const [link, setLink] = useState('')
   const [copied, setCopied] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!printing) return
-    // let the sheet render (and the drawings lay out) before the print dialog opens
-    const id = setTimeout(() => { try { window.print() } catch { /* printing blocked */ } }, 150)
-    return () => clearTimeout(id)
-  }, [printing])
+    if (!busy) return
+    let live = true
+    const go = async () => {
+      try { if (ref.current) await sheetToPdf(ref.current, pdfName(drill.name.uz)) }
+      catch { try { window.print() } catch { /* printing blocked */ } }
+      finally { if (live) setBusy(false) }
+    }
+    void go()
+    return () => { live = false }
+  }, [busy, drill])
 
   const send = async () => {
     const url = await drillLink(drill)
@@ -39,7 +45,7 @@ export function DrillShare({ drill }: { drill: Drill }) {
   return (
     <div className="share">
       <div className="row" style={{ justifyContent: 'flex-start' }}>
-        <button className="btn ghost small" onClick={() => setPrinting((n) => n + 1)}>🖨 {t('printPdf')}</button>
+        <button className="btn ghost small" disabled={busy} onClick={() => setBusy(true)}>{busy ? '⏳ ' + t('pdfMaking') : '📄 ' + t('printPdf')}</button>
         <button className="btn ghost small" onClick={send}>🔗 {t('shareLink')}</button>
       </div>
       {link && (
@@ -51,20 +57,20 @@ export function DrillShare({ drill }: { drill: Drill }) {
           </div>
         </div>
       )}
-      {printing > 0 && createPortal(<PrintSheet drill={drill} />, document.body)}
+      {busy && createPortal(<PrintSheet drill={drill} sheetRef={ref} />, document.body)}
     </div>
   )
 }
 
 /** One printable page (A4): drawing, steps as small pictures with words, description, why, points, source. */
-function PrintSheet({ drill }: { drill: Drill }) {
+function PrintSheet({ drill, sheetRef }: { drill: Drill; sheetRef: RefObject<HTMLDivElement | null> }) {
   const { t, L, lang } = useT()
   const scene = sceneOf(drill.id)
   const ben = getContent().benefit(drill.id)
   const story = scene ? narrate(scene, lang) : []
   const n = scene ? bookSteps(scene) - 1 : 0
   return (
-    <div className="print-sheet">
+    <div className="print-sheet pdf-render" ref={sheetRef}>
       <header className="ps-head">
         <h1>{L(drill.name)}</h1>
         <div className="ps-meta">{t(drill.cat)} · {ageText(drill.age, t('proAges'))} · {drill.min} {t('min')}{drill.players ? ` · ${t('playersCount')}: ${drill.players}` : ''}</div>
