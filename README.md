@@ -67,10 +67,17 @@ O'rnatish: `supabase/schema.sql` dan keyin `supabase/admin.sql` ni SQL Editor'da
 insert into public.admins (user_id) select id from auth.users where lower(email) = lower('SIZNING@EMAIL') on conflict do nothing;
 ```
 
-## Internetga joylash (GitHub Pages, bepul)
+## Internetga joylash (Cloudflare Pages, bepul)
 
-Repo'da **Settings → Pages → Source: GitHub Actions** ni tanlang. `main` ga har push qilinganda
-ilova `https://bma199117.github.io/Pro-Football-/` manzilida yangilanadi.
+Sayt Cloudflare Pages orqali `main` tarmog'idan avtomatik quriladi: `main` ga har push qilinganda
+bir-ikki daqiqada yangilanadi. Sozlamalar:
+
+- Framework preset: **Vite** (yoki None), Build command: `npm run build`, Output: `dist`
+- Environment variables: `NODE_VERSION=22`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+  (ixtiyoriy: `VITE_CONTACT_URL`, `VITE_PRICE_TEXT`)
+- Supabase → Authentication → URL Configuration: **Site URL** va **Redirect URLs** ga sayt manzilini yozing.
+
+GitHub Pages workflow (`.github/workflows/deploy.yml`) faqat qo'lda ishga tushiriladigan zaxira yo'l sifatida qoldirilgan.
 
 ## Texnologiyalar
 
