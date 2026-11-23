@@ -1,6 +1,6 @@
 import type { Template, Phase } from './types'
 
-type Row = [id: string, ages: string, group: string, source: string, title: [string, string], focus: [string, string], warm: string[], main: string[], game: string[]]
+type Row = [id: string, ages: string, group: string, source: string, title: [string, string], focus: [string, string], warm: string[], main: string[], game: string[], cool?: string[]]
 
 /**
  * Ready session plans, taken week by week from the books.
@@ -8,6 +8,8 @@ type Row = [id: string, ages: string, group: string, source: string, title: [str
  * The closing game of each week goes at the end of the main part (the books have no separate cool-down).
  * RFS 6–9 and adidas 10–14 / 15–17: sessions put together from each programme's block exercises.
  * 15–17: also sessions built from the FIFA part 8.2 physical exercises, grouped by the quality they train.
+ * Pro: sessions for adult players from FIFA part 8.1 (examples and weekly cycle) and 8.2; stretching as the cool-down.
+ * pro9+: positional-play sessions from the Phase of Play books (drills pp-*, xa-*, ip-*, dz-*, ad-*, vp-*).
  */
 const ROWS: Row[] = [
   // EPYSA U6 — game at the end of each week: 3×3
@@ -147,12 +149,70 @@ const ROWS: Row[] = [
     ["Maxsus intervallar va 1×1", 'Специальные интервалы и 1×1'], ['f82-25'], ['f82-21', 'f82-23'], []],
   ['f82s5', '15–17', 'U16', 'fifa82', ['Koordinatsiya stansiyalari', 'Координационные станции'],
     ["To'rt stansiya, keyin 5×5 o'yin", 'Четыре станции, затем игра 5×5'], ['f82-25', 'f82-26'], ['f82-27', 'f82-28', 'f82-11'], []],
+  ['f81s1', '15–17', 'U16', 'fifaPhys', ["Koordinatsiya to'p bilan (FIFA 8.1)", 'Координация с мячом (FIFA 8.1)'],
+    ["Burilib zarba, umbaloqdan keyin zarba, halqalar va uzun pas, itarish ostida zarba", 'Удар с разворота, после кувырка, кольца и длинный пас, удар под толчками'], ['f82-25'], ['f81-7', 'f81-8', 'f81-9'], ['f81-10'], ['f82-40']],
+  ['f81s2', '15–17', 'U16', 'fifaPhys', ['Test kuni: puls va Kuper', 'День тестов: пульс и Купер'],
+    ["Maksimal pulsni o'lchash, keyingi kuni Kuper testi; natija bo'yicha guruhlar", 'Измерение максимального пульса, на другой день тест Купера; группы по результатам'], ['f82-13'], ['f81-3', 'f81-4'], [], ['f82-40']],
+  // Pro — adult professional players (FIFA 8.1 / 8.2)
+  ['pro1', 'Pro', 'Pro', 'fifaPhys', ["Aerob mashg'ulot (kitobdagi namuna)", 'Аэробная тренировка (пример из книги)'],
+    ["To'p bilan fartlek 2 × 8′, uzlukli yugurish + texnika va 4 kishilik pas (6′ dan), 4×4 + darvozabonlar 4 × 3′", 'Фартлек с мячом 2 × 8′, прерывистый бег + техника и передачи вчетвером (по 6′), 4×4 + вратари 4 × 3′'],
+    ['f82-13'], ['f82-2', 'f82-7', 'f82-5'], ['f82-12'], ['f82-40']],
+  ['pro2', 'Pro', 'Pro', 'fifaPhys', ['Aerob quvvat: Norvegiya intervali va 3×3', 'Аэробная мощность: норвежские интервалы и 3×3'],
+    ["4 × 4′ maks. pulsning 90–95% ida, keyin 3×3 kichik darvozalarga 33 × 20 m da", '4 × 4′ на 90–95% макс. пульса, затем 3×3 на малые ворота 33 × 20 м'],
+    ['f82-13'], ['f81-1'], ['f81-2'], ['f82-40']],
+  ['pro3', 'Pro', 'Pro', 'fifaPhys', ["Tezlik mashg'uloti (4 seriya)", 'Тренировка скорости (4 подхода)'],
+    ["Tezlanish, 20–30–40–30–20 m, signal bilan slalom, 1×1 zarba; oxirida qarshi hujum o'yini", 'Ускорения, 20–30–40–30–20 м, слалом по сигналу, 1×1 с ударом; в конце игра с контратакой'],
+    ['f82-14'], ['f81-5'], ['f82-20'], ['f82-40']],
+  ['pro4', 'Pro', 'Pro', 'fifa82', ["Kuch kuni (o'yindan keyingi 2-kun)", 'День силы (2-й день после матча)'],
+    ["Tana barqarorligi, 12 stansiya, qorin va orqa; keyin texnik-taktik o'yin", 'Стабилизация корпуса, 12 станций, пресс и спина; затем технико-тактическая игра'],
+    ['f82-29'], ['f82-34', 'f82-31', 'f82-32'], ['f82-10'], ['f82-40']],
+  ['pro5', 'Pro', 'Pro', 'fifaPhys', ['Kontrast kuch va zarba', 'Контрастная сила и удар'],
+    ["O'tirish 90% + to'siqlar + zarba, bolgar hamlasi + zarba, yuqori tana + aut; keyin zarbali tezlik", 'Присед 90% + барьеры + удар, болгарский выпад + удар, верх тела + вбрасывание; затем скорость с ударом'],
+    ['f82-25'], ['f81-6', 'f82-36', 'f82-37'], ['f82-19'], ['f82-40']],
+  ['pro6', 'Pro', 'Pro', 'fifa82', ["O'yin oldidan: portlovchi kuch va reaksiya", 'Перед матчем: взрывная сила и реакция'],
+    ["Pliometrika va bosh bilan zarba, to'piq sakrashlari, to'p bilan tezlik, reaksiya va gol (o'yindan 1–2 kun oldin)", 'Плиометрика и удар головой, прыжки на голеностопе, скорость с мячом, реакция и гол (за 1–2 дня до матча)'],
+    ['f82-25'], ['f82-35', 'f82-39', 'f82-16'], ['f82-28'], ['f82-40']],
+  ['pro7', 'Pro', 'Pro', 'fifaPhys', ["O'yindan keyingi kun: tiklanish", 'День после матча: восстановление'],
+    ["To'p bilan yengil aylana, tana va oyoqni o'z vazni bilan mustahkamlash, yengil o'yin, cho'zilish", 'Лёгкий круг с мячом, укрепление корпуса и ног весом тела, лёгкая игра, растяжка'],
+    ['f82-2'], ['f82-29', 'f82-33'], ['f82-10'], ['f82-40']],
+  ['pro8', 'Pro', 'Pro', 'fifaPhys', ["Laktat chidamlilik (haftada 1 marta)", 'Лактатная выносливость (раз в неделю)'],
+    ["Maxsus intervallar, 1×1 va 2×2; o'yindan 3 kun oldin o'tkazilmaydi", 'Специальные интервалы, 1×1 и 2×2; не за 3 дня до матча'],
+    ['f82-25'], ['f82-21', 'f82-23'], ['f82-24'], ['f82-40']],
+  // Pro — positional play (Phase of Play books: Positional Play, Xabi Alonso, 4-3-3 In Possession)
+  ['pro9', 'Pro', 'Pro', 'ip433', ["Orqadan o'yin boshlash (4-3-3)", 'Розыгрыш от своих ворот (4-3-3)'],
+    ["Rondo, darvozabon–2 markaziy himoyachi–6-raqam olmosi, yuqori pressingni yorish, qanot orqali chiqish", 'Рондо, ромб вратарь–2 центральных–6-й, выход из-под высокого прессинга, выход через фланг'],
+    ['pp-26'], ['ip-11a', 'ip-11b', 'ip-13'], ['pp-19'], ['f82-40']],
+  ['pro10', 'Pro', 'Pro', 'xabi', ["O'rta blokni yorish (Leverkuzen)", 'Как вскрыть средний блок («Леверкузен»)'],
+    ["Yaqin masofada paslar, 3 markaziy himoyachi + ikki tayanch, uchinchi o'yinchi, «yuqoriga – orqaga – oldinga»", 'Передачи в близкой дистанции, 3 центральных + двойной опорный, третий игрок, «вверх – назад – вперёд»'],
+    ['xa-12'], ['xa-23', 'ip-19a', 'pp-41'], ['pp-32'], ['f82-40']],
+  ['pro11', 'Pro', 'Pro', 'xabi', ['Past blokka qarshi hujum', 'Атака против низкого блока'],
+    ["Qanot rondosi, qanot kombinatsiyalari, ortiqcha yuklab yakkalash, 3-2-3 va qanot himoyachisi orqali gol", 'Фланговое рондо, фланговые комбинации, перегрузка для изоляции, 3-2-3 и гол через вингбека'],
+    ['ip-21'], ['xa-25', 'pp-45', 'xa-34'], ['xa-30'], ['f82-40']],
+  ['pro12', 'Pro', 'Pro', 'xabi', ['Pressing va kontrpressing', 'Прессинг и контрпрессинг'],
+    ["Yo'qotishdan keyingi 5 soniya, Barselona rondosi, ixcham o'rta blok, signal bo'yicha shaxsiy pressing", '5 секунд после потери, рондо «Барселоны», компактный средний блок, персональный прессинг по сигналу'],
+    ['xa-39'], ['pp-39', 'pp-35', 'xa-41'], ['xa-38'], ['f82-40']],
+  ['pro13', 'Pro', 'Pro', 'posPlay', ["O'yindan 2 kun oldin: optimallashtirish", 'За 2 дня до матча: оптимизация'],
+    ["Kitobdagi mikrosikl bo'yicha: jadal, lekin qisqa — rondo, uchinchi o'yinchi bilan rotatsiyalar, markazdan yakunlash, hujumga tez o'tish", 'По микроциклу из книги: интенсивно, но коротко — рондо, ротации с третьим, завершение через центр, быстрый переход в атаку'],
+    ['pp-26'], ['pp-29', 'ip-19b', 'ip-33'], ['ip-38'], ['f82-40']],
+  // Pro — De Zerbi, The Art of Defending, Vertical Play in 4-2-3-1 (Phase of Play)
+  ['pro14', 'Pro', 'Pro', 'deZerbi', ["De Dzerbi: «quti» va «qum soati» bilan o'yin qurish", 'Де Дзерби: построение «коробкой» и «песочными часами»'],
+    ["S-kombinatsiya, «quti» rondosi, qum soati shakli, 2-4-2-2 da yuqori pressingga qarshi, darvozabondan yakunlashgacha", 'S-комбинация, рондо «коробка», форма «песочные часы», против высокого прессинга в 2-4-2-2, от вратаря до завершения'],
+    ['dz-20'], ['dz-18', 'dz-22', 'dz-23'], ['dz-19'], ['f82-40']],
+  ['pro15', 'Pro', 'Pro', 'vert4231', ['Vertikal o\'yin: o\'rta va past blokni yorish', 'Вертикальная игра: вскрыть средний и низкий блок'],
+    ["Devor pas bilan markazdan, markazdan o'yin qurish, qanotdan diagonal kombinatsiya, past blokka qarshi naqsh, differensial o'yin", 'Через центр со стенкой, построение через центр, диагональная комбинация с фланга, схема против низкого блока, дифференциальная игра'],
+    ['vp-20'], ['vp-14', 'vp-28', 'dz-35'], ['vp-7'], ['f82-40']],
+  ['pro16', 'Pro', 'Pro', 'artDef', ['Pressing va kontrpressing (himoya san\'ati)', 'Прессинг и контрпрессинг («Искусство обороны»)'],
+    ["Qachon bosishni tanish, zonalarda kontrpressing, olingan to'pni uzatish, signal bo'yicha yuqori pressing, yo'qotgan zahoti bosim", 'Когда прессинговать, контрпрессинг по зонам, перевод отобранного мяча, высокий прессинг по сигналу, давление сразу после потери'],
+    ['ad-7'], ['ad-9', 'vp-33a', 'vp-33b'], ['ad-8'], ['f82-40']],
+  ['pro17', 'Pro', 'Pro', 'artDef', ['Himoya tashkiloti: ixchamlik va jarima maydoni', 'Организация обороны: компактность и штрафная'],
+    ["Simeone ixchamligi, qanot almashishiga qarshi, past blokdan pressing (Mourinho), qarshi hujumga qarshi, oshirmalarni himoya qilish", 'Компактность Симеоне, защита от смены фланга, прессинг из низкого блока (Моуринью), защита от контратаки, защита от навесов'],
+    ['ad-15'], ['ad-17', 'ad-13', 'ad-23'], ['ad-26'], ['f82-40']],
 ]
 
-export const TEMPLATE_AGES = ['5–6', '7–8', '9–10', '11–12', '13–14', '15–17']
+export const TEMPLATE_AGES = ['5–6', '7–8', '9–10', '11–12', '13–14', '15–17', 'Pro']
 
-export const TEMPLATES: Template[] = ROWS.map(([id, ages, group, source, title, focus, warm, main, game]) => ({
+export const TEMPLATES: Template[] = ROWS.map(([id, ages, group, source, title, focus, warm, main, game, cool = []]) => ({
   id, ages, group, source,
   title: { uz: title[0], ru: title[1] }, focus: { uz: focus[0], ru: focus[1] },
-  phases: { warm, main: [...main, ...game], cool: [] } as Record<Phase, string[]>,
+  phases: { warm, main: [...main, ...game], cool } as Record<Phase, string[]>,
 }))

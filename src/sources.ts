@@ -25,4 +25,10 @@ export const SOURCES: Record<string, { title: string; author: string }> = {
   afc24: { title: 'AFC Grassroots Charter Regulations 2024 (loyiha)', author: 'AFC (Osiyo futbol konfederatsiyasi)' },
   fifa82: { title: 'FIFA. Часть 8.2 Физическая подготовка (содержание)', author: 'FIFA' },
   fifaPlan: { title: 'FIFA. План тренировки', author: 'FIFA' },
+  posPlay: { title: 'Positional Play (pozitsion o\'yin)', author: 'Phase of Play' },
+  xabi: { title: 'Xabi Alonso: Positionism and Relationism', author: 'Phase of Play' },
+  ip433: { title: '4-3-3 In Possession (to\'p bizda: 4-3-3)', author: 'Phase of Play' },
+  deZerbi: { title: 'Roberto De Zerbi: The Master of Timing', author: 'Phase of Play' },
+  artDef: { title: 'The Art of Defending (himoya san\'ati)', author: 'Phase of Play' },
+  vert4231: { title: 'Vertical Play in 4-2-3-1 (Hansi Flick)', author: 'Phase of Play' },
 }

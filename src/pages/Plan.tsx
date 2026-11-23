@@ -45,7 +45,7 @@ export function Plan() {
           <p className="sub" style={{ margin: 0 }}>{t('templatesSub')}</p>
           {TEMPLATE_AGES.map((age) => (
             <div key={age} className="list">
-              <h3 className="label">{age} {t('ages')}</h3>
+              <h3 className="label">{age === 'Pro' ? t('proAges') : `${age} ${t('ages')}`}</h3>
               {TEMPLATES.filter((x) => x.ages === age).map((x) => (
                 <button key={x.id} className="pick tpl" onClick={() => { setTpl(x); setTplOpen(false) }}>
                   <div style={{ flex: 1, minWidth: 0 }}>

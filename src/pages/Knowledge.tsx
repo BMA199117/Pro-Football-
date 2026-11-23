@@ -5,7 +5,7 @@ import { SOURCES } from '../sources'
 import type { Topic } from '../types'
 import { DEV_AREA_LABELS, DEV_PRINCIPLES, DEV_SOURCES, DEV_STAGES, type DevArea, type DevText } from '../development'
 
-const TOPIC_COLOR: Record<Topic, string> = { method: 'var(--pitch)', game: 'var(--blue)', kids: 'var(--cone)', physical: 'var(--purple)' }
+const TOPIC_COLOR: Record<Topic, string> = { method: 'var(--pitch)', game: 'var(--blue)', kids: 'var(--cone)', physical: 'var(--purple)', pro: 'var(--red, #D9342B)' }
 
 export function Knowledge() {
   const { t, L } = useT()
