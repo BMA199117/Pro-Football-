@@ -27,6 +27,7 @@ const surfaces: BookScene = {
 
 // Week 1 · Red light / green light – race to the far end, stop on red
 const redLight: BookScene = {
+  notes: { 1: ["Qizil chiroq: hamma to'pni oyoq tagi bilan to'xtatadi", 'Красный свет: все останавливают мяч подошвой'], 2: ["Yashil chiroq: yana tez olib boriladi", 'Зелёный свет: снова быстрое ведение'] },
   steps: 4, speed: 1.3,
   field: [AREA, ['traffic', 14, 22]],
   players: [
@@ -119,6 +120,7 @@ const ballTag: BookScene = {
 
 // Week 3 · Body part dribble – stop the ball with the body part the coach calls
 const bodyPart: BookScene = {
+  notes: { 1: ["Murabbiy tana qismini aytadi (masalan, «tizza!»): bolalar to'pni to'xtatib, unga shu qism bilan tegadi", 'Тренер называет часть тела (например, «колено!»): дети останавливают мяч и касаются его этой частью'] },
   steps: 4, speed: 1.3,
   field: [AREA],
   players: [

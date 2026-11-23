@@ -3,6 +3,7 @@ import { useT } from '../hooks'
 import { update, useData, usePrefs, setPrefs } from '../store'
 import { Modal } from '../components/Modal'
 import { parse, uid } from '../dates'
+import { allGroups } from '../groups'
 import type { Player } from '../types'
 
 export function Team() {
@@ -82,7 +83,7 @@ function PlayerForm({ player, group, onClose }: { player?: Player; group: string
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     const next: Player = { id: player?.id ?? uid(), name: name.trim(), num, pos, group: grp }
-    update((d) => ({ ...d, players: player ? d.players.map((p) => (p.id === next.id ? next : p)) : [...d.players, next] }))
+    update((d) => ({ ...d, groups: d.groups.includes(grp) ? d.groups : [...d.groups, grp], players: player ? d.players.map((p) => (p.id === next.id ? next : p)) : [...d.players, next] }))
     onClose()
   }
   const remove = () => { if (player) update((d) => ({ ...d, players: d.players.filter((p) => p.id !== player.id) })); onClose() }
@@ -92,7 +93,7 @@ function PlayerForm({ player, group, onClose }: { player?: Player; group: string
         <label className="full">{t('fullName')}<input id="fp-name" value={name} onChange={(e) => setName(e.target.value)} required autoFocus /></label>
         <label>{t('num')}<input id="fp-num" type="number" min={1} max={99} value={num} onChange={(e) => setNum(Number(e.target.value))} /></label>
         <label>{t('pos')}<select id="fp-pos" value={pos} onChange={(e) => setPos(e.target.value as Player['pos'])}>{['GK', 'DF', 'MF', 'FW'].map((p) => <option key={p}>{p}</option>)}</select></label>
-        <label className="full">{t('group')}<select id="fp-group" value={grp} onChange={(e) => setGrp(e.target.value)}>{data.groups.map((g) => <option key={g}>{g}</option>)}</select></label>
+        <label className="full">{t('group')}<select id="fp-group" value={grp} onChange={(e) => setGrp(e.target.value)}>{allGroups(data.groups).map((g) => <option key={g}>{g}</option>)}</select></label>
         <div className="row full">
           {player && <button type="button" className="btn ghost danger" onClick={remove}>{t('del')}</button>}
           <button type="button" className="btn ghost" onClick={onClose}>{t('cancel')}</button>

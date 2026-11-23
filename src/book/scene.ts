@@ -101,6 +101,11 @@ export interface BookScene {
    * these continue the drill in the animation only; the drawing stays as in the book.
    */
   book?: number
+  /**
+   * Coach's words for a step (0 = first movement), shown before the generated text, e.g. a signal
+   * that stops everyone: [uz, ru].
+   */
+  notes?: Record<number, [string, string]>
 }
 
 /**
@@ -240,6 +245,25 @@ export function marks(sc: BookScene, from = 0, to = sc.steps - 1): Mark[] {
   return out
 }
 
+/**
+ * Players drawn on top of each other read as one: push any two closer than gap apart
+ * (each moves half the way, along the line between them), so every player stays visible.
+ */
+export function spread(list: { p: Player; at: Pt }[], gap: number) {
+  for (let pass = 0; pass < 2; pass++) {
+    for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
+      const a = list[i], b = list[j]
+      if (a.p.quiet || b.p.quiet) continue
+      const dx = b.at[0] - a.at[0], dy = b.at[1] - a.at[1], dd = Math.hypot(dx, dy)
+      if (dd >= gap) continue
+      const [ux, uy] = dd > 0.01 ? [dx / dd, dy / dd] : [1, 0]
+      const push = (gap - dd) / 2
+      a.at = [a.at[0] - ux * push, a.at[1] - uy * push]
+      b.at = [b.at[0] + ux * push, b.at[1] + uy * push]
+    }
+  }
+}
+
 // ---------- the animation ----------
 
 const ease = (f: number) => (f < 0.5 ? 2 * f * f : 1 - (-2 * f + 2) ** 2 / 2)
@@ -276,6 +300,7 @@ export function frameAt(sc: BookScene, t: number): Frame {
       x.at = [x.at[0] + v[0] * bump, x.at[1] + v[1] * bump]
     }
   }
+  spread(players, 6.4 * (sc.ps ?? 1))
   const atOf = (id: string) => players.find((x) => x.p.id === id)?.at
   const balls: Pt[] = [], trails: [Pt, Pt, boolean][] = []
   for (const tr of tracks(sc)) {

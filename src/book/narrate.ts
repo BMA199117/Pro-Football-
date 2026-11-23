@@ -16,7 +16,19 @@ const TEAM_GEN: Record<Team, string> = { r: 'красных', b: 'синих', w
 const NUM_UZ = ['', 'bir', 'ikki', 'uch', "to'rt", 'besh', 'olti', 'yetti', 'sakkiz']
 const NUM_RU = ['', 'один', 'двое', 'трое', 'четверо', 'пятеро', 'шестеро', 'семеро', 'восьмеро']
 
-const isGk = (p: Player) => (p.t === 'k' && (!p.l || p.l === '1')) || ['gl', 'gr', 'gk'].includes(p.id) || (/^g\d$/.test(p.id) && (p.t === 'y' || p.t === 'k'))
+/**
+ * Goalkeepers: the usual ids (gl, gr, gk, g1…), the label GK, or a purple player without a number
+ * (the books draw keepers purple). Purple target players / neutrals (ids t…, n…) are not keepers.
+ */
+let GK = new Set<string>()
+function findGk(sc: BookScene): Set<string> {
+  return new Set(sc.players.filter((p) => {
+    if (['gl', 'gr', 'gk'].includes(p.id) || (p.l ?? '').toUpperCase() === 'GK') return true
+    if (/^g\d$/.test(p.id) && (p.t === 'y' || p.t === 'k')) return true
+    return p.t === 'k' && (!p.l || p.l === '1') && !/^[tn]\d/.test(p.id)
+  }).map((p) => p.id))
+}
+const isGk = (p: Player) => GK.has(p.id)
 const isCoach = (p: Player) => p.id === 'co' || p.id === 'coach' || p.l === 'T' || p.l === 'Т'
 
 /** Short name of a player: "qizil 10", "ko'k A", "darvozabon", "murabbiy", "qizil o'yinchi". */
@@ -43,6 +55,7 @@ type Ev = { kind: 'pass' | 'lob' | 'shot' | 'drib' | 'get' | 'space'; a: Player;
 
 /** What happens in step k → k+1, as short sentences. */
 export function stepLines(sc: BookScene, k: number, lang: Lang): string[] {
+  GK = findGk(sc)
   const uz = lang === 'uz'
   const byId = (id: string) => sc.players.find((p) => p.id === id)
   const at = (p: Player, s: number) => posAt(sc, p, s)
@@ -144,6 +157,9 @@ export function stepLines(sc: BookScene, k: number, lang: Lang): string[] {
     const many = ps.length > 1
     out.push(`${group(ps, lang)} ${MV[kind][(uz ? 0 : 2) + (many ? 1 : 0)]}`)
   }
+  // the coach changes place (e.g. moves to a new spot the players must find)
+  const coaches = sc.players.filter((p) => isCoach(p) && runs(p) && !withBall.has(p.id))
+  if (coaches.length) out.push(uz ? (coaches.length > 1 ? "murabbiylar maydonda yangi joyga o'tadi" : "murabbiy maydonda yangi joyga o'tadi") : (coaches.length > 1 ? 'тренеры переходят на новое место' : 'тренер переходит на новое место'))
   return out.map((s) => cap(s) + '.')
 }
 
@@ -151,7 +167,14 @@ export function stepLines(sc: BookScene, k: number, lang: Lang): string[] {
 export function narrate(sc: BookScene, lang: Lang): string[][] {
   const steps = Array.from({ length: sc.steps - 1 }, (_, k) => stepLines(sc, k, lang))
   // the same action again in the next step reads as "keeps doing it", not a word-for-word repeat
-  return steps.map((lines, k) => k === 0 ? lines : lines.map((l) => steps[k - 1].includes(l) ? keepOn(l, lang) : l))
+  const said = steps.map((lines, k) => k === 0 ? lines : lines.map((l) => steps[k - 1].includes(l) ? keepOn(l, lang) : l))
+  const i = lang === 'uz' ? 0 : 1
+  return said.map((lines, k) => {
+    const note = sc.notes?.[k]?.[i]
+    if (note) return [cap(note.replace(/\.?$/, '.')), ...lines]
+    // a step where nobody moves: say so, the coach should not wonder whether the animation froze
+    return lines.length ? lines : [["Hamma joyida turadi: to'xtash, keyin harakat davom etadi.", 'Все стоят на месте: пауза, затем движение продолжается.'][i]]
+  })
 }
 
 const KEEP: Record<Lang, [RegExp, string][]> = {

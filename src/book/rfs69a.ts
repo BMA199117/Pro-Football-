@@ -118,6 +118,7 @@ const mineBall: BookScene = {
 // 8 · Freeze – dribble for 30–40 s; on the whistle stop the ball with the sole (then knee, head, chest or sit on it); "unfreeze" and go on
 const AREA8: Item = ['area', 30, 10, 140, 90, 'c']
 const freeze: BookScene = {
+  notes: { 1: ["Hushtak — «to'xta!»: to'pni oyoq tagi bilan to'xtatib, unga tizza, peshona yoki ko'krak bilan tegadi", 'Свисток — «замри»: остановить мяч подошвой и коснуться его коленом, лбом или грудью'], 2: ["«Yur!» — olib yurish davom etadi", '«Отомри» — ведение продолжается'] },
   steps: 4, speed: 1.3,
   field: [AREA8],
   players: [
