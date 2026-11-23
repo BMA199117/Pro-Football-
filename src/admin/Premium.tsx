@@ -22,7 +22,7 @@ async function rpc<T>(fn: string, args?: Record<string, unknown>): Promise<T> {
 }
 
 export function Premium() {
-  const [tab, setTab] = useState<'subs' | 'free' | 'server'>('subs')
+  const [tab, setTab] = useState<'subs' | 'pay' | 'free' | 'server'>('subs')
   return (
     <>
       <div className="head">
@@ -30,10 +30,12 @@ export function Premium() {
       </div>
       <div className="filters">
         <button aria-pressed={tab === 'subs'} onClick={() => setTab('subs')}>⭐ Obunachilar</button>
+        <button aria-pressed={tab === 'pay'} onClick={() => setTab('pay')}>💳 Narxlar va to'lovlar</button>
         <button aria-pressed={tab === 'free'} onClick={() => setTab('free')}>🎁 Bepul mashqlar va rejalar</button>
         <button aria-pressed={tab === 'server'} onClick={() => setTab('server')}>☁️ Serverdagi ma'lumot</button>
       </div>
       {tab === 'subs' && <Subs />}
+      {tab === 'pay' && <Payments />}
       {tab === 'free' && <FreeItems />}
       {tab === 'server' && <ServerData />}
     </>
@@ -92,7 +94,7 @@ function Subs() {
             <div className="adm-main">
               <b>{s.email ?? '—'} {active(s) ? <span className="badge">faol</span> : <span className="badge gray">tugagan</span>}</b>
               <span className="muted small">
-                {s.until ? `${when(s.until, false)} gacha${active(s) ? ` · ${daysLeft(s)} kun qoldi` : ''}` : 'Muddatsiz'} · berilgan: {when(s.updated_at, false)}{s.note ? ` · ${s.note}` : ''}
+                {PLAN_UZ[s.plan] ?? s.plan} · {s.until ? `${when(s.until, false)} gacha${active(s) ? ` · ${daysLeft(s)} kun qoldi` : ''}` : 'Muddatsiz'} · berilgan: {when(s.updated_at, false)}{s.note ? ` · ${s.note}` : ''}
               </span>
             </div>
             <div className="adm-act">
@@ -266,6 +268,102 @@ function ServerData() {
         {busy && <p className="muted">{busy}</p>}
         {msg && <p className={'note' + (msg.err ? ' err' : ' ok')}>{msg.text}</p>}
       </section>
+    </>
+  )
+}
+
+/* ----------------------------------------------------- prices and payments */
+interface Pricing { month: number; year: number; academy: number; academySeats: number; trialDays: number; promoYearPercent: number; promoLimit: number }
+interface PayRow { id: number; email: string | null; plan: string; amount: number; promo: boolean; status: string; created_at: string; paid_at: string | null }
+const PLAN_UZ: Record<string, string> = { month: 'Oylik', year: 'Yillik', academy: 'Akademiya', trial: 'Bepul sinov', manual: "Qo'lda berilgan" }
+const STATUS_UZ: Record<string, [string, string]> = { new: ["To'lanmagan", 'gray'], prepared: ['Jarayonda', 'cone'], paid: ["To'langan", ''], cancelled: ['Bekor qilingan', 'gray'] }
+const money = (n: number) => n.toLocaleString('ru-RU').replace(/\u00a0/g, ' ') + " so'm"
+
+function Payments() {
+  const [pr, setPr] = useState<Pricing | null>(null)
+  const [click, setClick] = useState({ service_id: '', merchant_id: '' })
+  const [secretSet, setSecretSet] = useState<boolean | null>(null)
+  const [secret, setSecret] = useState('')
+  const [list, setList] = useState<PayRow[] | null>(null)
+  const [msg, setMsg] = useState<Msg>(null)
+  const [busy, setBusy] = useState(false)
+  const load = async () => {
+    if (!supabase) return
+    const { data, error } = await supabase.from('app_settings').select('key,value')
+    if (error) { setMsg({ text: "Sozlamalarni o'qib bo'lmadi. 6-tolov.sql Supabase'da ishga tushirilganmi?", err: true }); return }
+    for (const r of data as { key: string; value: unknown }[]) {
+      if (r.key === 'pricing') setPr(r.value as Pricing)
+      if (r.key === 'click') setClick(r.value as typeof click)
+    }
+    rpc<boolean>('admin_click_secret_set').then(setSecretSet, () => setSecretSet(null))
+    rpc<PayRow[]>('admin_payments', { lim: 200 }).then(setList, () => setList([]))
+  }
+  useEffect(() => { load() }, [])
+
+  const save = async () => {
+    if (!supabase || !pr) return
+    setBusy(true); setMsg(null)
+    const rows = [{ key: 'pricing', value: pr, updated_at: new Date().toISOString() }, { key: 'click', value: { service_id: click.service_id.trim(), merchant_id: click.merchant_id.trim() }, updated_at: new Date().toISOString() }]
+    const { error } = await supabase.from('app_settings').upsert(rows, { onConflict: 'key' })
+    let err = !!error
+    if (!err && secret.trim()) { try { await rpc('admin_set_click_secret', { secret: secret.trim() }); setSecret(''); setSecretSet(true) } catch { err = true } }
+    setBusy(false)
+    setMsg(err ? { text: "Saqlab bo'lmadi.", err: true } : { text: 'Saqlandi. Yangi narxlar murabbiylarga darhol ko\'rinadi.' })
+    if (!err) refreshAccess()
+  }
+  const num = (k: keyof Pricing, label: string, hint?: string) => (
+    <label>{label}<input type="number" min={0} value={pr?.[k] ?? 0} onChange={(e) => setPr({ ...(pr as Pricing), [k]: Math.max(0, Math.round(+e.target.value || 0)) })} />{hint && <span className="muted small">{hint}</span>}</label>
+  )
+  const fnUrl = (import.meta.env.VITE_SUPABASE_URL as string | undefined ?? '').replace(/\/$/, '') + '/functions/v1/click'
+  const paid = (list ?? []).filter((p) => p.status === 'paid')
+  const month = new Date().toISOString().slice(0, 7)
+
+  if (!pr) return msg ? <p className="note err">{msg.text}</p> : <p className="muted">Yuklanmoqda…</p>
+  return (
+    <>
+      {msg && <p className={'note' + (msg.err ? ' err' : ' ok')}>{msg.text}</p>}
+      <section className="panel">
+        <h2 className="label">Narxlar (so'm)</h2>
+        <div className="form" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+          {num('month', 'Oylik')}
+          {num('year', 'Yillik')}
+          {num('academy', 'Akademiya (oyiga)')}
+          {num('academySeats', 'Akademiyada murabbiylar soni')}
+          {num('trialDays', 'Bepul sinov (kun)', '0 = sinov yo\'q')}
+          {num('promoYearPercent', 'Yillik chegirma (%)', '0 = chegirma yo\'q')}
+          {num('promoLimit', 'Chegirma nechta murabbiyga')}
+        </div>
+        {pr.promoYearPercent > 0 && pr.promoLimit > 0 && <p className="muted small">Chegirmali yillik narx: <b>{money(Math.round(pr.year * (100 - pr.promoYearPercent) / 100))}</b>, birinchi {pr.promoLimit} ta to'lovgacha (hozir ishlatilgan: {(list ?? []).filter((p) => p.plan === 'year' && p.promo && p.status === 'paid').length}).</p>}
+      </section>
+      <section className="panel">
+        <h2 className="label">Click</h2>
+        <p className="muted small">Click bilan shartnoma tuzilgach, Click kabinetidagi ma'lumotlarni shu yerga yozing. Ular yozilmaguncha murabbiylarga "to'lov tez orada" deb chiqadi.</p>
+        <div className="form" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
+          <label>service_id<input value={click.service_id} onChange={(e) => setClick({ ...click, service_id: e.target.value })} /></label>
+          <label>merchant_id<input value={click.merchant_id} onChange={(e) => setClick({ ...click, merchant_id: e.target.value })} /></label>
+          <label>Secret key {secretSet ? <span className="badge">saqlangan</span> : <span className="badge cone">yo'q</span>}<input type="password" autoComplete="off" value={secret} onChange={(e) => setSecret(e.target.value)} placeholder={secretSet ? "O'zgartirish uchun yangisini yozing" : 'Click bergan maxfiy kalit'} /></label>
+        </div>
+        <p className="small">Click kabinetida <b>Prepare URL</b> va <b>Complete URL</b> ga shu manzilni yozing:<br /><code style={{ overflowWrap: 'anywhere' }}>{fnUrl}</code></p>
+      </section>
+      <div className="row" style={{ justifyContent: 'flex-start' }}><button className="btn" disabled={busy} onClick={save}>{busy ? 'Saqlanmoqda…' : 'Saqlash'}</button></div>
+
+      <h2 className="label">To'lovlar</h2>
+      <div className="tiles">
+        <div className="tile"><span className="tile-n">{paid.length}</span><span className="tile-l">to'langan</span></div>
+        <div className="tile"><span className="tile-n">{money(paid.reduce((a, p) => a + p.amount, 0))}</span><span className="tile-l">jami tushum</span></div>
+        <div className="tile"><span className="tile-n">{money(paid.filter((p) => (p.paid_at ?? '').startsWith(month)).reduce((a, p) => a + p.amount, 0))}</span><span className="tile-l">shu oy</span></div>
+      </div>
+      {list && list.length === 0 && <p className="muted">Hali to'lov yo'q.</p>}
+      <div className="adm-list">
+        {(list ?? []).map((p) => (
+          <article key={p.id} className={'adm-row' + (p.status === 'paid' ? '' : ' is-hidden')}>
+            <div className="adm-main">
+              <b>#{p.id} · {p.email ?? '—'} <span className={'badge ' + (STATUS_UZ[p.status]?.[1] ?? '')}>{STATUS_UZ[p.status]?.[0] ?? p.status}</span></b>
+              <span className="muted small">{PLAN_UZ[p.plan] ?? p.plan} · {money(p.amount)}{p.promo ? ' (chegirma)' : ''} · {when(p.paid_at ?? p.created_at)}</span>
+            </div>
+          </article>
+        ))}
+      </div>
     </>
   )
 }

@@ -544,3 +544,16 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .free-group { padding: 10px 14px; display: flex; flex-direction: column; gap: 6px }
 .free-group summary { cursor: pointer }
 .free-group .check { display: flex; gap: 8px; align-items: center; padding: 3px 0 }
+.pw-plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px }
+.pw-plan { display: flex; flex-direction: column; gap: 6px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface) }
+.pw-plan.best { border: 2px solid var(--pitch); background: var(--pitch-soft) }
+.pw-plan .btn { margin-top: auto }
+.pw-amount span { font-family: var(--display); font-size: 26px; font-weight: 700; color: var(--pitch) }
+.pw-amount s { color: var(--muted); font-size: 14px }
+.pw-amount small { color: var(--muted) }
+.pw-promo { align-self: flex-start; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--cone); color: #fff }
+.trial-btn { background: var(--cone) !important; border-color: var(--cone) !important }
+.acad { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 8px; background: var(--bg) }
+.acad p { margin: 0 }
+.acad textarea { border: 1px solid var(--line); border-radius: 8px; padding: 8px; background: var(--surface); color: inherit; font: inherit }
+.acad .btn { align-self: flex-start }
