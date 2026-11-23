@@ -124,7 +124,7 @@ export const DEV_STAGES: DevStage[] = [
     focus: {
       technical: [
         ["Birinchi teginish, uzatma, olib yurish va aldash, zarba", 'Первое касание, передача, ведение и обводка, удар'],
-        ["Ikkala oyoq, turli yuzalar (ichki, tashqi, taglik)", 'Обе ноги, разные поверхности (внутренняя, внешняя, подошва)'],
+        ["Ikkala oyoq, turli yuzalar (ichki, tashqi tomoni, oyoq tagi)", 'Обе ноги, разные поверхности (внутренняя, внешняя, подошва)'],
       ],
       tactical: [
         ["Atrofga qarash (skanerlash) va bo'sh joyga ochilish", 'Осмотр (сканирование) и открывание в свободную зону'],

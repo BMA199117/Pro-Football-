@@ -86,7 +86,7 @@ export function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; a
       <div className="apitch-cap" aria-live="polite">
         {pos.k < 0 || pos.k >= moves
           ? <span className="muted">{pos.k < 0 ? tr('ready') : tr('finalPos')}</span>
-          : <><b>{pos.k + 1}.</b> {(story[pos.k] ?? []).join(' · ') || '—'}</>}
+          : <><b>{pos.k + 1}.</b> {(story[pos.k] ?? []).join(' ') || '—'}</>}
       </div>
       <div className="apitch-bar"><i style={{ width: `${Math.min(100, (s / total) * 100)}%` }} /></div>
       <div className="apitch-ctl">
@@ -141,7 +141,7 @@ function StepList({ scene }: { scene: BookScene }) {
   const story = narrate(scene, lang)
   if (!story.some((l) => l.length)) return null
   const b = bookSteps(scene) - 1
-  const li = (l: string[], k: number) => l.length ? <li key={k} value={k + 1}>{l.join(' · ')}</li> : null
+  const li = (l: string[], k: number) => l.length ? <li key={k} value={k + 1}>{l.join(' ')}</li> : null
   return (
     <details className="steps" open>
       <summary>{t('stepsTitle')}</summary>

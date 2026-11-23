@@ -131,11 +131,11 @@ const ROWS: Row[] = [
     ["Chiqib ketish o'yini, doimiy son ustunligi, 10 to'p, 2–0 yoki 0–2", 'Игра на вылет, постоянный перегруз, 10 мячей, 2–0 или 0–2'], ['s100-114'], ['s100-154', 's100-150'], ['s100-153']],
   // adidas / RFS 15–17 — group tactics
   ['a17p1', '15–17', '15', 'adidas1517', ['Hujumni boshlash (1-zona)', 'Начало атаки (зона 1)'],
-    ["Yoriuvchi paslar, markazdan va qanotdan boshlash, yo'nalishni o'zgartirish", 'Проникающие передачи, начало по центру и по флангу, смена направления'], ['a17-4'], ['a17-1', 'a17-2'], ['a17-3']],
+    ["Yoruvchi paslar, markazdan va qanotdan boshlash, yo'nalishni o'zgartirish", 'Проникающие передачи, начало по центру и по флангу, смена направления'], ['a17-4'], ['a17-1', 'a17-2'], ['a17-3']],
   ['a17p2', '15–17', '15', 'adidas1517', ['Hujumni yakunlash', 'Завершение атак'],
     ["Ozchilikda himoya, 3×2 va 4×2 yakunlash, 5×4 chiziqni kesish", 'Оборона в меньшинстве, завершение 3×2 и 4×2, 5×4 с выходом 1 на 1'], ['a17-8'], ['a17-6', 'a17-7'], ['a17-5']],
   ['a17p3', '15–17', '16–17', 'adidas1517', ['Qanotdan hujum', 'Атака по флангу'],
-    ["8×4 yoriuvchi paslar, 7×5 uzatmadan gol, 7 + darvozabon × 7", '8×4 проникающие передачи, 7×5 гол после передачи, 7 + вратарь × 7'], ['a17-9'], ['a17-10'], ['a17-11']],
+    ["8×4 yoruvchi paslar, 7×5 uzatmadan gol, 7 + darvozabon × 7", '8×4 проникающие передачи, 7×5 гол после передачи, 7 + вратарь × 7'], ['a17-9'], ['a17-10'], ['a17-11']],
   // FIFA 8.2 — 15–17
   ['f82s1', '15–17', 'U16', 'fifa82', ['Aerob chidamlilik', 'Аэробная выносливость'],
     ["Koordinatsiya, to'p bilan aylana, 6×6 fartlek", 'Координация, круг с мячом, игра 6×6 (фартлек)'], ['f82-25'], ['f82-2', 'f82-4'], []],

@@ -27,7 +27,7 @@ export const BENEFITS_F: Record<string, Benefit> = {
   's100-107': [['team', 'decide', 'vision'], "Pleymeyker — jamoa kalit o'yinchini qanday ishlatishini, raqib esa uni qanday to'xtatishini o'rganadi.", 'Плеймейкер — команда учится использовать ключевого игрока, соперник — его останавливать.'],
   's100-110': [['trans', 'speed', 'decide'], "Tor maydonda qarshi hujum — to'pni olib darhol oldinga o'ynash va to'g'ri vaqtda pas.", 'Контратака на узком поле — отобрать и сразу играть вперёд, вовремя отдать.'],
   's100-114': [['shoot', 'press', 'joy'], "Chiqib ketish o'yini — bosim ostida sovuqqon yakunlash va yangi kirgan jamoaning darhol pressingi.", 'Игра на вылет — хладнокровное завершение под давлением и мгновенный прессинг вошедшей команды.'],
-  's100-116': [['shoot', 'decide', 'react'], "Jarima maydonchasida bombardir — zich joyda tez yakunlash: bir teginish, bosh, burilib zarba.", 'Бомбардир в штрафной — быстрое завершение в тесноте: в касание, головой, с разворотом.'],
+  's100-116': [['shoot', 'decide', 'react'], "Jarima maydonida bombardir — zich joyda tez yakunlash: bir teginish, bosh, burilib zarba.", 'Бомбардир в штрафной — быстрое завершение в тесноте: в касание, головой, с разворотом.'],
   's100-119': [['duel', 'drib', 'trans'], "Burilib hujum — golchi darhol yangi to'p bilan 1×1 ga kiradi; himoyachilar tez reaksiya qiladi.", '«Разверни и зажги» — забивший сразу идёт в 1×1 с новым мячом; защитники быстро реагируют.'],
   's100-120': [['shoot', 'decide', 'joy'], "Uzoqdan zarba 3 ochko — zarbaga jasorat va qachon urish, qachon pas berish kerakligini tanlash.", 'Дальний удар за 3 очка — смелость бить и выбор, когда бить, а когда отдавать.'],
   's100-123': [['shoot', 'focus', 'joy'], "Yuqori burchakka nishon — zarba aniqligi, kuchdan ko'ra aniqlik muhim.", 'Мишени в девятке — точность удара, точность важнее силы.'],
@@ -44,5 +44,5 @@ export const BENEFITS_F: Record<string, Benefit> = {
   's100-147': [['focus', 'shoot', 'team'], "Bosim ostidagi penalti — hissiyotni boshqarish va hisobga qarab strategiya.", 'Пенальти под давлением — управление эмоциями и стратегия по счёту.'],
   's100-150': [['team', 'decide', 'focus'], "10 to'p — hisob ko'rinib turadi, jamoa o'yinni hisobga qarab boshqarishni o'rganadi.", '10 мячей — счёт виден, команда учится управлять игрой по счёту.'],
   's100-153': [['team', 'decide', 'focus'], "2-0 yoki 0-2 — yutayotgan va yutqazayotgan jamoa strategiyasi, bosim ostida o'ynash.", '2–0 или 0–2 — стратегия ведущей и отстающей команды, игра под давлением.'],
-  's100-154': [['decide', 'defend', 'trans'], "Doimiy son ustunligi — ozchilik va ko'pchilikda tez moslashish, har kim o'yinni boshlashni o'rganadi.", 'Постоянный перегруз — быстрая адаптация в меньшинстве и большинстве, каждый учится начинать игру.'],
+  's100-154': [['decide', 'defend', 'trans'], "Doimiy son ustunligi — ozchilikda ham, son ustunligida ham tez moslashish, har kim o'yinni boshlashni o'rganadi.", 'Постоянный перегруз — быстрая адаптация в меньшинстве и большинстве, каждый учится начинать игру.'],
 }

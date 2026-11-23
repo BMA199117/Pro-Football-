@@ -78,7 +78,7 @@ function PrintSheet({ drill }: { drill: Drill }) {
             {Array.from({ length: n }, (_, k) => (
               <figure key={k}>
                 <BookFrame scene={scene} t={k} step={k} />
-                <figcaption><b>{k + 1}.</b> {story[k]?.join(' · ')}</figcaption>
+                <figcaption><b>{k + 1}.</b> {story[k]?.join(' ')}</figcaption>
               </figure>
             ))}
           </div>

@@ -339,7 +339,7 @@ const ROWS: Row[] = [
      ["Javobni aytmang — savol bering: «Qanday qilib tezroq o'tkazish mumkin edi?»", 'Не давайте ответ — задавайте вопрос: «Как можно было перевести быстрее?»']]],
   ['n51', 'game', 'ssg100',
     ["Yordam va chiziqni yorish: «4 ta yordam» va «tepadan, aylanib, orasidan»", 'Поддержка и вскрытие линии: «4 B» и «над, вокруг, насквозь»'],
-    ["To'p egasiga to'rt xil yordam beriladi: orqadan (xavfsiz orqaga pas), yonidan, raqiblar oraliqidan va uzoqdan (raqibni cho'zish uchun). Himoya chizig'ini uch yo'l bilan yorish mumkin: tepadan (oshirma), aylanib (qanot orqali) yoki orasidan (yoriuvchi pas). Yaxshi jamoa vaziyatga qarab shu uchtasidan birini tanlaydi.",
+    ["To'p egasiga to'rt xil yordam beriladi: orqadan (xavfsiz orqaga pas), yonidan, raqiblar oraliqidan va uzoqdan (raqibni cho'zish uchun). Himoya chizig'ini uch yo'l bilan yorish mumkin: tepadan (oshirma), aylanib (qanot orqali) yoki orasidan (yoruvchi pas). Yaxshi jamoa vaziyatga qarab shu uchtasidan birini tanlaydi.",
      'Владельцу мяча помогают четырьмя способами: сзади (надёжный пас назад), рядом, между соперниками и вдали (чтобы растянуть соперника). Линию обороны вскрывают тремя путями: над (навес), вокруг (через фланг) или насквозь (проникающий пас). Хорошая команда выбирает один из трёх по ситуации.'],
     [["Mashqlarda o'yinchidan so'rang: «Hozir qaysi yordam kerak edi?»", 'Спрашивайте игрока: «Какая поддержка была нужна сейчас?»'],
      ["Zich himoyaga qarshi — aylanib, keng himoyaga qarshi — orasidan", 'Против плотной обороны — вокруг, против растянутой — насквозь'],
