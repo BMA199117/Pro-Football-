@@ -15,8 +15,26 @@ const ERR_KEY: Record<AuthError, Key> = {
 
 export function SyncBadge({ onClick }: { onClick: () => void }) {
   const { t } = useT()
-  const { status } = useSync()
+  const { status, email } = useSync()
   const label = t(STATUS_KEY[status])
+  // not signed in: a clear sign-up / sign-in button instead of a vague status pill
+  if (status === 'signedOut' || (status !== 'disabled' && !email)) {
+    return (
+      <button className="acct-btn" onClick={onClick} title={t('signUp') + ' / ' + t('signIn')}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" /></svg>
+        <span className="acct-long">{t('signUp')} / {t('signIn')}</span>
+        <span className="acct-short">{t('signIn')}</span>
+      </button>
+    )
+  }
+  if (email) {
+    return (
+      <button className={'acct-me s-' + status} onClick={onClick} aria-label={email + ' · ' + t('sync') + ': ' + label} title={email + ' · ' + label}>
+        <span className="acct-av">{email[0].toUpperCase()}<span className="sdot" /></span>
+        <span className="acct-txt"><b>{email}</b><small>{label}</small></span>
+      </button>
+    )
+  }
   return <button className={'sync-badge s-' + status} onClick={onClick} aria-label={t('sync') + ': ' + label} title={label}><span className="sdot" /><span className="slabel">{label}</span></button>
 }
 
@@ -58,7 +76,7 @@ export function SyncPanel({ onClose }: { onClose: () => void }) {
   const time = lastSync ? new Date(lastSync).toLocaleTimeString(lang === 'ru' ? 'ru-RU' : 'uz-UZ', { hour: '2-digit', minute: '2-digit' }) : null
 
   return (
-    <Modal title={t('sync')} onClose={onClose}>
+    <Modal title={status === 'disabled' || email ? t('sync') : t('signUp') + ' / ' + t('signIn')} onClose={onClose}>
       {status === 'disabled' ? <p>{t('syncNotSet')}</p> : email ? (
         <div className="sync-in">
           <p>{t('signedAs')} <b>{email}</b></p>
