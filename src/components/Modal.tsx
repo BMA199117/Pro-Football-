@@ -1,16 +1,25 @@
 import { useEffect, type ReactNode } from 'react'
+import { useT } from '../hooks'
 
-export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+/** Dialog with a sticky title bar and a close (×) button. `sheet` makes it full-screen on a phone; `footer` stays pinned at the bottom. */
+export function Modal({ title, onClose, children, sheet, footer }: { title: string; onClose: () => void; children: ReactNode; sheet?: boolean; footer?: ReactNode }) {
+  const { t } = useT()
   useEffect(() => {
     const k = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     document.addEventListener('keydown', k)
     return () => document.removeEventListener('keydown', k)
   }, [onClose])
   return (
-    <div className="overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div className={'overlay' + (sheet ? ' sheet' : '')} onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal" role="dialog" aria-modal="true" aria-label={title}>
-        <h2>{title}</h2>
+        <div className="modal-h">
+          <h2>{title}</h2>
+          <button className="modal-x" onClick={onClose} aria-label={t('close')} title={t('close')}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </button>
+        </div>
         {children}
+        {footer && <div className="modal-f">{footer}</div>}
       </div>
     </div>
   )

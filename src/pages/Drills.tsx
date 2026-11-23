@@ -37,6 +37,8 @@ export function Drills() {
   const [age, setAge] = useState('')
   const [view, setView] = useState<'base' | 'fav' | 'mine'>('base')
   const [onlyBooks, setOnlyBooks] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const activeFilters = Number(cat !== 'all') + Number(onlyBooks)
   const [detail, setDetail] = useState<Drill | null>(null)
   const favs = useData().favorites ?? []
   const range = (r: string): [number, number] => {
@@ -61,6 +63,10 @@ export function Drills() {
                 <dt>{t('ageCat')}</dt><dd>{ageList(d.age)}</dd>
                 <dt>{t('equip')}</dt><dd>{L(d.equip)}</dd>
               </dl>
+              <p className="mini" aria-hidden="true">
+                {d.players && <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="8" r="3" /><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6" /><circle cx="17" cy="9" r="2.5" /><path d="M15 20c0-2.5 1.5-4.5 4-4.5" /></svg>{d.players}</span>}
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2.5 2M9 2h6" /></svg>{d.min}′</span>
+              </p>
               <div className="meta">
                 <span className="chip" style={{ boxShadow: `inset 3px 0 0 ${CAT_COLOR[d.cat]}` }}>{t(d.cat)}</span>
                 <span className="chip cone">{d.min} {t('min')}</span>
@@ -83,6 +89,12 @@ export function Drills() {
           <button className="btn ghost" onClick={() => setAdding(true)}>+ {t('own')}</button>
         </div>
       </div>
+      <div className="dtool">
+        <input className="search" id="drill-search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('search')} aria-label={t('search')} />
+        <button className="filter-btn" aria-expanded={filtersOpen} aria-controls="drill-filters" onClick={() => setFiltersOpen(!filtersOpen)}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M7 12h10M10 18h4" /></svg>{t('filter')}{activeFilters > 0 && <i>{activeFilters}</i>}
+        </button>
+      </div>
       <div className="libtabs" role="group">
         {(['base', 'fav', 'mine'] as const).map((v) => (
           <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>{v === 'fav' ? '★ ' + t('favs') : t(v)}</button>
@@ -96,12 +108,11 @@ export function Drills() {
           </button>
         ))}
       </div>
-      <div className="filters">
+      <div className={'filters' + (filtersOpen ? ' open' : '')} id="drill-filters">
         {(['all', ...CATEGORIES] as const).map((c) => (
           <button key={c} aria-pressed={cat === c} onClick={() => setCat(c)}>{t(c)}</button>
         ))}
         <button aria-pressed={onlyBooks} onClick={() => setOnlyBooks(!onlyBooks)}>📖 {t('fromBooks')}</button>
-        <input className="search" id="drill-search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('search')} aria-label={t('search')} />
       </div>
       {sections.map(({ band: b, list }) => (
         <section key={b.id} className="band">

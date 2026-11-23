@@ -25,6 +25,7 @@ export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onC
   const [phase, setPhase] = useState<Phase>('main')
   const [added, setAdded] = useState(false)
   const [editing, setEditing] = useState(false)
+  const [picking, setPicking] = useState(false)
 
   const toggleFav = () => update((d) => {
     const f = d.favorites ?? []
@@ -35,18 +36,41 @@ export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onC
     setAdded(true)
   }
 
+  const footer = (
+    <>
+      {picking && upcoming.length > 0 && (
+        <div className="dd-pick">
+          <select className="sel" id="dd-session" aria-label={t('session')} value={sid} onChange={(e) => { setSid(e.target.value); setAdded(false) }}>
+            {upcoming.map((s) => { const d = parse(s.date); return <option key={s.id} value={s.id}>{d.getDate()} {months[d.getMonth()]} · {s.group} · {s.goal}</option> })}
+          </select>
+          <select className="sel" id="dd-phase" aria-label={t('cat')} value={phase} onChange={(e) => { setPhase(e.target.value as Phase); setAdded(false) }}>
+            {PHASES.map((p) => <option key={p} value={p}>{t(p)}</option>)}
+          </select>
+        </div>
+      )}
+      <div className="dd-bar">
+        <button className={'star' + (fav ? ' on' : '')} onClick={toggleFav} aria-pressed={fav} aria-label={t('favs')} title={t('favs')}>{fav ? '★' : '☆'}</button>
+        {drill.custom && <button className="btn ghost" onClick={() => setEditing(true)}>✏️ {t('edit')}</button>}
+        {upcoming.length > 0 ? (
+          picking
+            ? <button className="btn grow" onClick={add} disabled={added}>{added ? '✓ ' + t('added') : '+ ' + t('addTo')}</button>
+            : <button className="btn grow" onClick={() => setPicking(true)}>+ {t('addTo')}</button>
+        ) : <button className="btn ghost grow" onClick={onClose}>{t('close')}</button>}
+      </div>
+    </>
+  )
+
   return (
-    <Modal title={L(drill.name)} onClose={onClose}>
+    <Modal title={L(drill.name)} onClose={onClose} sheet footer={footer}>
       {top}
-      <DrillViews id={drill.id} type={drill.dia} />
-      {sceneOf(drill.id) && <LineKey scene={sceneOf(drill.id)!} label={(k) => t(({ run: 'kRun', drib: 'kDrib', pass: 'kPass', shot: 'kShot', lob: 'kLob' } as const)[k])} />}
       <div className="meta">
         <span className="chip">{t(drill.cat)}</span>
         <span className="chip">{drill.age}</span>
         <span className="chip cone">{drill.min} {t('min')}</span>
         {drill.players && <span className="chip">{t('playersCount')}: {drill.players}</span>}
-        <button className={'star' + (fav ? ' on' : '')} onClick={toggleFav} aria-pressed={fav} aria-label={t('favs')}>★</button>
       </div>
+      <DrillViews id={drill.id} type={drill.dia} />
+      {sceneOf(drill.id) && <LineKey scene={sceneOf(drill.id)!} label={(k) => t(({ run: 'kRun', drib: 'kDrib', pass: 'kPass', shot: 'kShot', lob: 'kLob' } as const)[k])} />}
       {L(drill.desc) && <p className="lead">{L(drill.desc)}</p>}
       {ben && (
         <div className="benefit">
@@ -55,35 +79,17 @@ export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onC
           <div className="skills"><span className="skills-l">{t('develops')}:</span>{ben[0].map((k) => <span key={k} className="skill">{SKILLS[k][lang === 'ru' ? 1 : 0]}</span>)}</div>
         </div>
       )}
-      <p className="sub"><b>{t('equip')}:</b> {L(drill.equip)}</p>
-      {drill.source && SOURCES[drill.source] && (
-        <p className="source">📖 {t('source')}: {SOURCES[drill.source].author}, «{SOURCES[drill.source].title}»</p>
-      )}
       {drill.points && drill.points.length > 0 && (
         <div>
           <h3 className="label">{t('points')}</h3>
           <ul className="points">{drill.points.map((p, i) => <li key={i}>{L(p)}</li>)}</ul>
         </div>
       )}
-      <DrillShare drill={drill} />
-      {upcoming.length > 0 && (
-        <div className="add-to">
-          <h3 className="label">{t('addTo')}</h3>
-          <div className="row" style={{ justifyContent: 'flex-start' }}>
-            <select className="sel" id="dd-session" value={sid} onChange={(e) => { setSid(e.target.value); setAdded(false) }}>
-              {upcoming.map((s) => { const d = parse(s.date); return <option key={s.id} value={s.id}>{d.getDate()} {months[d.getMonth()]} · {s.group} · {s.goal}</option> })}
-            </select>
-            <select className="sel" id="dd-phase" value={phase} onChange={(e) => { setPhase(e.target.value as Phase); setAdded(false) }}>
-              {PHASES.map((p) => <option key={p} value={p}>{t(p)}</option>)}
-            </select>
-            <button className="btn small" onClick={add} disabled={added}>{added ? '✓ ' + t('added') : '+ ' + t('addTo')}</button>
-          </div>
-        </div>
+      <p className="sub"><b>{t('equip')}:</b> {L(drill.equip)}</p>
+      {drill.source && SOURCES[drill.source] && (
+        <p className="source">📖 {t('source')}: {SOURCES[drill.source].author}, «{SOURCES[drill.source].title}»</p>
       )}
-      <div className="row">
-        {drill.custom && <button className="btn ghost" onClick={() => setEditing(true)}>✏️ {t('edit')}</button>}
-        <button className="btn ghost" onClick={onClose}>{t('close')}</button>
-      </div>
+      <DrillShare drill={drill} />
       {editing && <DrillForm drill={drill} onClose={() => setEditing(false)} />}
     </Modal>
   )
