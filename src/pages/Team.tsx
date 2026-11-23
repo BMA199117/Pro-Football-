@@ -39,7 +39,7 @@ export function Team() {
           ) : (
             <label className="inline">{t('group')}:
               <select className="sel" id="team-group" value={groupPick} onChange={(e) => setGroupPick(e.target.value)}>
-                {data.groups.map((g) => <option key={g}>{g}</option>)}
+                {allGroups(data.groups).map((g) => <option key={g}>{g}</option>)}
               </select>
             </label>
           )}
