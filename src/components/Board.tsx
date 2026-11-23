@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { ballAt, marks, posAt, type BallStep, type BookScene, type Item, type Pt, type Step, type Team } from '../book/scene'
-import { Frame, MarkPaths, TEAM, ballDot, item, playerDot } from './BookPitch'
+import { ballAt, marks, posAt, type BallStep, type BookScene, type ConeColor, type Item, type Pt, type Step, type Team } from '../book/scene'
+import { Frame, MarkPaths, TEAM, ballDot, item, playerDot, soccerBall } from './BookPitch'
 import { BookPlayer } from './AnimatedPitch'
 import { useT } from '../hooks'
 import type { Key } from '../i18n'
@@ -11,14 +11,37 @@ import type { Key } from '../i18n'
  * board builds the same kind of scene the book drills use (drawing + step animation).
  */
 
-type Tool = 'move' | 'pass' | 'shot' | 'lob' | 'del' | `add:${Team}` | 'add:ball' | 'add:cone' | 'add:mini' | 'add:goal' | 'add:pole' | 'add:hurdle' | 'add:flag'
+/** move, pass, shot, lob, del, line, add:<team> or add:<kit key> */
+type Tool = string
 type Hit = { kind: 'p'; id: string } | { kind: 'b'; i: number } | { kind: 'i'; i: number }
 
-const PLAYER_TOOLS: [Team, Key][] = [['r', 'bRed'], ['b', 'bBlue'], ['y', 'bYellow'], ['k', 'bKeeper'], ['c', 'bCoach']]
-const KIT_TOOLS: ['ball' | 'cone' | 'mini' | 'goal' | 'pole' | 'hurdle' | 'flag', Key][] = [['ball', 'bBall'], ['cone', 'bCone'], ['mini', 'bMini'], ['goal', 'bGoal'], ['pole', 'bPole'], ['hurdle', 'bHurdle'], ['flag', 'bFlag']]
-const MOVABLE = new Set(['cone', 'mini', 'goal', 'pole', 'hurdle', 'flag', 'ball', 'hoop', 'text'])
+const PLAYER_TOOLS: [Team, Key][] = [['r', 'bRed'], ['b', 'bBlue'], ['y', 'bYellow'], ['w', 'bWhite'], ['o', 'bOrange'], ['g', 'bGrey'], ['k', 'bKeeper'], ['c', 'bCoach']]
+type Kit = { key: string; label: Key; col?: Key; make: (x: number, y: number) => Item; box?: number }
+const COLS: [ConeColor, Key][] = [['y', 'cYellow'], ['r', 'cRed'], ['b', 'cBlue']]
+const CONE_COLS: [ConeColor, Key][] = [['o', 'cOrange'], ...COLS]
+/** equipment on the board; each one is drawn with the same shapes as the book diagrams */
+const KIT: Kit[] = [
+  ...CONE_COLS.map(([c, col]): Kit => ({ key: 'cone' + c, label: 'bCone', col, make: (x, y) => ['cone', x, y, c], box: 9 })),
+  ...COLS.map(([c, col]): Kit => ({ key: 'disc' + c, label: 'bDisc', col, make: (x, y) => ['disc', x, y, c], box: 8 })),
+  { key: 'dummy', label: 'bDummy', make: (x, y) => ['dummy', x, y], box: 16 },
+  { key: 'pole', label: 'bPole', make: (x, y) => ['pole', x, y], box: 13 },
+  { key: 'hurdle', label: 'bHurdle', make: (x, y) => ['hurdle', x, y], box: 11 },
+  { key: 'arc', label: 'bArc', make: (x, y) => ['arc', x, y], box: 10 },
+  { key: 'ladder', label: 'bLadder', make: (x, y) => ['ladder', x - 8, y, x + 8, y], box: 22 },
+  ...COLS.filter(([c]) => c !== 'r').map(([c, col]): Kit => ({ key: 'hoop' + c, label: 'bHoop', col, make: (x, y) => ['hoop', x, y, c], box: 10 })),
+  ...COLS.map(([c, col]): Kit => ({ key: 'bib' + c, label: 'bBib', col, make: (x, y) => ['bib', x, y, c], box: 9 })),
+  { key: 'mini', label: 'bMini', make: (x, y) => ['mini', x, y, goalDir(x)], box: 13 },
+  { key: 'goal', label: 'bGoal', make: (x, y) => ['goal', x, y, goalDir(x)], box: 26 },
+  { key: 'flag', label: 'bFlag', make: (x, y) => ['flag', x, y], box: 13 },
+]
+const MOVABLE = new Set(['cone', 'disc', 'dummy', 'bib', 'arc', 'ladder', 'mark', 'mini', 'goal', 'pole', 'hurdle', 'flag', 'ball', 'hoop', 'text'])
+const TWO_POINT = new Set(['ladder', 'mark'])
+/** line styles of the line tool (see the 'mark' item) */
+const L_TYPES: [string, Key][] = [['s', 'lSolid'], ['d', 'lDashed'], ['w', 'lWavy'], ['c', 'lCurved'], ['e', 'lCurvedDashed']]
+const L_ENDS: [string, Key][] = [['a', 'lArrow'], ['x', 'lCross'], ['b', 'lBar'], ['n', 'lNone']]
+const L_COLS: [string, Key, string][] = [['w', 'cWhite', '#fff'], ['k', 'cBlack', '#0E1C15'], ['r', 'cRed', '#FF4A3D'], ['b', 'cBlue', '#3D7FE6'], ['y', 'cYellow', '#F6D83A']]
 
-export const blankScene = (): BookScene => ({ steps: 1, field: [['pitch', 'full']], players: [], balls: [] })
+export const blankScene = (): BookScene => ({ steps: 1, field: [['pitch', 'full'], ['goal', 4, 55, 'r', 12], ['goal', 196, 55, 'l', 12]], players: [], balls: [] })
 
 const padTo = <T,>(a: T[], n: number): T[] => (a.length >= n ? a : [...a, ...Array(n - a.length).fill(a[a.length - 1])])
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b)
@@ -42,22 +65,22 @@ const setBall = (sc: BookScene, i: number, s: number, v: BallStep): BookScene =>
   ...sc, balls: (sc.balls ?? []).map((t, j) => (j === i ? setAt<BallStep>(t, s, v, 0) : t)),
 })
 const goalDir = (x: number) => (x < 100 ? 'r' : 'l') as 'r' | 'l'
-function moveItem(it: Item, at: Pt): Item {
+/** Shift an item by (dx, dy); goals turn to face the middle of the pitch. */
+function shiftItem(it: Item, dx: number, dy: number): Item {
   const c = [...it] as unknown as (string | number)[]
-  c[1] = at[0]; c[2] = at[1]
-  if (it[0] === 'goal' || it[0] === 'mini') c[3] = goalDir(at[0])
+  c[1] = (c[1] as number) + dx; c[2] = (c[2] as number) + dy
+  if (TWO_POINT.has(it[0])) { c[3] = (c[3] as number) + dx; c[4] = (c[4] as number) + dy }
+  if (it[0] === 'goal' || it[0] === 'mini') c[3] = goalDir(c[1] as number)
   return c as unknown as Item
 }
-function newItem(kind: string, at: Pt): Item {
-  const [x, y] = at
-  switch (kind) {
-    case 'cone': return ['cone', x, y]
-    case 'mini': return ['mini', x, y, goalDir(x)]
-    case 'goal': return ['goal', x, y, goalDir(x)]
-    case 'pole': return ['pole', x, y]
-    case 'hurdle': return ['hurdle', x, y]
-    default: return ['flag', x, y]
-  }
+/** Distance from a tap to an item (to the whole line for lines and ladders). */
+function itemDist(it: Item, at: Pt): number {
+  const a: Pt = [it[1] as number, it[2] as number]
+  if (!TWO_POINT.has(it[0])) return dist(a, at)
+  const b: Pt = [it[3] as number, it[4] as number]
+  const vx = b[0] - a[0], vy = b[1] - a[1], l2 = vx * vx + vy * vy || 1
+  const f = Math.max(0, Math.min(1, ((at[0] - a[0]) * vx + (at[1] - a[1]) * vy) / l2))
+  return dist([a[0] + vx * f, a[1] + vy * f], at)
 }
 function removePlayer(sc: BookScene, id: string): BookScene {
   const p = sc.players.find((q) => q.id === id)!
@@ -83,7 +106,10 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
   const [preview, setPreview] = useState(false)
   const [all, setAll] = useState(false)
   const svgRef = useRef<SVGSVGElement>(null)
-  const drag = useRef<{ hit: Hit; moved: boolean } | null>(null)
+  const drag = useRef<{ hit: Hit; moved: boolean; last: Pt } | null>(null)
+  const [line, setLine] = useState({ type: 'd', end: 'a', col: 'w', w: 2 })
+  const [draft, setDraft] = useState<[Pt, Pt] | null>(null)
+  const [text, setText] = useState('')
 
   useEffect(() => {
     // capture first, so Escape closes only the board and not the form under it
@@ -110,9 +136,9 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
     // on a phone the pitch is small: keep every target at least ~22px wide for a finger
     const px = (svgRef.current?.getBoundingClientRect().width ?? 600) / 200
     const consider = (h: Hit, d: number, r0: number) => { const r = Math.max(r0, 11 / px); if (d < r && d - r * 0.3 < bd) { bd = d - r * 0.3; best = h } }
-    if (only !== 'b') sc.players.forEach((p) => consider({ kind: 'p', id: p.id }, dist(posAt(sc, p, s), at), 6.5))
+    if (only !== 'b') sc.players.forEach((p) => consider({ kind: 'p', id: p.id }, dist(posAt(sc, p, s), at), 6.5 * (sc.ps ?? 1)))
     if (only !== 'p') ballsP.forEach((tr, i) => { const b = ballAt(sc, tr, s); if (b) consider({ kind: 'b', i }, dist(b, at), 4.5) })
-    if (!only) sc.field.forEach((it, i) => { if (MOVABLE.has(it[0])) consider({ kind: 'i', i }, dist([it[1] as number, it[2] as number], at), 6) })
+    if (!only) sc.field.forEach((it, i) => { if (MOVABLE.has(it[0])) consider({ kind: 'i', i }, itemDist(it, at), it[0] === 'mark' ? 3.5 : 6) })
     return best
   }
   /** ball the pass tools act on: the selected one, the only one, or the one at a tapped player's feet */
@@ -130,7 +156,13 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
       if (!h) return
       ;(e.target as Element).setPointerCapture?.(e.pointerId)
       setHist((x) => [...x.slice(-40), sc])
-      drag.current = { hit: h, moved: false }
+      drag.current = { hit: h, moved: false, last: at }
+      return
+    }
+    if (tool === 'line') {
+      ;(e.target as Element).setPointerCapture?.(e.pointerId)
+      const p = clampPt(at)
+      setDraft([p, p])
       return
     }
     if (tool === 'del') {
@@ -163,6 +195,11 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
       setSel(balls.length)
       return
     }
+    if (kind === 'text') {
+      if (text.trim()) commit({ ...sc, field: [...sc.field, ['text', pt[0], pt[1], text.trim()]] })
+      else document.getElementById('tb-text')?.focus()
+      return
+    }
     if (kind.length === 1) {
       const team = kind as Team
       const id = nextId(sc, team)
@@ -171,19 +208,29 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
       commit({ ...sc, players: [...sc.players, { id, t: team, p: [pt], ...(l ? { l } : {}) }] })
       return
     }
-    commit({ ...sc, field: [...sc.field, newItem(kind, pt)] })
+    const kit = KIT.find((k) => k.key === kind)
+    if (kit) commit({ ...sc, field: [...sc.field, kit.make(pt[0], pt[1])] })
   }
   const move = (e: React.PointerEvent) => {
+    if (draft) { const p = clampPt(toPt(e)); setDraft([draft[0], p]); return }
     const d = drag.current
     if (!d) return
-    const at = clampPt(toPt(e))
+    const raw = toPt(e), at = clampPt(raw)
+    const dx = raw[0] - d.last[0], dy = raw[1] - d.last[1]
+    d.last = raw
     d.moved = true
     const h = d.hit
     setSc((cur) => h.kind === 'p' ? movePlayer(cur, h.id, s, at)
       : h.kind === 'b' ? setBall(cur, h.i, s, at)
-      : { ...cur, field: cur.field.map((it, i) => (i === h.i ? moveItem(it, at) : it)) })
+      : { ...cur, field: cur.field.map((it, i) => (i === h.i ? shiftItem(it, dx, dy) : it)) })
   }
   const up = (e: React.PointerEvent) => {
+    if (draft) {
+      const [a, b] = draft
+      setDraft(null)
+      if (dist(a, b) > 4) commit({ ...sc, field: [...sc.field, ['mark', a[0], a[1], b[0], b[1], line.type + line.end + line.col + line.w]] })
+      return
+    }
     const d = drag.current
     drag.current = null
     if (!d) return
@@ -214,6 +261,8 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
   const hintKey: Key = tool === 'move' ? (s === 0 ? 'bHintStart' : 'bHintMove')
     : tool === 'del' ? 'bHintDel'
     : tool === 'pass' || tool === 'shot' || tool === 'lob' ? (s === 0 ? 'bHintPass0' : 'bHintPass')
+    : tool === 'line' ? 'bHintLine'
+    : tool === 'add:text' ? 'bHintText'
     : 'bHintAdd'
   const selBall = sel !== null && ballsP[sel] ? ballAt(sc, ballsP[sel], s) : null
   const toolBtn = (v: Tool, label: string, icon: React.ReactNode) => (
@@ -221,16 +270,14 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
       <span className="tb-ic" aria-hidden="true">{icon}</span><span>{label}</span>
     </button>
   )
+  const kitBtn = (v: Tool, label: string, icon: React.ReactNode) => (
+    <button type="button" key={v} className="tb-kitbtn" aria-pressed={tool === v} onClick={() => { setTool(v); setPreview(false) }} title={label} aria-label={label}>{icon}</button>
+  )
   const dot = (team: Team) => <svg viewBox="-6 -6 12 12" width="18" height="18"><circle r={4.6} fill={TEAM[team].fill} stroke={team === 'w' || team === 'y' ? '#1C2A22' : '#fff'} strokeWidth={1.2} /></svg>
-  const kitIc: Record<string, React.ReactNode> = {
-    ball: <svg viewBox="-6 -6 12 12" width="18" height="18"><circle r={3.6} fill="#fff" stroke="#16231C" strokeWidth={1} /></svg>,
-    cone: <svg viewBox="0 0 12 12" width="18" height="18"><path d="M2 10L6 2L10 10Z" fill="#F28A30" /></svg>,
-    mini: <svg viewBox="0 0 12 12" width="18" height="18"><rect x="4" y="2" width="4" height="8" fill="none" stroke="currentColor" strokeWidth="1.2" /></svg>,
-    goal: <svg viewBox="0 0 12 12" width="18" height="18"><rect x="3" y="1" width="6" height="10" fill="none" stroke="currentColor" strokeWidth="1.6" /></svg>,
-    pole: <svg viewBox="0 0 12 12" width="18" height="18"><path d="M6 1V10" stroke="#E0B400" strokeWidth="1.8" /><circle cx="6" cy="10" r="1.6" fill="#E0B400" /></svg>,
-    hurdle: <svg viewBox="0 0 12 12" width="18" height="18"><path d="M2 6H10" stroke="#E0B400" strokeWidth="2.2" strokeLinecap="round" /></svg>,
-    flag: <svg viewBox="0 0 12 12" width="18" height="18"><path d="M3 11V1" stroke="currentColor" strokeWidth="1" /><path d="M3 1l6 2l-6 2z" fill="#E0B400" /></svg>,
-  }
+  /** a small picture of a kit item, drawn with the board's own shapes */
+  const kitIc = (k: Kit) => { const r = (k.box ?? 16) / 2; const it = k.make(0, 0); const shown = (it[0] === 'goal' || it[0] === 'mini') ? ([it[0], 0, -r * 0.25, 'u', it[0] === 'goal' ? 22 : 11] as Item) : it; return <svg viewBox={`${-r} ${-r} ${r * 2} ${r * 2}`} width="26" height="26"><g>{item(shown, 0, fid + 'net')}</g></svg> }
+  const ballIc = <svg viewBox="-5 -5 10 10" width="24" height="24">{soccerBall(0, 0, 4, "b", false)}</svg>
+  const lineIc = (st: string) => <svg viewBox="0 0 30 12" width="34" height="14"><rect width="30" height="12" rx="2.5" fill="#2E8B57" />{item(['mark', 3, 8, 26, 5, st], 0, fid + 'net')}</svg>
   const arrowIc = (dash?: string, curve?: boolean) => <svg viewBox="0 0 20 12" width="20" height="12"><path d={curve ? 'M2 10Q10 -2 17 8' : 'M2 6H16'} fill="none" stroke="currentColor" strokeWidth="1.6" strokeDasharray={dash} /><path d={curve ? 'M14 9l4 0l-1-4z' : 'M15 3l4 3l-4 3z'} fill="currentColor" /></svg>
 
   return (
@@ -253,11 +300,12 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
               {sc.field.map((it, i) => item(it, i, fid + 'net'))}
               {all && sc.steps > 1 && <MarkPaths scene={sc} ms={marks(sc, 0, sc.steps - 1)} id={fid} opacity={0.35} />}
               {s > 0 && <>
-                {sc.players.map((p) => { const a = posAt(sc, p, s - 1), b = posAt(sc, p, s); return dist(a, b) > 1.5 ? <circle key={'g' + p.id} cx={a[0]} cy={a[1]} r={4.4} fill={TEAM[p.t].fill} opacity={0.3} /> : null })}
+                {sc.players.map((p) => { const a = posAt(sc, p, s - 1), b = posAt(sc, p, s); return dist(a, b) > 1.5 ? <circle key={'g' + p.id} cx={a[0]} cy={a[1]} r={4.4 * (sc.ps ?? 1)} fill={TEAM[p.t].fill} opacity={0.3} /> : null })}
                 <MarkPaths scene={sc} ms={marks(sc, s - 1, s)} id={fid} />
               </>}
               {selBall && (tool === 'pass' || tool === 'shot' || tool === 'lob') && <circle cx={selBall[0]} cy={selBall[1]} r={4.6} fill="none" stroke="#FFE45C" strokeWidth={1} />}
-              {sc.players.map((p) => playerDot(p.t, posAt(sc, p, s), p.l, 'p' + p.id))}
+              {draft && dist(draft[0], draft[1]) > 1 && item(['mark', ...draft[0], ...draft[1], line.type + line.end + line.col + line.w], 999, fid + 'net')}
+              {sc.players.map((p) => playerDot(p.t, posAt(sc, p, s), p.l, 'p' + p.id, sc.ps))}
               {ballsP.map((tr, i) => { const b = ballAt(sc, tr, s); return b ? ballDot(b, 'b' + i) : null })}
             </Frame>
           )}
@@ -287,8 +335,30 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
           </div>
           <h3 className="tb-h">{t('bPlayers')}</h3>
           <div className="tb-tools">{PLAYER_TOOLS.map(([team, k]) => toolBtn(`add:${team}`, t(k), dot(team)))}</div>
+          <div className="tb-size">
+            <span>{t('bSize')}</span>
+            <button type="button" className="tb-tool" aria-label={t('bSmaller')} disabled={(sc.ps ?? 1) <= 0.6} onClick={() => commit({ ...sc, ps: Math.max(0.6, Math.round(((sc.ps ?? 1) - 0.1) * 10) / 10) })}>−</button>
+            <input type="range" min={0.6} max={1.6} step={0.1} value={sc.ps ?? 1} aria-label={t('bSize')} onChange={(e) => commit({ ...sc, ps: Number(e.target.value) })} />
+            <button type="button" className="tb-tool" aria-label={t('bBigger')} disabled={(sc.ps ?? 1) >= 1.6} onClick={() => commit({ ...sc, ps: Math.min(1.6, Math.round(((sc.ps ?? 1) + 0.1) * 10) / 10) })}>+</button>
+            <b>{Math.round((sc.ps ?? 1) * 100)}%</b>
+          </div>
           <h3 className="tb-h">{t('bKit')}</h3>
-          <div className="tb-tools">{KIT_TOOLS.map(([kind, k]) => toolBtn(`add:${kind}` as Tool, t(k), kitIc[kind]))}</div>
+          <div className="tb-tools tb-kit">
+            {kitBtn('add:ball', t('bBall'), ballIc)}
+            {KIT.map((k) => kitBtn('add:' + k.key, t(k.label) + (k.col ? ' · ' + t(k.col) : ''), kitIc(k)))}
+            {kitBtn('add:text', t('bText'), <b className="tb-T">T</b>)}
+          </div>
+          {tool === 'add:text' && <input id="tb-text" className="tb-text" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('bTextPh')} aria-label={t('bText')} />}
+          <h3 className="tb-h">{t('bLines')}</h3>
+          <div className="tb-tools">{toolBtn('line', t('bDraw'), lineIc(line.type + line.end + line.col + line.w))}</div>
+          {tool === 'line' && (
+            <div className="tb-lines">
+              <div className="tb-tools">{L_TYPES.map(([v, k]) => <button type="button" key={v} className="tb-tool" aria-pressed={line.type === v} title={t(k)} aria-label={t(k)} onClick={() => setLine({ ...line, type: v })}>{lineIc(v + 'n' + line.col + line.w)}</button>)}</div>
+              <div className="tb-tools">{L_ENDS.map(([v, k]) => <button type="button" key={v} className="tb-tool" aria-pressed={line.end === v} title={t(k)} aria-label={t(k)} onClick={() => setLine({ ...line, end: v })}>{lineIc('s' + v + line.col + line.w)}</button>)}</div>
+              <div className="tb-tools">{L_COLS.map(([v, k, c]) => <button type="button" key={v} className="tb-sw" aria-pressed={line.col === v} title={t(k)} aria-label={t(k)} onClick={() => setLine({ ...line, col: v })}><i style={{ background: c }} /></button>)}</div>
+              <div className="tb-tools">{[1, 2, 3, 4].map((w) => <button type="button" key={w} className="tb-sw" aria-pressed={line.w === w} aria-label={t('lWidth') + ' ' + w} onClick={() => setLine({ ...line, w })}><i className="tb-w" style={{ width: 3 + w * 3, height: 3 + w * 3 }} /></button>)}</div>
+            </div>
+          )}
           <h3 className="tb-h">{t('bField')}</h3>
           <div className="tb-tools">
             {(['full', 'right', 'free'] as const).map((f) => (

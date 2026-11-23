@@ -5,10 +5,10 @@ import { update, useData, setPrefs } from '../store'
 import { iso, uid } from '../dates'
 import type { Session, Template } from '../types'
 
-export function SessionForm({ session, defaultDate, template, onClose }: { session?: Session; defaultDate?: string; template?: Template; onClose: () => void }) {
+export function SessionForm({ session, defaultDate, template, goal: goal0, onClose }: { session?: Session; defaultDate?: string; template?: Template; goal?: string; onClose: () => void }) {
   const { t, L } = useT()
   const data = useData()
-  const [goal, setGoal] = useState(session?.goal ?? (template ? L(template.title) : ''))
+  const [goal, setGoal] = useState(session?.goal ?? goal0 ?? (template ? L(template.title) : ''))
   const [date, setDate] = useState(session?.date ?? defaultDate ?? iso(new Date()))
   const [time, setTime] = useState(session?.time ?? '16:00')
   const [group, setGroup] = useState(session?.group ?? (template && data.groups.includes(template.group) ? template.group : data.groups[0] ?? 'U12'))

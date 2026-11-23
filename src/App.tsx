@@ -11,6 +11,7 @@ import { useIsAdmin } from './admin/api'
 
 const AdminApp = lazy(() => import('./admin/Admin'))
 const isAdminHash = () => location.hash.replace(/^#\/?/, '').startsWith('admin')
+import { SharedDrill } from './components/SharedDrill'
 
 const ICON: Record<Tab, React.ReactNode> = {
   plan: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 8h8M8 12h8M8 16h5" /></svg>,
@@ -67,6 +68,7 @@ function CoachApp() {
       </aside>
       <main><div className="wrap"><Page /></div></main>
       {sync && <SyncPanel onClose={() => setSync(false)} />}
+      <SharedDrill />
     </div>
   )
 }
