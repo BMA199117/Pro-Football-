@@ -8,7 +8,6 @@ import { DrillDetail } from '../components/DrillDetail'
 import { AccessChip, PaywallModal } from '../premium/Locked'
 import { hasPremium, isLocked, useAccess } from '../premium/access'
 import { RunSession } from '../components/RunSession'
-import { SessionPrintButton } from '../components/SessionPrint'
 import { sampleData } from '../sample'
 import { parse, weekdayIndex } from '../dates'
 import { PHASES, type Drill, type Phase, type Template } from '../types'
@@ -125,7 +124,6 @@ export function Plan() {
             </div>
             <div className="row">
               {total > 0 && <button className="btn small cone-btn" onClick={() => setRunning(true)}>▶ {t('start')}</button>}
-              {total > 0 && <SessionPrintButton session={s} byId={byId} />}
               <button className="btn ghost small" onClick={() => setForm('edit')}>{t('edit')}</button>
               <ConfirmButton label={t('del')} confirmLabel={t('yes')} onConfirm={() => update((d) => ({ ...d, sessions: d.sessions.filter((x) => x.id !== s.id) }))} />
             </div>
