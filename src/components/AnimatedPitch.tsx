@@ -7,14 +7,17 @@ import { bookSteps, type BookScene } from '../book/scene'
 import { narrate } from '../book/narrate'
 import { BookFrame, BookStatic } from './BookPitch'
 import { useT } from '../hooks'
-import { BODY } from '../body'
+import { getContent, useContent } from '../content'
+import { LockedPitch } from '../premium/Locked'
 import { BodyPlayer, BodyStatic, BodySteps } from './BodyFigure'
 
 const reduceMotion = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
 /** Static diagram for a drill: the book drawing when we have it, else the generic one. */
 export function DrillPitch({ id, type, maxHeight }: { id?: string; type: Diagram; maxHeight?: number }) {
-  const body = id ? BODY[id] : undefined
+  const c = useContent()
+  if (id && c.locked(id)) return <LockedPitch maxHeight={maxHeight} />
+  const body = id ? c.body(id) : undefined
   if (body) return <BodyStatic prog={body} maxHeight={maxHeight} />
   const book = sceneOf(id)
   return book ? <BookStatic scene={book} maxHeight={maxHeight} /> : <Pitch type={type} maxHeight={maxHeight} />
@@ -109,7 +112,9 @@ export function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; a
  * Stopped at the start it shows the static diagram with arrows.
  */
 export function AnimatedPitch({ id, type, autoPlay = true, maxHeight }: { id?: string; type: Diagram; autoPlay?: boolean; maxHeight?: number }) {
-  const body = id ? BODY[id] : undefined
+  const c = useContent()
+  if (id && c.locked(id)) return <LockedPitch maxHeight={maxHeight} />
+  const body = id ? c.body(id) : undefined
   if (body) return <BodyPlayer key={id} prog={body} autoPlay={autoPlay} maxHeight={maxHeight} />
   const book = sceneOf(id)
   if (book) return <BookPlayer key={id} scene={book} autoPlay={autoPlay} maxHeight={maxHeight} />
@@ -136,7 +141,7 @@ export function DrillViews({ id, type, maxHeight }: { id?: string; type: Diagram
         {view !== 'dia' && <figure className="view-anim"><AnimatedPitch id={id} type={type} maxHeight={maxHeight} />{view === 'both' && <figcaption>{t('vAnim')}</figcaption>}</figure>}
         {view !== 'anim' && <figure className="view-dia"><DrillPitch id={id} type={type} maxHeight={maxHeight} />{view === 'both' && <figcaption>{t('vDia')}</figcaption>}</figure>}
       </div>
-      {id && BODY[id] && <BodySteps prog={BODY[id]} />}
+      {id && getContent().body(id) && <BodySteps prog={getContent().body(id)!} />}
       {sceneOf(id) && <StepList scene={sceneOf(id)!} />}
     </div>
   )

@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { BOOK_SCENES } from '../book'
 import type { BookScene } from '../book/scene'
 import { BookStatic } from '../components/BookPitch'
 import { BookPlayer } from '../components/AnimatedPitch'
@@ -49,7 +48,7 @@ const DIAGRAMS: Diagram[] = ['pass', 'dribble', 'rondo', 'smallgame', 'shoot', '
 export function DrillEditor({ entry, onDone }: Props<'drill'>) {
   const d = entry?.item
   const builtin = !!d && isBuiltin('drill', d.id)
-  const bookScene = d ? BOOK_SCENES[d.id] : undefined
+  const bookScene = d ? getContent().bookScene(d.id) : undefined
   const [name, setName] = useState(toPair(d?.name))
   const [desc, setDesc] = useState(toPair(d?.desc))
   const [equip, setEquip] = useState(toPair(d?.equip))

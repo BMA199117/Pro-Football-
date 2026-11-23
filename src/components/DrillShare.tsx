@@ -7,7 +7,7 @@ import { narrate } from '../book/narrate'
 import { bookSteps } from '../book/scene'
 import { useT } from '../hooks'
 import { SOURCES } from '../sources'
-import { BENEFITS } from '../benefits'
+import { getContent } from '../content'
 import { SKILLS } from '../skills'
 import { ageText } from '../ages'
 import { drillLink } from '../share'
@@ -60,7 +60,7 @@ export function DrillShare({ drill }: { drill: Drill }) {
 function PrintSheet({ drill }: { drill: Drill }) {
   const { t, L, lang } = useT()
   const scene = sceneOf(drill.id)
-  const ben = BENEFITS[drill.id]
+  const ben = getContent().benefit(drill.id)
   const story = scene ? narrate(scene, lang) : []
   const n = scene ? bookSteps(scene) - 1 : 0
   return (

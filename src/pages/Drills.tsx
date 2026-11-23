@@ -4,8 +4,9 @@ import { update, useData } from '../store'
 import { DrillDetail } from '../components/DrillDetail'
 import { DrillPitch } from '../components/AnimatedPitch'
 import { useContent } from '../content'
-import { BODY } from '../body'
-import { ageRange, ageText } from '../ages'
+import { AccessChip, PaywallModal } from '../premium/Locked'
+import { hasPremium, useAccess } from '../premium/access'
+import { ageText, BANDS, fitsBand, type Band } from '../ages'
 import { ConfirmButton } from '../components/Modal'
 import { uid } from '../dates'
 import { DrillForm } from '../components/DrillForm'
@@ -13,15 +14,6 @@ import { Board } from '../components/Board'
 import { CATEGORIES, type Category, type Drill } from '../types'
 
 const CAT_COLOR: Record<Category, string> = { tech: 'var(--pitch)', tact: 'var(--blue)', phys: 'var(--cone)', gk: 'var(--purple)' }
-type Band = { id: string; label: string; from: number; to: number }
-const BANDS: Band[] = [
-  { id: 'u8', label: 'U6–U8', from: 6, to: 8 },
-  { id: 'u10', label: 'U9–U10', from: 9, to: 10 },
-  { id: 'u12', label: 'U11–U12', from: 11, to: 12 },
-  { id: 'u14', label: 'U13–U14', from: 13, to: 14 },
-  { id: 'u17', label: 'U15–U17', from: 15, to: 17 },
-  { id: 'pro', label: '', from: 18, to: 99 },
-]
 /** "U9–U12" → "U9, U10, U11, U12" (long ranges stay short) */
 const ageList = (r: string) => {
   const n = r.match(/\d+/g)?.map(Number) ?? []
@@ -32,8 +24,14 @@ const ageList = (r: string) => {
 export function Drills() {
   const { t, L } = useT()
   // drills drawn from the books first, so every card looks like its own exercise
-  const { scene } = useContent()
-  const drills = [...useDrills()].sort((a, b) => Number(a.custom || !(scene(a.id) || BODY[a.id])) - Number(b.custom || !(scene(b.id) || BODY[b.id])))
+  const { scene, body, locked } = useContent()
+  const access = useAccess()
+  const paid = !hasPremium(access) // the coach sees free and closed drills
+  const [pw, setPw] = useState<Drill | null>(null)
+  const open = (d: Drill) => (!d.custom && locked(d.id) ? setPw(d) : setDetail(d))
+  const drills = [...useDrills()].sort((a, b) => Number(a.custom || !(scene(a.id) || body(a.id))) - Number(b.custom || !(scene(b.id) || body(b.id))))
+    // without premium the free drills come first
+    .sort((a, b) => Number(!a.custom && locked(a.id)) - Number(!b.custom && locked(b.id)))
   const [cat, setCat] = useState<Category | 'all'>('all')
   const [q, setQ] = useState('')
   const [adding, setAdding] = useState(false)
@@ -43,7 +41,6 @@ export function Drills() {
   const [onlyBooks, setOnlyBooks] = useState(false)
   const [detail, setDetail] = useState<Drill | null>(null)
   const favs = useData().favorites ?? []
-  const fitsBand = (r: string, b: Band) => { const [a, z] = ageRange(r); return a <= b.to && z >= b.from }
   const bandLabel = (b: Band) => (b.id === 'pro' ? t('proBand') : b.label)
   const bandYears = (b: Band) => (b.to >= 99 ? `${b.from}+` : `${b.from}–${b.to}`)
   const base = drills.filter((d) => (cat === 'all' || d.cat === cat) && (view !== 'fav' || favs.includes(d.id)) && (view !== 'mine' || !!d.custom) && (!onlyBooks || !!d.source) &&
@@ -55,9 +52,9 @@ export function Drills() {
   const sections = band ? [{ band, list: shown }] : BANDS.map((b) => ({ band: b, list: base.filter((d) => BANDS.find((x) => fitsBand(d.age, x)) === b) })).filter((s) => s.list.length)
   const card = (d: Drill) => (
           <article className="card" key={d.id}>
-            <button className="card-open" onClick={() => setDetail(d)} aria-label={L(d.name)}><DrillPitch id={d.id} type={d.dia} maxHeight={110} /><span className="play-badge" aria-hidden="true">▶</span></button>
+            <button className="card-open" onClick={() => open(d)} aria-label={L(d.name)}><DrillPitch id={d.id} type={d.dia} maxHeight={110} /><span className="play-badge" aria-hidden="true">▶</span></button>
             <div className="b">
-              <button className="n link" onClick={() => setDetail(d)}>{favs.includes(d.id) && <span className="fav">★ </span>}{L(d.name)}</button>
+              <button className="n link" onClick={() => open(d)}>{favs.includes(d.id) && <span className="fav">★ </span>}{L(d.name)}</button>
               <p>{L(d.desc)}</p>
               <dl className="facts">
                 {d.players && <><dt>{t('playersCount')}</dt><dd>{d.players}</dd></>}
@@ -68,6 +65,7 @@ export function Drills() {
                 <span className="chip" style={{ boxShadow: `inset 3px 0 0 ${CAT_COLOR[d.cat]}` }}>{t(d.cat)}</span>
                 <span className="chip cone">{d.min} {t('min')}</span>
                 {d.source && <span className="chip book" title={t('source')}>📖</span>}
+                {paid && !d.custom && <AccessChip locked={locked(d.id)} />}
               </div>
               {d.custom && (
                 <ConfirmButton label={t('del')} confirmLabel={t('yes')}
@@ -108,7 +106,7 @@ export function Drills() {
       </div>
       {sections.map(({ band: b, list }) => (
         <section key={b.id} className="band">
-          <h2 className="band-h">{bandLabel(b)} <span>· {bandYears(b)} {t('years')} · {list.length} {t('drillsN')}</span></h2>
+          <h2 className="band-h">{bandLabel(b)} <span>· {bandYears(b)} {t('years')} · {list.length} {t('drillsN')}{paid && <> · {list.filter((d) => d.custom || !locked(d.id)).length} {t('freeN')}</>}</span></h2>
           <div className="cards">{list.map(card)}</div>
         </section>
       ))}
@@ -120,6 +118,7 @@ export function Drills() {
         update((x) => ({ ...x, customDrills: [d, ...x.customDrills] }))
         setDrawing(false); setView('mine'); setDetail(d)
       }} />}
+      {pw && <PaywallModal title={L(pw.name)} why="drill" onClose={() => setPw(null)} />}
       {detail && <DrillDetail drill={detail} onClose={() => setDetail(null)} />}
     </>
   )

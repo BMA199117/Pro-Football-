@@ -5,6 +5,8 @@ import { DrillPitch } from '../components/AnimatedPitch'
 import { Modal, ConfirmButton } from '../components/Modal'
 import { SessionForm } from './SessionForm'
 import { DrillDetail } from '../components/DrillDetail'
+import { AccessChip, PaywallModal } from '../premium/Locked'
+import { hasPremium, isLocked, useAccess } from '../premium/access'
 import { RunSession } from '../components/RunSession'
 import { sampleData } from '../sample'
 import { parse, weekdayIndex } from '../dates'
@@ -25,6 +27,10 @@ export function Plan() {
   const [running, setRunning] = useState(false)
   const [tplOpen, setTplOpen] = useState(false)
   const [tpl, setTpl] = useState<Template | null>(null)
+  const access = useAccess()
+  const paid = !hasPremium(access)
+  const [pw, setPw] = useState<{ title: string; why: 'drill' | 'plan' } | null>(null)
+  const dLocked = (d: Drill) => !d.custom && isLocked('drill', d.id, access)
 
   const sorted = [...data.sessions].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
   const s = sorted.find((x) => x.id === selected) ?? sorted[0]
@@ -42,18 +48,20 @@ export function Plan() {
   const tplMins = (x: Template) => PHASES.reduce((a, p) => a + x.phases[p].reduce((b, id) => b + (byId.get(id)?.min ?? 0), 0), 0)
   const modals = (
     <>
+      {pw && <PaywallModal title={pw.title} why={pw.why} onClose={() => setPw(null)} />}
       {tplOpen && (
         <Modal title={t('templates')} onClose={() => setTplOpen(false)}>
           <p className="sub" style={{ margin: 0 }}>{t('templatesSub')}</p>
           {TEMPLATE_AGES.map((age) => (
             <div key={age} className="list">
               <h3 className="label">{age === 'Pro' ? t('proAges') : `${age} ${t('ages')}`}</h3>
-              {TEMPLATES.filter((x) => x.ages === age).map((x) => (
-                <button key={x.id} className="pick tpl" onClick={() => { setTpl(x); setTplOpen(false) }}>
+              {TEMPLATES.filter((x) => x.ages === age).sort((a, b) => Number(isLocked('plan', a.id, access)) - Number(isLocked('plan', b.id, access))).map((x) => (
+                <button key={x.id} className="pick tpl" onClick={() => { if (isLocked('plan', x.id, access)) { setPw({ title: L(x.title), why: 'plan' }); return } setTpl(x); setTplOpen(false) }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <b>{L(x.title)}</b>
                     <div className="m">{L(x.focus)}</div>
                   </div>
+                  {paid && <AccessChip locked={isLocked('plan', x.id, access)} />}
                   <span className="chip cone">{tplMins(x)} {t('min')}</span>
                 </button>
               ))}
@@ -159,10 +167,11 @@ export function Plan() {
       {picking && (
         <Modal title={`${t('choose')} · ${t(picking)}`} onClose={() => setPicking(null)}>
           <div className="list">
-            {drills.map((d) => (
-              <button key={d.id} className="pick" onClick={() => { editPhase(picking, (ids) => [...ids, d.id]); setPicking(null) }}>
+            {[...drills].sort((a, b) => Number(dLocked(a)) - Number(dLocked(b))).map((d) => (
+              <button key={d.id} className="pick" onClick={() => { if (dLocked(d)) { setPw({ title: L(d.name), why: 'drill' }); return } editPhase(picking, (ids) => [...ids, d.id]); setPicking(null) }}>
                 <div style={{ width: 70, flex: 'none' }}><DrillPitch id={d.id} type={d.dia} maxHeight={40} /></div>
                 <div style={{ flex: 1 }}><b>{L(d.name)}</b><div className="m">{t(d.cat)} · {d.min} {t('min')}</div></div>
+                {paid && !d.custom && <AccessChip locked={dLocked(d)} />}
               </button>
             ))}
           </div>

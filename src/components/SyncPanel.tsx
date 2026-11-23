@@ -1,3 +1,4 @@
+import { PremiumLine } from '../premium/Locked'
 import { useState } from 'react'
 import { Modal } from './Modal'
 import { useT } from '../hooks'
@@ -61,6 +62,7 @@ export function SyncPanel({ onClose }: { onClose: () => void }) {
       {status === 'disabled' ? <p>{t('syncNotSet')}</p> : email ? (
         <div className="sync-in">
           <p>{t('signedAs')} <b>{email}</b></p>
+          <PremiumLine />
           <p className={'sync-line s-' + status}><span className="sdot" />{t(STATUS_KEY[status])}{time && <span className="muted"> · {t('lastSync')}: {time}</span>}</p>
           {pending > 0 && <p className="note">{pending} {t('pendingN')}</p>}
           <div className="row"><button className="btn ghost" disabled={status === 'syncing'} onClick={() => syncNow()}>{t('syncNow')}</button></div>

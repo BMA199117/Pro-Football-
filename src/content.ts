@@ -9,11 +9,12 @@
 import { useSyncExternalStore } from 'react'
 import { supabase } from './sync'
 import type { Drill, KnowledgeCard, Template } from './types'
-import { LIBRARY } from './library'
-import { BOOK_SCENES } from './book'
+import { CATALOG, localDetails } from './content-source'
 import type { BookScene } from './book/scene'
-import { BENEFITS } from './benefits'
+import type { BodyProgram } from './body/program'
 import type { Benefit } from './skills'
+import { getAccess, isLocked, serverDetails, subscribeAccess, hasPremium } from './premium/access'
+import { toCatalog, type Details } from './premium/split'
 import { KNOWLEDGE } from './knowledge'
 import { TEMPLATES, TEMPLATE_AGES } from './templates'
 import { SOURCES } from './sources'
@@ -39,9 +40,8 @@ export interface ContentRow { kind: Kind; id: string; data: unknown; hidden: boo
 
 /* ---------- built-in content ---------- */
 const sourceList: SourceData[] = Object.entries(SOURCES).map(([id, s]) => ({ id, ...s }))
-const drillsWithBenefit: DrillData[] = LIBRARY.map((d) => (BENEFITS[d.id] ? { ...d, benefit: BENEFITS[d.id] } : d))
 export const BUILTIN: { [K in Kind]: ItemOf[K][] } = {
-  drill: drillsWithBenefit,
+  drill: CATALOG,
   card: KNOWLEDGE,
   plan: TEMPLATES,
   stage: DEV_STAGES,
@@ -97,13 +97,23 @@ export interface Content {
   principles: DevPrinciple[]
   sources: Record<string, { title: string; author: string }>
   scene: (id: string) => BookScene | undefined
+  /** the drawing from the book (not the admin's), for the admin editor */
+  bookScene: (id: string) => BookScene | undefined
+  body: (id: string) => BodyProgram | undefined
   benefit: (id: string) => Benefit | undefined
+  /** the drill is closed for this coach (paid) */
+  locked: (id: string) => boolean
   /** Everything incl. hidden items, with their state (for the admin panel). */
   all: { [K in Kind]: Entry<K>[] }
 }
 
+/** Drill rows of the admin this coach may not read in full: only their catalog part (server function content_drill_meta). */
+let metaRows: Record<string, ContentRow> = {}
+
 function entries<K extends Kind>(kind: K): Entry<K>[] {
-  const rows = Object.values(cache.rows).filter((r) => r.kind === kind && !r.deleted)
+  const own = Object.values(cache.rows).filter((r) => r.kind === kind && !r.deleted)
+  const ids = new Set(own.map((r) => r.id))
+  const rows = kind === 'drill' ? [...own, ...Object.values(metaRows).filter((r) => !r.deleted && !ids.has(r.id))] : own
   const byId = new Map(rows.map((r) => [r.id, r]))
   const out: Entry<K>[] = []
   // items the admin added come first (newest first), then the built-in ones in their order
@@ -117,8 +127,26 @@ function entries<K extends Kind>(kind: K): Entry<K>[] {
   return out
 }
 
+/** The details of a drill: the admin's version, else the server's (paid version), else the book's (shipped). */
+const detailsOf = (id: string): Details | undefined => serverDetails(id) ?? localDetails(id)
+
 function build(): Content {
   const all = Object.fromEntries(KINDS.map((k) => [k, entries(k)])) as Content['all']
+  const locked = (id: string) => isLocked('drill', id)
+  // a closed drill keeps only its catalog part; an open built-in one gets its details
+  all.drill = all.drill.map((e) => {
+    const id = e.item.id
+    if (locked(id)) return { ...e, item: toCatalog(e.item) as DrillData }
+    if (e.changed) return e
+    const d = detailsOf(id)
+    if (!d) return e
+    const item: DrillData = { ...e.item }
+    if (d.desc) item.desc = d.desc
+    if (d.points) item.points = d.points
+    if (d.video) item.video = d.video
+    if (d.benefit) item.benefit = d.benefit
+    return { ...e, item }
+  })
   const visible = <K extends Kind>(k: K) => all[k].filter((e) => !e.hidden).map((e) => e.item)
   const drillMap = new Map(all.drill.map((e) => [e.item.id, e.item]))
   const plans = visible('plan')
@@ -131,8 +159,11 @@ function build(): Content {
     stages: visible('stage'),
     principles: visible('principle'),
     sources: Object.fromEntries(all.source.map((e) => [e.item.id, { title: e.item.title, author: e.item.author }])),
-    scene: (id) => drillMap.get(id)?.scene ?? BOOK_SCENES[id],
+    scene: (id) => (locked(id) ? undefined : drillMap.get(id)?.scene ?? detailsOf(id)?.scene),
+    bookScene: (id) => (locked(id) ? undefined : detailsOf(id)?.scene),
+    body: (id) => (locked(id) ? undefined : detailsOf(id)?.body),
     benefit: (id) => drillMap.get(id)?.benefit,
+    locked,
     all,
   }
 }
@@ -140,6 +171,15 @@ function build(): Content {
 let content = build()
 const listeners = new Set<() => void>()
 function changed() { content = build(); listeners.forEach((l) => l()) }
+
+/* access changes (sign-in, premium, free list) rebuild the view; gaining access re-reads the admin's rows in full */
+const accessKey = () => { const a = getAccess(); return (a.uid ?? '-') + ':' + hasPremium(a) }
+let lastAccess = accessKey()
+subscribeAccess(() => {
+  const k = accessKey()
+  if (k !== lastAccess) { lastAccess = k; cache.cursor = null; metaRows = {}; refreshContent() }
+  changed()
+})
 export const getContent = () => content
 export const useContent = () => useSyncExternalStore((l) => { listeners.add(l); return () => listeners.delete(l) }, getContent)
 
@@ -179,6 +219,14 @@ export function refreshContent(): Promise<void> {
       if (data.length < 1000) break
       after = (data[data.length - 1] as ContentRow).updated_at
     }
+    // drills the coach may not open: their catalog part only
+    if (!hasPremium()) {
+      const { data, error } = await sb.rpc('content_drill_meta')
+      if (!error && Array.isArray(data)) {
+        metaRows = Object.fromEntries((data as ContentRow[]).filter((r) => r.data == null || valid('drill', r.data)).map((r) => [r.id, { ...r, kind: 'drill' as const }]))
+        changed()
+      }
+    } else if (Object.keys(metaRows).length) { metaRows = {}; changed() }
   })().finally(() => { loading = null })
   return loading
 }

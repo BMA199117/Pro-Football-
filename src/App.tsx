@@ -40,6 +40,7 @@ function CoachApp() {
   const admin = useIsAdmin()
   const { t } = useT()
   const [sync, setSync] = useState(false)
+  useEffect(() => { const on = () => setSync(true); window.addEventListener('pf-open-account', on); return () => window.removeEventListener('pf-open-account', on) }, [])
   useEffect(() => { document.documentElement.lang = lang; document.title = t('appName') }, [lang, t])
   const Page = { plan: Plan, drills: Drills, team: Team, cal: Calendar, know: Knowledge }[tab]
   return (

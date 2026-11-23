@@ -29,6 +29,9 @@ jobs:
           BASE_PATH: /${{ github.event.repository.name }}/
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # paid version: contact for subscriptions and the price line (repository variables, optional)
+          VITE_CONTACT_URL: ${{ vars.VITE_CONTACT_URL }}
+          VITE_PRICE_TEXT: ${{ vars.VITE_PRICE_TEXT }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

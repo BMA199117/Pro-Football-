@@ -13,13 +13,14 @@ import { SKILLS } from '../skills'
 import { ageText } from '../ages'
 import { DrillForm } from './DrillForm'
 import { DrillShare } from './DrillShare'
+import { PaywallBody } from '../premium/Locked'
 
 export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onClose: () => void; top?: React.ReactNode }) {
   const { t, L, months, lang } = useT()
   const data = useData()
   // a drill the coach edits here shows its new version at once
   const drill = data.customDrills.find((x) => x.id === drill0.id) ?? drill0
-  const { benefit, sources: SOURCES } = useContent()
+  const { benefit, sources: SOURCES, locked } = useContent()
   const ben = benefit(drill.id)
   const fav = (data.favorites ?? []).includes(drill.id)
   const upcoming = [...data.sessions].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
@@ -37,6 +38,9 @@ export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onC
     setAdded(true)
   }
 
+  if (!drill.custom && locked(drill.id)) {
+    return <Modal title={L(drill.name)} onClose={onClose}>{top}<PaywallBody why="drill" /></Modal>
+  }
   return (
     <Modal title={L(drill.name)} onClose={onClose}>
       {top}

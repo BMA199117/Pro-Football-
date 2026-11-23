@@ -1,3 +1,5 @@
+import { AccessChip, PaywallBody } from '../premium/Locked'
+import { hasPremium, isLocked, useAccess } from '../premium/access'
 import { useMemo, useState } from 'react'
 import { useT } from '../hooks'
 import { update, useData } from '../store'
@@ -49,6 +51,9 @@ function NewSeason({ onSaved }: { onSaved: (id: string) => void }) {
   const [group, setGroup] = useState(data.groups[0] ?? 'U12')
   const [bw, setBw] = useState<number | undefined>(undefined)
   const [repeat, setRepeat] = useState(false)
+  const access = useAccess()
+  const paid = !hasPremium(access)
+  const progLocked = !!prog && isLocked('season', prog.id, access)
   const pick = (p: SeasonProgram) => { setPid(p.id); setStart(defaultStart(p)); setBw(undefined); setRepeat(false) }
   const chooseAge = (a: string) => { setAge(a); const first = SEASON_PROGRAMS.find((p) => p.ages === a); if (first) pick(first) }
 
@@ -78,10 +83,12 @@ function NewSeason({ onSaved }: { onSaved: (id: string) => void }) {
               <div className="m">{L(p.summary)}</div>
               <div className="m src">📖 {SOURCES[p.source]?.title}</div>
             </div>
+            {paid && <AccessChip locked={isLocked('season', p.id, access)} />}
           </button>
         ))}
       </div>
-      {prog && (
+      {prog && progLocked && <PaywallBody why="plan" />}
+      {prog && !progLocked && (
         <div className="form">
           <label>{t('seasonStart')}<input id="ss-start" type="date" value={start} onChange={(e) => setStart(e.target.value)} required /></label>
           <label>{t('group')}

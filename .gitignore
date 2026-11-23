@@ -7,3 +7,6 @@ dist
 src/**/*.js
 *.tsbuildinfo
 .env.*.local
+
+src/generated/
+private/
