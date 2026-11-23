@@ -49,7 +49,7 @@ function at(sc: BookScene, s: number, slow: boolean) {
 }
 
 /** The book animation: step by step, with the arrows of each step shown before it plays. */
-export function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; autoPlay: boolean; maxHeight?: number }) {
+export function BookPlayer({ scene, autoPlay, maxHeight, fit }: { scene: BookScene; autoPlay: boolean; maxHeight?: number; fit?: boolean }) {
   const { t: tr, lang } = useT()
   const story = narrate(scene, lang)
   const [playing, setPlaying] = useState(autoPlay && !reduceMotion())
@@ -86,7 +86,9 @@ export function BookPlayer({ scene, autoPlay, maxHeight }: { scene: BookScene; a
 
   return (
     <div className="apitch">
-      <BookFrame scene={scene} t={pos.t} step={pos.step} stepOpacity={pos.op} maxHeight={maxHeight} />
+      {fit
+        ? <div className="apitch-fit"><BookFrame scene={scene} t={pos.t} step={pos.step} stepOpacity={pos.op} /></div>
+        : <BookFrame scene={scene} t={pos.t} step={pos.step} stepOpacity={pos.op} maxHeight={maxHeight} />}
       <div className="apitch-step" aria-live="polite">
         {pos.k < 0 ? tr('ready') : pos.k >= moves ? tr('finalPos') : `${tr('stepN')} ${shown} / ${moves}${pos.k >= bookSteps(scene) - 1 ? ' · ' + tr('cont') : ''}`}
       </div>

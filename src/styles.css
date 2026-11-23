@@ -311,13 +311,17 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .board .tb-top { padding: 8px 10px; background: var(--bg) }
 .tb-stage { flex: 1 1 auto; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center; padding: 6px; overflow: hidden }
 .tb-stage svg.pitch { width: 100%; height: 100%; max-width: 100%; max-height: 100%; display: block; border-radius: 8px }
-.tb-play { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column; overflow: hidden }
-.tb-play .apitch { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; flex-direction: column }
-.tb-play .apitch > svg.pitch { flex: 1 1 auto; min-height: 0; width: 100%; height: 100%; max-height: none !important }
-.tb-play .apitch > :not(svg) { flex: none }
+.tb-play { flex: 1 1 0; min-height: 0; width: 100%; display: flex; flex-direction: column; overflow: hidden }
+.tb-play .apitch { flex: 1 1 0; min-height: 0; width: 100%; display: flex; flex-direction: column }
+/* the frame box is sized by the space left, and the pitch inside by that box (container units): no browser can grow it past the screen */
+.tb-play { position: relative }
+.tb-play .apitch-fit { flex: 1 1 0; min-height: 0; height: 0; width: 100%; container-type: size; display: grid; place-items: center; overflow: hidden }
+.tb-play .apitch-fit > svg.pitch { width: min(100cqw, calc(100cqh * 200 / 110)); height: auto; max-height: 100cqh }
+.tb-play .apitch > :not(.apitch-fit) { flex: none }
 .tb-play .apitch-step { position: absolute }
 .tb-field { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; align-items: stretch; gap: 6px }
-.tb-field svg.pitch { flex: 1 1 auto; min-width: 0; width: auto; height: 100% }
+.tb-fitbox { flex: 1 1 0; min-width: 0; min-height: 0; container-type: size; display: grid; place-items: center; overflow: hidden }
+.tb-fitbox > svg.pitch { width: min(100cqw, calc(100cqh * 200 / 110)) !important; height: auto !important; max-height: 100cqh }
 .tb-rail { flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 4px 3px; border-radius: 10px; background: rgba(255, 255, 255, .05); overflow-y: auto; scrollbar-width: none }
 .tb-rail::-webkit-scrollbar { display: none }
 .tb-tok { flex: none; display: grid; place-items: center; width: 34px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: transparent; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none }
