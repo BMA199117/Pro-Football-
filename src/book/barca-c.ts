@@ -52,8 +52,32 @@ const bc93: BookScene = {
   balls: d93.balls([['r', 'm', 'c', 'm', 'm', 'l', 'l']]),
 }
 
-export const BC_C: Record<string, BookScene> = { 'bc-89': bc89, 'bc-93': bc93 }
+// p105 Shooting technique in pairs: strike the held ball into the partner's hands, then half-volleys, then further apart
+const d105 = persp([[210, 378], [855, 378], [118, 815], [962, 815]], [30, 8, 170, 104], false)
+type Px = [number, number]
+const pairs105: [Px, Px, boolean][] = [
+  [[300, 405], [435, 400], false], [[290, 495], [428, 500], true], [[260, 605], [418, 605], false], [[255, 700], [400, 710], true],
+  [[612, 410], [790, 400], true], [[637, 500], [803, 495], false], [[645, 610], [840, 600], false], [[635, 715], [850, 720], true],
+]
+const near = (a: Px, b: Px): Px => [a[0] + (b[0] - a[0]) * 0.1, a[1] + (b[1] - a[1]) * 0.1]
+const bc105: BookScene = {
+  ...S, steps: 4,
+  notes: { 0: ["To'pni qo'lda ushlab, sherigining qo'liga aniq urib beradi (ikkala oyoq bilan)", 'Держа мяч в руках, точно пробивает партнёру в руки (обеими ногами)'] },
+  field: [d105.area(''), d105.line([372, 378], [300, 815], false), d105.line([695, 378], [765, 815], false),
+    d105.cone([355, 476], 'r'), d105.cone([340, 572], 'r'), d105.cone([318, 692], 'r'), d105.cone([712, 476], 'r'), d105.cone([727, 572], 'r'), d105.cone([745, 692], 'r')],
+  players: [
+    d105.pl('co', 'c', 'T', [[477, 775]]),
+    ...pairs105.flatMap(([a, b], i) => [d105.pl('l' + i, 'b', undefined, [a]), d105.pl('r' + i, 'b', undefined, [b])]),
+  ],
+  balls: d105.balls(pairs105.map(([a, b, ltr], i) => (ltr
+    ? ['l' + i, ['l', near(b, a)], 'r' + i, ['l', near(a, b)]]
+    : ['r' + i, ['l', near(a, b)], 'l' + i, ['l', near(b, a)]]))),
+}
+
+export const BC_C: Record<string, BookScene> = { 'bc-89': bc89, 'bc-93': bc93, 'bc-105': bc105 }
 export const MORE_BC_C: Record<string, More> = {
+  // the pairs keep striking to each other (half-volleys)
+  'bc-105': d105.more(2, {}, pairs105.map(([a, b, ltr], i) => (ltr ? ['l' + i, ['l', near(b, a)]] : ['r' + i, ['l', near(a, b)]]) as never)),
   // new duel in every pair: the defender now has the ball
   'bc-89': replay(bc89, { a1: 'd1', d1: 'a1', a2: 'd2', d2: 'a2', a3: 'd3', d3: 'a3', a4: 'd4', d4: 'a4', a5: 'd5', d5: 'a5', a6: 'd6', d6: 'a6' }),
 }

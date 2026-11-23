@@ -28,4 +28,5 @@ export const BENEFITS_J: Record<string, Benefit> = {
   'bc-80': [['position', 'support', 'vision'], "To'psiz harakat bilan bo'sh joy yaratish va undan foydalanish — to'pni ushlab turishning asosi.", 'Создание и использование пространства движением без мяча — основа удержания мяча.'],
   'bc-89': [['duel', 'drib', 'react'], "Gavjum maydonda 1×1 tez qaror, atrofni kuzatish va yakunlashni birga rivojlantiradi.", 'В тесной зоне 1×1 развивает быстроту решений, обзор и завершение.'],
   'bc-93': [['drib', 'vision', 'trans'], "Bo'sh joyni ko'rib, to'p bilan unga kirish va hujum yo'nalishini tez o'zgartirish o'rganiladi.", 'Учатся видеть свободную зону, врываться в неё с мячом и быстро менять направление атаки.'],
+  'bc-105': [['shoot', 'coord', 'touch'], "Zarba texnikasi oddiydan murakkabga: qo'ldan, keyin yarim volley, so'ng uzoqroqdan — ikkala oyoq bilan.", 'Техника удара от простого к сложному: с рук, с полулёта, затем дальше — обеими ногами.'],
 }
