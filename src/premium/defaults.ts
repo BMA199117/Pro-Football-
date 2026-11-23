@@ -12,9 +12,11 @@ export function defaultFreeDrills(drills: Drill[], drawn: (id: string) => boolea
   const picked = new Set<string>()
   for (const b of BANDS) {
     const ordered = [...drills].sort((x, y) => Number(!drawn(x.id)) - Number(!drawn(y.id)))
-    // drills listed under this band first, then the ones that also suit it
-    const pool = [...ordered.filter((d) => homeBand(d.age) === b), ...ordered.filter((d) => homeBand(d.age) !== b && fitsBand(d.age, b))]
-    let have = pool.filter((d) => picked.has(d.id)).length
+    // the drills listed under this band (so "all ages" shows 5 free in every section);
+    // only a band with too few of its own borrows drills that also suit it
+    const own = ordered.filter((d) => homeBand(d.age) === b)
+    const pool = own.length >= FREE_PER_BAND ? own : [...own, ...ordered.filter((d) => homeBand(d.age) !== b && fitsBand(d.age, b))]
+    let have = 0
     const cats = [...new Set(pool.map((d) => d.cat))]
     for (let round = 0; have < FREE_PER_BAND && round < 50; round++) {
       let added = false

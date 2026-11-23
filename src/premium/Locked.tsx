@@ -77,7 +77,7 @@ export function PaywallBody({ why }: { why: 'drill' | 'plan' | 'generic' }) {
 
 export function PaywallModal({ title, why, onClose }: { title?: string; why: 'drill' | 'plan' | 'generic'; onClose: () => void }) {
   const { t } = useT()
-  return <Modal title={title ?? t('pwTitle')} onClose={onClose}><PaywallBody why={why} /></Modal>
+  return <Modal title={title ?? t('pwTitle')} onClose={onClose}><PaywallBody why={why} /><button className="btn ghost" onClick={onClose}>{t('close')}</button></Modal>
 }
 
 /** Premium state line for the account panel. */
