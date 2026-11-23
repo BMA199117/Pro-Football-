@@ -1,3 +1,4 @@
+import { useBackClose } from '../back'
 import { useEffect, useRef, useState } from 'react'
 import { DrillViews } from './AnimatedPitch'
 import { useT, useDrills, PHASE_COLOR } from '../hooks'
@@ -5,6 +6,7 @@ import { PHASES, type Phase, type Session } from '../types'
 
 /** Full-screen pitch-side mode: one drill at a time with a countdown. */
 export function RunSession({ session, onClose }: { session: Session; onClose: () => void }) {
+  useBackClose(onClose)
   const { t, L } = useT()
   const drills = useDrills()
   const byId = new Map(drills.map((d) => [d.id, d]))
@@ -42,7 +44,7 @@ export function RunSession({ session, onClose }: { session: Session; onClose: ()
   return (
     <div className="run">
       <div className="run-top">
-        <button className="btn ghost small light" onClick={onClose}>✕ {t('close')}</button>
+        <button className="btn ghost small light" onClick={onClose}>← {t('back')}</button>
         <span>{session.goal}</span>
       </div>
       {finished || !step ? (

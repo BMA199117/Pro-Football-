@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { usePrefs, setPrefs, type Tab } from './store'
+import { useTabHistory } from './back'
 import { useT } from './hooks'
 import { Plan } from './pages/Plan'
 import { Home } from './pages/Home'
@@ -39,6 +40,7 @@ export default function App() {
 
 function CoachApp() {
   const { tab, lang, theme } = usePrefs()
+  useTabHistory<Tab>(tab, (t) => setPrefs({ tab: t }))
   const admin = useIsAdmin()
   const { t } = useT()
   const [sync, setSync] = useState(false)

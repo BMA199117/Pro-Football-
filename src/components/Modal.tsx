@@ -1,9 +1,11 @@
 import { useEffect, type ReactNode } from 'react'
+import { useBackClose } from '../back'
 import { useT } from '../hooks'
 
 /** Dialog with a sticky title bar and a close (×) button. `sheet` makes it full-screen on a phone; `footer` stays pinned at the bottom. */
 export function Modal({ title, onClose, children, sheet, footer }: { title: string; onClose: () => void; children: ReactNode; sheet?: boolean; footer?: ReactNode }) {
   const { t } = useT()
+  useBackClose(onClose)
   useEffect(() => {
     const k = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     document.addEventListener('keydown', k)

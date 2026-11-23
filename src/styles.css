@@ -375,7 +375,7 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .tb-pop .tb-size .tb-tool { color: #e8ece9 }
 .tb-pop .tb-kit { padding: 0; background: transparent }
 .tb-pop .tb-text { background: #161A18; color: #fff; border-color: #3B423E; font-size: 15px }
-@media (max-width: 640px) { .tbb-act { min-width: 50px } .tbb-big { min-width: 60px } .board .tb-top { padding: 6px 8px } .board .tb-top .tb-name { flex-basis: 100% } }
+@media (max-width: 640px) { .tbb-act { min-width: 50px } .tbb-big { min-width: 60px } .board .tb-top { padding: 6px 8px } .board .tb-top .tb-name { flex: 1 1 0; min-width: 0 } .board .tb-top-btns { flex-basis: 100%; justify-content: flex-end } }
 @media (max-width: 640px) and (orientation: portrait) {
   .tb-field { gap: 3px }
   .tb-rail { justify-content: flex-start; padding: 2px 1px }
@@ -779,4 +779,19 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
   .tb-play .apitch .apitch-cap { min-height: 0; padding: 4px 10px; font-size: 12px }
   .tb-play .apitch .apitch-ctl { padding: 3px; gap: 6px }
   .tb-play .apitch .apitch-ctl button { height: 26px; min-width: 34px }
+}
+.tb-rec { position: absolute; inset: 0; z-index: 40; display: grid; place-items: center; background: rgba(0, 0, 0, .55); padding: 16px }
+.tb-recbox { width: min(420px, 100%); display: flex; flex-direction: column; gap: 12px; align-items: flex-start; padding: 18px; border-radius: 14px; background: #232926; color: #eef2ef }
+.tb-recbox .muted { margin: 0; color: #b9c2bd; font-size: 13.5px; line-height: 1.4 }
+.tb-recbar { width: 100%; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .12); overflow: hidden }
+.tb-recbar i { display: block; height: 100%; background: #FFE45C; transition: width .2s linear }
+.tb-recbtns { display: flex; gap: 8px; flex-wrap: wrap }
+.tb-recbox .btn.ghost { color: #eef2ef; border-color: rgba(255, 255, 255, .3); background: transparent }
+/* bottom rows centred as one tidy group (auto margins keep horizontal scroll safe on narrow screens) */
+.tb-steps > :first-child, .tb-bar > :first-child { margin-left: auto }
+.tb-steps > :last-child, .tb-bar > :last-child { margin-right: auto }
+@media (min-width: 641px) { .tb-bar { gap: 8px } .tb-bar > .tbb-group { padding-right: 10px } .tb-bar > .tbb-group:last-child { border-right: 0; padding-right: 0; margin-right: auto } }
+@media (max-width: 640px) and (orientation: portrait) {
+  .tb-bar > :first-child, .tb-bar > :last-child { margin-left: 0; margin-right: 0 }
+  .board .tb-count { display: none }
 }

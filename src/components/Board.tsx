@@ -3,6 +3,9 @@ import { ballAt, marks, posAt, type BallStep, type BookScene, type ConeColor, ty
 import { Frame, MarkPaths, SCALABLE, TEAM, ballDot, fieldItem, item, playerDot, soccerBall } from './BookPitch'
 import { BookPlayer } from './AnimatedPitch'
 import { useT } from '../hooks'
+import { useBackClose } from '../back'
+import { hasPremium, useAccess } from '../premium/access'
+import { PaywallModal } from '../premium/Locked'
 import type { Key } from '../i18n'
 
 /**
@@ -111,7 +114,12 @@ function nextId(sc: BookScene, t: Team) {
 }
 
 export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?: BookScene; name?: string; onSave: (scene: BookScene, name: string) => void; onClose: () => void }) {
-  const { t } = useT()
+  const { t, lang } = useT()
+  const access = useAccess()
+  useBackClose(onClose)
+  /** video download (Premium): progress while recording, the file when ready */
+  const [vid, setVid] = useState<null | { f: number; ac: AbortController } | { file: Blob; ext: string } | { err: true }>(null)
+  const [wall, setWall] = useState(false)
   const fid = 'tb' + useId().replace(/:/g, '')
   const [sc, setSc] = useState<BookScene>(() => initial ?? blankScene())
   const [hist, setHist] = useState<BookScene[]>([])
@@ -280,6 +288,22 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
     setSelItem(null)
   }
   const fieldNow = (sc.field.find((it) => it[0] === 'pitch')?.[1] as PitchKind | undefined) ?? 'free'
+  const fileName = () => (name.trim() || t('board')).replace(/[\\/:*?"<>|]+/g, ' ').trim().slice(0, 60)
+  const startVideo = async () => {
+    if (!hasPremium(access)) { setWall(true); return }
+    const v = await import('./boardVideo')
+    if (!v.canRecord()) { setVid({ err: true }); return }
+    const ac = new AbortController()
+    setPop(null); setPreview(false)
+    setVid({ f: 0, ac })
+    try {
+      const r = await v.recordScene({ scene: sc, lang, title: name.trim(), labels: { ready: t('ready'), end: t('finalPos') }, signal: ac.signal, onProgress: (f) => setVid((x) => (x && 'f' in x ? { ...x, f } : x)) })
+      v.saveFile(r.blob, fileName() + '.' + r.ext)
+      setVid({ file: r.blob, ext: r.ext })
+    } catch (e) {
+      setVid((e as Error)?.name === 'AbortError' ? null : { err: true })
+    }
+  }
   const save = () => { if (!name.trim()) { document.getElementById('tb-name')?.focus(); return } onSave(sc, name.trim()) }
 
   const hintKey: Key = tool === 'move' ? (s === 0 ? 'bHintStart' : 'bHintMove')
@@ -409,10 +433,11 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
   return (
     <div className="board" role="dialog" aria-modal="true" aria-label={t('board')}>
       <div className="tb-top">
+        <button type="button" className="btn ghost small tb-back" onClick={onClose}>← {t('back')}</button>
         <input id="tb-name" className="tb-name" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('bName')} aria-label={t('name')} />
         <div className="tb-top-btns">
-          <button type="button" className="btn ghost small" onClick={undo} disabled={!hist.length}>↶ {t('bUndo')}</button>
-          <button type="button" className="btn ghost small" onClick={onClose}>{t('cancel')}</button>
+          <button type="button" className="btn ghost small" onClick={undo} disabled={!hist.length} title={t('bUndo')} aria-label={t('bUndo')}>↶</button>
+          {sc.steps > 1 && <button type="button" className="btn ghost small tb-dl" onClick={startVideo} title={t('vDownload')}>⬇ {t('vVideo')}{!hasPremium(access) && ' 🔒'}</button>}
           <button type="button" className="btn small" onClick={save}>{t('save')}</button>
         </div>
       </div>
@@ -454,6 +479,30 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
           {sc.steps > 1 && s > 0 && <button type="button" className="tb-delstep" onClick={delStep} aria-label={t('bDelStep')}>✕</button>}
           <label className="tb-check"><input type="checkbox" checked={all} onChange={(e) => setAll(e.target.checked)} /> {t('bAll')}</label>
           <span className="tb-count">{sc.players.length} {t('bPl')} · {balls.length} {t('bBl')} · {sc.steps - 1} {t('bSt')}</span>
+        </div>
+      )}
+
+      {wall && <PaywallModal why="generic" title={t('vPremium')} onClose={() => setWall(false)} />}
+      {vid && (
+        <div className="tb-rec" role="dialog" aria-modal="true" aria-label={t('vVideo')}>
+          <div className="tb-recbox">
+            {'f' in vid ? <>
+              <b>{t('vRecording')}</b>
+              <div className="tb-recbar"><i style={{ width: `${Math.round(vid.f * 100)}%` }} /></div>
+              <p className="muted">{t('vKeepOpen')}</p>
+              <button type="button" className="btn ghost small" onClick={() => vid.ac.abort()}>{t('cancel')}</button>
+            </> : 'file' in vid ? <>
+              <b>✅ {t('vDone')}</b>
+              <p className="muted">{t('vDoneHint')}</p>
+              <div className="tb-recbtns">
+                <button type="button" className="btn small" onClick={() => import('./boardVideo').then((v) => v.saveFile(vid.file, fileName() + '.' + vid.ext))}>⬇ {t('vAgain')}</button>
+                <button type="button" className="btn ghost small" onClick={() => setVid(null)}>{t('close')}</button>
+              </div>
+            </> : <>
+              <b>{t('vErr')}</b>
+              <button type="button" className="btn ghost small" onClick={() => setVid(null)}>{t('close')}</button>
+            </>}
+          </div>
         </div>
       )}
 
