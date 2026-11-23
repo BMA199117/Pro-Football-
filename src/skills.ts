@@ -25,6 +25,9 @@ export const SKILLS = {
   joy: ["Zavq va o'ziga ishonch", 'Удовольствие и уверенность'],
   comm: ['Muloqot', 'Общение на поле'],
   gk: ['Darvozabon texnikasi', 'Техника вратаря'],
+  core: ['Tana (korpus) mushaklari', 'Мышцы корпуса'],
+  flex: ['Egiluvchanlik', 'Гибкость'],
+  injury: ['Jarohatlar profilaktikasi', 'Профилактика травм'],
 } as const
 
 export type SkillKey = keyof typeof SKILLS

@@ -204,6 +204,26 @@ const FIFA_UNITS: SeasonUnit[] = [
     focus: T("4–8 hafta. To'liq dam 2–3 haftadan oshsa, ish qobiliyati 20–25% ga tushadi, shuning uchun bosqichma-bosqich yuklama: 1-bosqich 7–14 kun (boshqa sport turlari), 2-bosqich 10–20 kun (haftasiga 3–4 mashg'ulot, 45–60 daqiqa, 60–70% intensivlik).", '4–8 недель. 2–3 недели полного отдыха снижают результативность на 20–25 %, поэтому нагрузка прогрессивная: этап 1 — 7–14 дней (другие виды спорта), этап 2 — 10–20 дней (3–4 тренировки в неделю по 45–60 минут, интенсивность 60–70 %).') },
 ]
 
+/* ---------- FIFA 8.1: strength through the year (table 14) and the weekly cycle, adult players ---------- */
+const PRO_UNITS: SeasonUnit[] = [
+  { id: 'pr-1', kind: 'prep', weeks: 1, title: T("Tayyorgarlik (ekstensiv bosqich): 1-hafta", 'Подготовка (экстенсивная стадия): 1-я неделя'),
+    focus: T("Kuch: 1–2 mashg'ulot, 2 seriya. Asosiy chidamlilik (1–2-zona), o'z vazni bilan mustahkamlash.", 'Сила: 1–2 тренировки, 2 подхода. Основная выносливость (зоны 1–2), укрепление весом тела.'), tpl: ['pro7', 'pro4'] },
+  { id: 'pr-2', kind: 'prep', weeks: 1, title: T("Tayyorgarlik (ekstensiv bosqich): 2-hafta", 'Подготовка (экстенсивная стадия): 2-я неделя'),
+    focus: T("Kuch: 2 mashg'ulot, 3 seriya. Aerob mashg'ulot (2–3-zona).", 'Сила: 2 тренировки, 3 подхода. Аэробная тренировка (зоны 2–3).'), tpl: ['pro4', 'pro1'] },
+  { id: 'pr-3', kind: 'prep', weeks: 1, title: T("Tayyorgarlik (ekstensiv bosqich): 3-hafta", 'Подготовка (экстенсивная стадия): 3-я неделя'),
+    focus: T("Kuch: 2 mashg'ulot, 3–4 seriya. Aerob quvvat (3–4-zona), pliometrika haftada kamida 1 marta.", 'Сила: 2 тренировки, 3–4 подхода. Аэробная мощность (зоны 3–4), плиометрика не реже раза в неделю.'), tpl: ['pro4', 'pro2'] },
+  { id: 'pr-4', kind: 'prep', weeks: 1, title: T("Tayyorgarlik: yengillashtirilgan hafta", 'Подготовка: разгрузочная неделя'),
+    focus: T("Kuch: 1 mashg'ulot, 2–3 seriya (yuklama kamaytirilgan sikl).", 'Сила: 1 тренировка, 2–3 подхода (цикл со сниженной нагрузкой).'), tpl: ['pro7', 'pro1'] },
+  { id: 'pr-5', kind: 'prep', weeks: 2, title: T("Musobaqa oldi (intensiv bosqich)", 'Перед соревнованиями (интенсивная стадия)'),
+    focus: T("2 hafta: kuch 1–2 mashg'ulot, 2–3 seriya, yuklama oshadi; maksimal va kontrast kuch, tezlik. Laktat ish faqat 4–5 haftalik tayyorgarlikdan keyin.", '2 недели: сила 1–2 тренировки, 2–3 подхода, нагрузка растёт; максимальная и контрастная сила, скорость. Лактатная работа — только после 4–5 недель подготовки.'), tpl: ['pro5', 'pro3', 'pro2'] },
+  { id: 'pr-6', kind: 'prep', weeks: 1, title: T("Musobaqa oldi: yengillashtirilgan hafta", 'Перед соревнованиями: разгрузочная неделя'),
+    focus: T("Kuch: 1 mashg'ulot, 2 seriya. O'rtoqlik o'yinlari.", 'Сила: 1 тренировка, 2 подхода. Товарищеские матчи.'), tpl: ['pro6'] },
+  { id: 'pr-7', kind: 'comp', weeks: 30, title: T("Musobaqa davri (maxsus bosqich)", 'Период соревнований (специальная стадия)'),
+    focus: T("Har hafta kuch 1–2 mashg'ulot, 2–3 seriya (kuchni saqlash). 1-kun (o'yindan keyin): tiklanish; 2-kun: kuch; 4–5-kun: portlovchi kuch va reaksiya. Tezlik haftasiga 2 marta, laktat ish haftada 1 marta, o'yindan 3 kun oldin emas.", 'Каждую неделю сила 1–2 тренировки, 2–3 подхода (поддержание). 1-й день (после матча): восстановление; 2-й день: сила; 4–5-й день: мощность и реактивность. Скорость 2 раза в неделю, лактатная работа раз в неделю, не за 3 дня до матча.'), tpl: ['pro7', 'pro4', 'pro3', 'pro8', 'pro6'] },
+  { id: 'pr-8', kind: 'trans', weeks: 4, title: T("O'tish davri", 'Переходный период'),
+    focus: T("Boshqa sport turlari, uzlukli yugurish yo'lagi, o'z vazni bilan umumiy tonus (haftasiga 1–2), egiluvchanlik.", 'Другие виды спорта, прерывистая полоса препятствий, общий тонус весом тела (1–2 раза в неделю), гибкость.') },
+]
+
 export const SEASON_PROGRAMS: SeasonProgram[] = [
   // ---- EPYSA ----
   { id: 'epysa6', source: 'epysa6', ages: '5–6', startMonth: 8, title: T('EPYSA U6: haftalik reja', 'EPYSA U6: план по неделям'),
@@ -316,6 +336,17 @@ export const SEASON_PROGRAMS: SeasonProgram[] = [
     units: NOI_U17, rules: NOI_RULES(5, 90, [20, 45, 20, 5]),
     months: months([6, 5, 5, 5, 5, 6, 5, 5, 5, 5, 4], [9, 15, 15, 14, 8, 9, 14, 15, 15, 15, 8], [5, 8, 8, 7, 4, 4, 8, 8, 8, 7, 3], [1, 3, 3, 2, 2, 2, 2, 2, 3, 3, 1], [31, 33, 33, 30, 22, 31, 33, 32, 33, 32, 24]),
     year: year(56, 137, 12, 70, 24, 17, 18, 334, 31) },
+  // ---- FIFA 8.1, adult players ----
+  { id: 'fifa-pro', source: 'fifaPhys', ages: 'Pro', startMonth: 6,
+    title: T("FIFA 8.1: professional futbolchilar mavsumi", 'FIFA 8.1: сезон профессиональных футболистов'),
+    summary: T("Kuch tayyorgarligi jadvali (14-jadval) va musobaqa davridagi haftalik sikl. Haftalar oxirida tayyor mashg'ulot rejalari bor.", 'График силовой подготовки (таблица 14) и недельный цикл в период соревнований. К неделям привязаны готовые тренировки.'),
+    units: PRO_UNITS, rules: [
+      T("Kuch: ekstensiv bosqich (mushak asosi, aylanma 15–30 s yoki 3 × 10 marta 50–70% bilan) → intensiv bosqich (maksimal kuch) → maxsus bosqich (kontrast kuch, pliometrika).", 'Сила: экстенсивная стадия (мышечная база, круг 15–30 с или 3 × 10 при 50–70%) → интенсивная (максимальная сила) → специальная (контрастная сила, плиометрика).'),
+      T("Musobaqa davrida kuch mashg'uloti haftada kamida 1 marta, hafta boshida; og'ir-yengil almashinuvi hafta boshida, quvvat va reaktiv kuch haftaning ikkinchi yarmida.", 'В период соревнований силовая тренировка не реже раза в неделю, в начале недели; чередование тяжёлой и лёгкой нагрузки — в начале недели, мощность и реактивная сила — во второй половине.'),
+      T("Tezlik haftasiga 2 marta: hafta boshida bajarish tezligi, oxirida reaksiya va chaqqonlik. Tezlik mashg'ulotning boshida, dam olgandan keyin.", 'Скорость 2 раза в неделю: в начале недели скорость выполнения, в конце — реакция и живость. Скорость — в начале тренировки, после отдыха.'),
+      T("Laktat ish 4–5 haftalik tayyorgarlikdan keyin boshlanadi va o'yindan 3 kun oldin o'tkazilmaydi; uglevodga boy ovqat kerak.", 'Лактатная работа начинается после 4–5 недель подготовки и не проводится за 3 дня до матча; нужна богатая углеводами диета.'),
+      T("Kuch mashqidan keyin texnik ish ayniqsa samarali.", 'Техническая работа особенно эффективна после силовой.'),
+    ] },
   // ---- FIFA ----
   { id: 'fifa-year', source: 'fifaPlan', ages: '15–17', startMonth: 7,
     title: T('FIFA: yil davrlari', 'FIFA: периоды года'),
@@ -327,7 +358,7 @@ export const SEASON_PROGRAMS: SeasonProgram[] = [
     ] },
 ]
 
-export const SEASON_AGES = ['5–6', '7–8', '9–10', '11–12', '13–14', '15–17']
+export const SEASON_AGES = ['5–6', '7–8', '9–10', '11–12', '13–14', '15–17', 'Pro']
 
 /** The coach's own season plan (synced: AppData.seasons). */
 export interface SeasonPlan {

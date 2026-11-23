@@ -9,6 +9,7 @@ import { useT } from '../hooks'
 import { SOURCES } from '../sources'
 import { BENEFITS } from '../benefits'
 import { SKILLS } from '../skills'
+import { ageText } from '../ages'
 import { drillLink } from '../share'
 import type { Drill } from '../types'
 
@@ -66,7 +67,7 @@ function PrintSheet({ drill }: { drill: Drill }) {
     <div className="print-sheet">
       <header className="ps-head">
         <h1>{L(drill.name)}</h1>
-        <div className="ps-meta">{t(drill.cat)} · {drill.age} · {drill.min} {t('min')}{drill.players ? ` · ${t('playersCount')}: ${drill.players}` : ''}</div>
+        <div className="ps-meta">{t(drill.cat)} · {ageText(drill.age, t('proAges'))} · {drill.min} {t('min')}{drill.players ? ` · ${t('playersCount')}: ${drill.players}` : ''}</div>
       </header>
       <div className="ps-main"><DrillPitch id={drill.id} type={drill.dia} /></div>
       {scene && <LineKey scene={scene} label={(k) => t(({ run: 'kRun', drib: 'kDrib', pass: 'kPass', shot: 'kShot', lob: 'kLob' } as const)[k])} />}

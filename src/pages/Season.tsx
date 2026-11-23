@@ -66,7 +66,7 @@ function NewSeason({ onSaved }: { onSaved: (id: string) => void }) {
       <div>
         <h3 className="label">{t('pickAge')}</h3>
         <div className="ages" role="group">
-          {SEASON_AGES.map((a) => <button key={a} aria-pressed={age === a} onClick={() => chooseAge(a)}>{a} {t('ages')}</button>)}
+          {SEASON_AGES.map((a) => <button key={a} aria-pressed={age === a} onClick={() => chooseAge(a)}>{a === 'Pro' ? t('proAges') : `${a} ${t('ages')}`}</button>)}
         </div>
       </div>
       <div className="list">

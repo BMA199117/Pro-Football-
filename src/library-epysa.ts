@@ -452,7 +452,7 @@ export const EPYSA_U12: Row[] = [
     [["Kenglik va chuqurlik", 'Ширина и глубина'], ["Mashg'ulot mavzusini o'yinda qo'llang", 'Применяйте тему занятия в игре']]],
 ]
 
-const F82 = 'U15–U17'
+const F82 = 'U15+'
 export const FIFA_82: Row[] = [
   ['f82-1', 'phys', 'sprint', F82, 25, '18–24', 'fifa82',
     ["Aralash chidamlilik aylanmasi", 'Смешанный круг на выносливость'],
