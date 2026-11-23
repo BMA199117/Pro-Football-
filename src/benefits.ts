@@ -8,8 +8,9 @@ import { BENEFITS_F } from './benefits-f'
 import { BENEFITS_G } from './benefits-g'
 import { BENEFITS_H } from './benefits-h'
 import { BENEFITS_I } from './benefits-i'
+import { BENEFITS_J } from './benefits-j'
 
 /** "Why useful" + developed qualities for every book drill, keyed by drill id. */
 export const BENEFITS: Record<string, Benefit> = {
-  ...BENEFITS_A, ...BENEFITS_B, ...BENEFITS_C, ...BENEFITS_D, ...BENEFITS_E, ...BENEFITS_F, ...BENEFITS_G, ...BENEFITS_H, ...BENEFITS_I,
+  ...BENEFITS_A, ...BENEFITS_B, ...BENEFITS_C, ...BENEFITS_D, ...BENEFITS_E, ...BENEFITS_F, ...BENEFITS_G, ...BENEFITS_H, ...BENEFITS_I, ...BENEFITS_J,
 }

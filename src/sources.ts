@@ -28,6 +28,7 @@ export const SOURCES: Record<string, { title: string; author: string }> = {
   posPlay: { title: 'Positional Play (pozitsion o\'yin)', author: 'Phase of Play' },
   xabi: { title: 'Xabi Alonso: Positionism and Relationism', author: 'Phase of Play' },
   ip433: { title: '4-3-3 In Possession (to\'p bizda: 4-3-3)', author: 'Phase of Play' },
+  barcaAcad: { title: 'Barça Academy Coaching U7–U12', author: 'SoccerTutor / FC Barcelona' },
   deZerbi: { title: 'Roberto De Zerbi: The Master of Timing', author: 'Phase of Play' },
   artDef: { title: 'The Art of Defending (himoya san\'ati)', author: 'Phase of Play' },
   vert4231: { title: 'Vertical Play in 4-2-3-1 (Hansi Flick)', author: 'Phase of Play' },

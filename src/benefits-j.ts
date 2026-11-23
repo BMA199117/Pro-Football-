@@ -1,0 +1,27 @@
+import type { Benefit } from './skills'
+
+/** Why each Barça Academy (U7–U12) drill is useful. */
+export const BENEFITS_J: Record<string, Benefit> = {
+  'bc-15': [['comm', 'vision', 'support'], "Bolalar bir-birini ismi bilan chaqirishga, boshni ko'tarib bo'sh joyga ochilishga o'rganadi.", 'Дети учатся звать друг друга по имени, поднимать голову и открываться.'],
+  'bc-16': [['touch', 'coord', 'joy'], "Havodagi to'pni qabul qilish va havodan pas berish o'yin orqali o'rganiladi.", 'Приём летящего мяча и передача верхом осваиваются в игре.'],
+  'bc-21': [['drib', 'agil', 'joy'], "To'pni yaqin olib yurish, boshni ko'tarish va yo'nalishni keskin o'zgartirish quvnoq o'yinda mashq qilinadi.", 'Ведение вплотную, поднятая голова и резкая смена направления — в весёлой игре.'],
+  'bc-22': [['drib', 'duel', 'vision'], "To'pni tana bilan to'sish va bir vaqtda raqib to'piga hujum qilish — hujum va himoyani tez almashtirish.", 'Укрывание мяча корпусом и одновременная атака чужого мяча — быстрое переключение.'],
+  'bc-25': [['touch', 'react', 'duel'], "To'p o'ynatish bilan teginish sezgisi, signaldan keyin esa 1×1 da tez qaror qabul qilish rivojlanadi.", 'Набивание развивает чувство мяча, а 1×1 после сигнала — быстроту решений.'],
+  'bc-26': [['pass', 'support', 'focus'], "Rondoda pas yo'liga chiqish va murabbiy chaqirig'iga tez javob berish o'rganiladi.", 'В рондо учатся выходить на линию передачи и быстро реагировать на команду.'],
+  'bc-31': [['drib', 'agil', 'react'], "Burilish va fintalar zaxirasi kengayadi, signalga javob tezligi oshadi.", 'Расширяется набор поворотов и финтов, растёт скорость реакции на сигнал.'],
+  'bc-33': [['drib', 'pass', 'focus'], "Tezlikda to'p olib yurish va to'pni sherikka aniq topshirish ko'p takrorlanadi.", 'Много повторений ведения на скорости и точной передачи партнёру.'],
+  'bc-35': [['drib', 'agil', 'coord'], "Oltita asosiy burilish ikkala oyoq bilan avtomatizmga yetkaziladi.", 'Шесть основных поворотов доводятся до автоматизма обеими ногами.'],
+  'bc-37': [['drib', 'speed', 'joy'], "Yuqori tezlikda to'pni nazorat qilish musobaqa ruhida mashq qilinadi.", 'Контроль мяча на высокой скорости — в соревновательной форме.'],
+  'bc-38': [['duel', 'drib', 'speed'], "Tezlikdagi 1×1 va quvib yetilganda to'pni tana bilan to'sish o'rganiladi.", 'Учатся 1×1 на скорости и укрыванию мяча, когда догнали.'],
+  'bc-40': [['drib', 'vision', 'team'], "Har pasdan oldin bir necha teginish to'pni asrash va olib yurishda dadillik beradi.", 'Несколько касаний перед пасом дают уверенность в ведении и сохранении мяча.'],
+  'bc-44': [['pass', 'touch', 'support'], "Qo'riqchidan ajralib chiqish va bir teginishda qaytarma pas — o'rta chiziq o'yinchisi uchun asosiy ko'nikma.", 'Уход от опекуна и скидка в одно касание — базовый навык полузащитника.'],
+  'bc-46': [['pass', 'vision', 'endur'], "Uzluksiz «pas ber — harakatlan» tamoyili ko'p to'p bilan yuqori jadallikda o'rganiladi.", 'Принцип «отдал — открылся» в высоком темпе с несколькими мячами.'],
+  'bc-48': [['pass', 'decide', 'support'], "2×1 da himoyachini o'ziga tortish va to'g'ri vaqtda pas berish o'rganiladi.", 'В 2×1 учатся притягивать защитника и отдавать пас вовремя.'],
+  'bc-49': [['duel', 'shoot', 'decide'], "Son ustunligi, 1×1 va yakunlash bitta ketma-ketlikda — o'yindagidek.", 'Большинство, 1×1 и завершение в одной последовательности — как в игре.'],
+  'bc-52': [['trans', 'pass', 'shoot'], "To'pni ushlashdan tez hujumga o'tish va 2×1 da yakunlash mashq qilinadi.", 'Переход от удержания мяча к быстрой атаке и завершение 2×1.'],
+  'bc-56': [['pass', 'touch', 'position'], "To'g'ri qabul qilish (uzoqdagi oyoq bilan) rondoda keyingi pasni tezlashtiradi.", 'Правильный приём (дальней ногой) ускоряет следующий пас в рондо.'],
+  'bc-59': [['pass', 'vision', 'defend'], "Himoyachilar orasidan chiziqni yoruvchi pas va juftlikda birga himoyalanish o'rganiladi.", 'Разрезающая передача между защитниками и защита в паре.'],
+  'bc-62': [['pass', 'trans', 'focus'], "Xatodan keyin darhol himoyaga o'tish odatga aylanadi.", 'Немедленный переход в защиту после ошибки становится привычкой.'],
+  'bc-67': [['pass', 'vision', 'decide'], "Qachon to'pni aylantirish va qachon markazga bostirib kirishni tanlash o'rganiladi.", 'Учатся выбирать: гонять мяч по кругу или врываться в центр.'],
+  'bc-69': [['position', 'pass', 'trans'], "Markazda bo'sh joy yaratish va undan foydalanish, to'p yo'qotilganda darhol bosim.", 'Создание и использование пространства в центре, мгновенный прессинг после потери.'],
+}
