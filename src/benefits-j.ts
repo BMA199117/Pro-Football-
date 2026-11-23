@@ -30,4 +30,5 @@ export const BENEFITS_J: Record<string, Benefit> = {
   'bc-93': [['drib', 'vision', 'trans'], "Bo'sh joyni ko'rib, to'p bilan unga kirish va hujum yo'nalishini tez o'zgartirish o'rganiladi.", 'Учатся видеть свободную зону, врываться в неё с мячом и быстро менять направление атаки.'],
   'bc-105': [['shoot', 'coord', 'touch'], "Zarba texnikasi oddiydan murakkabga: qo'ldan, keyin yarim volley, so'ng uzoqroqdan — ikkala oyoq bilan.", 'Техника удара от простого к сложному: с рук, с полулёта, затем дальше — обеими ногами.'],
   'bc-109': [['shoot', 'speed', 'coord'], "Harakatdagi to'pga yoysimon yugurib kelib zarba berish — o'yindagi eng ko'p uchraydigan zarba vaziyati.", 'Удар по движущемуся мячу после дугообразного забега — частая игровая ситуация.'],
+  'bc-125': [['position', 'team', 'vision'], "Bolalar 3-2-1 tizimida har bir pozitsiyaning vazifasini va maydonni keng ochishni o'rganadi.", 'Дети изучают задачи каждой позиции в системе 3-2-1 и учатся раскрывать поле.'],
 }
