@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useT } from '../hooks'
 import { TOPICS } from '../knowledge'
 import { useContent } from '../content'
+import { Video } from '../components/Video'
 import type { Topic } from '../types'
 import { DEV_AREA_LABELS, DEV_SOURCES, type DevArea, type DevText } from '../development'
 
@@ -46,6 +47,7 @@ export function Knowledge() {
               <p className="know-idea">{L(k.idea)}</p>
               {isOpen && (
                 <div className="know-more">
+                  {k.video && <Video url={k.video} />}
                   <h3 className="label">{t('howTo')}</h3>
                   <ul className="points">{k.tips.map((tip, i) => <li key={i}>{L(tip)}</li>)}</ul>
                 </div>

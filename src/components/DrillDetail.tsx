@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Modal } from './Modal'
 import { DrillViews } from './AnimatedPitch'
 import { LineKey } from './BookPitch'
+import { Video } from './Video'
 import { sceneOf } from '../scene-of'
 import { useT } from '../hooks'
 import { update, useData } from '../store'
@@ -37,6 +38,7 @@ export function DrillDetail({ drill: drill0, onClose }: { drill: Drill; onClose:
   return (
     <Modal title={L(drill.name)} onClose={onClose}>
       <DrillViews id={drill.id} type={drill.dia} />
+      {drill.video && <Video url={drill.video} />}
       {sceneOf(drill.id) && <LineKey scene={sceneOf(drill.id)!} label={(k) => t(({ run: 'kRun', drib: 'kDrib', pass: 'kPass', shot: 'kShot', lob: 'kLob' } as const)[k])} />}
       <div className="meta">
         <span className="chip">{t(drill.cat)}</span>

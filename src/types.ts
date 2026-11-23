@@ -23,6 +23,8 @@ export interface Drill {
   custom?: boolean
   /** the coach's own drawing (tactics board), animated like the book drills */
   scene?: BookScene
+  /** video added by the admin (YouTube link or uploaded file URL) */
+  video?: string
 }
 
 export interface Player {
@@ -66,6 +68,7 @@ export interface KnowledgeCard {
   idea: Text
   tips: Text[]
   source: string
+  video?: string
 }
 
 export interface Template {

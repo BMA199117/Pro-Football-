@@ -12,7 +12,7 @@ import { DEV_AREA_LABELS, DEV_SOURCES, type DevArea } from '../development'
 import { TOPICS } from '../knowledge'
 import { CATEGORIES, PHASES, type Diagram, type Phase } from '../types'
 import { CAT_UZ, TOPIC_UZ } from './labels'
-import { Chips, EditorFoot, Field, PairList, SAVE_ERR, UzRu, cleanPairs, toPair, toText, type Pair } from './fields'
+import { Chips, EditorFoot, Field, PairList, SAVE_ERR, UzRu, VideoField, cleanPairs, toPair, toText, type Pair } from './fields'
 
 type Props<K extends Kind> = { entry?: Entry<K>; onDone: () => void }
 
@@ -62,6 +62,7 @@ export function DrillEditor({ entry, onDone }: Props<'drill'>) {
   const [skills, setSkills] = useState<SkillKey[]>(d?.benefit?.[0] ?? [])
   const [why, setWhy] = useState<Pair>([d?.benefit?.[1] ?? '', d?.benefit?.[2] ?? ''])
   const [dia, setDia] = useState<Diagram>(d?.dia ?? 'pass')
+  const [video, setVideo] = useState(d?.video ?? '')
   /** the admin's own drawing; undefined = keep the book drawing (built-in drills) */
   const [scene, setScene] = useState<BookScene | undefined>(d?.scene)
   const [drawing, setDrawing] = useState(false)
@@ -79,6 +80,7 @@ export function DrillEditor({ entry, onDone }: Props<'drill'>) {
       points: cleanPairs(points).map(toText),
       ...(source ? { source } : {}),
       ...(scene ? { scene } : {}),
+      ...(video ? { video } : {}),
       ...(skills.length || why[0].trim() || why[1].trim() ? { benefit: [skills, why[0].trim(), why[1].trim()] } : {}),
     }
     s.run(item)
@@ -110,6 +112,7 @@ export function DrillEditor({ entry, onDone }: Props<'drill'>) {
           )}
         </div>
       </div>
+      <VideoField value={video} onChange={setVideo} />
       <UzRu label="Tavsif (qanday o'tkaziladi)" value={desc} onChange={setDesc} rows={5} />
       <Field label="Turi">
         <select value={cat} onChange={(e) => setCat(e.target.value as typeof cat)}>{CATEGORIES.map((c) => <option key={c} value={c}>{CAT_UZ[c]}</option>)}</select>
@@ -143,11 +146,12 @@ export function CardEditor({ entry, onDone }: Props<'card'>) {
   const [idea, setIdea] = useState(toPair(c?.idea))
   const [tips, setTips] = useState<Pair[]>((c?.tips ?? []).map(toPair))
   const [source, setSource] = useState(c?.source ?? '')
+  const [video, setVideo] = useState(c?.video ?? '')
   const s = useSave('card', entry?.hidden ?? false, onDone)
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!title[0].trim() && !title[1].trim()) { s.setErr('Sarlavhani yozing.'); return }
-    s.run({ id: c?.id ?? newId('card'), topic, title: toText(title), idea: toText(idea), tips: cleanPairs(tips).map(toText), source })
+    s.run({ id: c?.id ?? newId('card'), topic, title: toText(title), idea: toText(idea), tips: cleanPairs(tips).map(toText), source, ...(video ? { video } : {}) })
   }
   return (
     <form className="form ed" onSubmit={submit}>
@@ -155,6 +159,7 @@ export function CardEditor({ entry, onDone }: Props<'card'>) {
       <Field label="Mavzu"><select value={topic} onChange={(e) => setTopic(e.target.value as typeof topic)}>{TOPICS.map((x) => <option key={x} value={x}>{TOPIC_UZ[x]}</option>)}</select></Field>
       <SourcePick value={source} onChange={setSource} />
       <UzRu label="Asosiy g'oya" value={idea} onChange={setIdea} rows={6} />
+      <VideoField value={video} onChange={setVideo} />
       <PairList label="Qanday qo'llash (maslahatlar)" value={tips} onChange={setTips} />
       <EditorFoot {...s} onCancel={onDone} />
     </form>

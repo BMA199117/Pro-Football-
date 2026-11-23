@@ -251,3 +251,17 @@ grant execute on function public.admin_delete_coach(uuid) to authenticated;
 --   insert into public.admins (user_id) select id from auth.users where lower(email) = lower('SIZNING@EMAIL') on conflict do nothing;
 --
 -- More admins can then be added from the admin panel (Adminlar section).
+
+/* ------------------------------------------------------------- videos */
+-- Bucket "media" for videos (and pictures) the admin uploads. Everyone can watch, only admins upload or delete.
+-- 50 MB per file (the Supabase free plan limit). Longer videos: put them on YouTube and paste the link instead.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('media', 'media', true, 52428800, array['video/mp4', 'video/webm', 'video/quicktime', 'image/jpeg', 'image/png', 'image/webp'])
+on conflict (id) do update set public = true, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "media: admin uploads" on storage.objects;
+drop policy if exists "media: admin updates" on storage.objects;
+drop policy if exists "media: admin deletes" on storage.objects;
+create policy "media: admin uploads" on storage.objects for insert to authenticated with check (bucket_id = 'media' and public.is_admin());
+create policy "media: admin updates" on storage.objects for update to authenticated using (bucket_id = 'media' and public.is_admin());
+create policy "media: admin deletes" on storage.objects for delete to authenticated using (bucket_id = 'media' and public.is_admin());

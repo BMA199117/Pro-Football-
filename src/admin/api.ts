@@ -75,3 +75,18 @@ export function ago(iso: string | null) {
   const d = Math.round(h / 24)
   return d < 31 ? `${d} kun oldin` : when(iso, false)
 }
+
+export const MAX_VIDEO_MB = 50
+/** Upload a video file to the "media" bucket; returns its public URL or an error text. */
+export async function uploadVideo(file: File): Promise<{ url?: string; error?: string }> {
+  if (!supabase) return { error: 'Server ulanmagan.' }
+  if (file.size > MAX_VIDEO_MB * 1024 * 1024) return { error: `Fayl juda katta (${Math.round(file.size / 1048576)} MB). Eng ko'pi ${MAX_VIDEO_MB} MB. Kattaroq videoni YouTube'ga joylab, havolasini qo'ying.` }
+  const ext = (file.name.split('.').pop() || 'mp4').toLowerCase().replace(/[^a-z0-9]/g, '') || 'mp4'
+  const path = `videos/${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}.${ext}`
+  const { error } = await supabase.storage.from('media').upload(path, file, { contentType: file.type || 'video/mp4', upsert: false })
+  if (error) {
+    const m = error.message.toLowerCase()
+    return { error: m.includes('bucket') ? "Video saqlash joyi hali yoqilmagan: Supabase'da yangi SQL faylni ishga tushiring." : m.includes('mime') ? "Bu turdagi faylni yuklab bo'lmaydi. MP4, WEBM yoki MOV video tanlang." : m.includes('size') || m.includes('large') ? `Fayl juda katta. Eng ko'pi ${MAX_VIDEO_MB} MB.` : "Yuklab bo'lmadi: " + error.message }
+  }
+  return { url: supabase.storage.from('media').getPublicUrl(path).data.publicUrl }
+}

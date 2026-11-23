@@ -1,4 +1,6 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
+import { Video } from '../components/Video'
+import { MAX_VIDEO_MB, uploadVideo } from './api'
 import type { Text } from '../types'
 
 export type Pair = [string, string]
@@ -91,4 +93,42 @@ export const SAVE_ERR: Record<string, string> = {
   notAdmin: "Saqlanmadi: bu hisobda admin huquqi yo'q.",
   noNet: "Saqlanmadi: internet yo'q. Ulanib, qayta urinib ko'ring.",
   error: "Saqlanmadi: serverda xatolik. Birozdan keyin qayta urinib ko'ring.",
+}
+
+/** Video: upload a file or paste a YouTube link. */
+export function VideoField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [link, setLink] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+  const pick = async (f?: File) => {
+    if (!f) return
+    setBusy(true); setErr(null)
+    const r = await uploadVideo(f)
+    setBusy(false)
+    if (r.url) onChange(r.url); else setErr(r.error ?? 'Xatolik')
+  }
+  return (
+    <fieldset className="full plist">
+      <legend>Video <span className="muted small">· ixtiyoriy</span></legend>
+      <div className="vfield">
+        {value ? <Video url={value} /> : <p className="muted small" style={{ margin: 0 }}>Video yo'q. Telefon yoki kompyuterdan video fayl yuklang (eng ko'pi {MAX_VIDEO_MB} MB) yoki YouTube havolasini qo'ying.</p>}
+        <div className="row" style={{ justifyContent: 'flex-start' }}>
+          <label className="btn small" style={{ cursor: busy ? 'default' : 'pointer' }}>
+            {busy ? 'Yuklanmoqda…' : value ? '📤 Boshqa video yuklash' : '📤 Video fayl yuklash'}
+            <input type="file" accept="video/mp4,video/webm,video/quicktime" hidden disabled={busy} onChange={(e) => { pick(e.target.files?.[0]); e.target.value = '' }} />
+          </label>
+          {value && <button type="button" className="btn ghost small danger" onClick={() => onChange('')}>Videoni olib tashlash</button>}
+        </div>
+        <div className="row" style={{ justifyContent: 'flex-start' }}>
+          <input className="search wide" placeholder="yoki YouTube havolasi: https://youtu.be/..." value={link} onChange={(e) => setLink(e.target.value)} aria-label="YouTube havolasi" />
+          <button type="button" className="btn ghost small" onClick={() => {
+            const v = link.trim()
+            if (!/^https:\/\//.test(v)) { setErr('Havola https:// bilan boshlanishi kerak.'); return }
+            setErr(null); onChange(v); setLink('')
+          }}>Qo'yish</button>
+        </div>
+        {err && <p className="note err">{err}</p>}
+      </div>
+    </fieldset>
+  )
 }
