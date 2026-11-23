@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useT, useDrills, sessionMinutes, PHASE_COLOR } from '../hooks'
-import { update, useData, usePrefs, setPrefs } from '../store'
+import { update, useData, usePrefs, setPrefs, takeIntent } from '../store'
 import { DrillPitch } from '../components/AnimatedPitch'
 import { Modal, ConfirmButton } from '../components/Modal'
 import { SessionForm } from './SessionForm'
@@ -25,7 +25,7 @@ export function Plan() {
   const [picking, setPicking] = useState<Phase | null>(null)
   const [detail, setDetail] = useState<Drill | null>(null)
   const [running, setRunning] = useState(false)
-  const [tplOpen, setTplOpen] = useState(false)
+  const [tplOpen, setTplOpen] = useState(() => takeIntent() === 'templates')
   const [tpl, setTpl] = useState<Template | null>(null)
   const access = useAccess()
   const paid = !hasPremium(access)

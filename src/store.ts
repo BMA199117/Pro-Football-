@@ -46,9 +46,9 @@ export const clearLocal = () => replaceFromRemote(emptyData())
 export const useData = () => useSyncExternalStore(subscribe, getData)
 
 /* ---------- per-device preferences ---------- */
-export type Tab = 'plan' | 'drills' | 'team' | 'cal' | 'know'
+export type Tab = 'home' | 'plan' | 'drills' | 'team' | 'cal' | 'know'
 export interface Prefs { lang: Lang; tab: Tab; selected: string | null; theme?: 'light' | 'dark' }
-let prefs: Prefs = { lang: 'uz', tab: 'plan', selected: null, ...(read<Prefs>(PREFS_KEY) ?? {}) }
+let prefs: Prefs = { lang: 'uz', tab: 'home', selected: null, ...(read<Prefs>(PREFS_KEY) ?? {}) }
 const prefListeners = new Set<() => void>()
 export function setPrefs(p: Partial<Prefs>) {
   prefs = { ...prefs, ...p }
@@ -57,3 +57,8 @@ export function setPrefs(p: Partial<Prefs>) {
 }
 export const usePrefs = () =>
   useSyncExternalStore((l) => { prefListeners.add(l); return () => prefListeners.delete(l) }, () => prefs)
+
+/** One-shot request from the home screen, read once by the page it opens (e.g. open the ready-plan list). */
+let intent: 'templates' | null = null
+export const setIntent = (i: typeof intent) => { intent = i }
+export const takeIntent = () => { const i = intent; intent = null; return i }
