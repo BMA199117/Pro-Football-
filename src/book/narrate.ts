@@ -149,5 +149,26 @@ export function stepLines(sc: BookScene, k: number, lang: Lang): string[] {
 
 /** All steps of a drill (step 1 = first movement). */
 export function narrate(sc: BookScene, lang: Lang): string[][] {
-  return Array.from({ length: sc.steps - 1 }, (_, k) => stepLines(sc, k, lang))
+  const steps = Array.from({ length: sc.steps - 1 }, (_, k) => stepLines(sc, k, lang))
+  // the same action again in the next step reads as "keeps doing it", not a word-for-word repeat
+  return steps.map((lines, k) => k === 0 ? lines : lines.map((l) => steps[k - 1].includes(l) ? keepOn(l, lang) : l))
+}
+
+const KEEP: Record<Lang, [RegExp, string][]> = {
+  uz: [
+    [/to'pni olib boradi\.$/, "to'pni olib borishda davom etadi."],
+    [/to'p egasiga yaqinlashib bosim beradi\.$/, 'bosimni davom ettiradi.'],
+    [/bo'sh joyga ochiladi\.$/, "ochilishda davom etadi."],
+    [/yuguradi\.$/, 'yugurishda davom etadi.'],
+  ],
+  ru: [
+    [/ведёт мяч\.$/, 'продолжает вести мяч.'], [/ведут мяч\.$/, 'продолжают вести мяч.'],
+    [/выходит на игрока с мячом\.$/, 'продолжает давить на игрока с мячом.'], [/выходят на игрока с мячом\.$/, 'продолжают давить на игрока с мячом.'],
+    [/открывается под передачу\.$/, 'продолжает открываться.'], [/открываются под передачу\.$/, 'продолжают открываться.'],
+    [/бежит\.$/, 'продолжает бег.'], [/бегут\.$/, 'продолжают бег.'],
+  ],
+}
+function keepOn(line: string, lang: Lang): string {
+  for (const [re, to] of KEEP[lang]) if (re.test(line)) return line.replace(re, to)
+  return line
 }
