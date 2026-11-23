@@ -215,7 +215,7 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 .apitch-ctl button:hover { background: rgba(10, 30, 20, .82) }
 .apitch-ctl button[aria-pressed="true"] { background: #fff; color: #16231C }
 .mtop { display: none }
-.card-open { position: relative; background: #2E7D52 }
+.card-open { position: relative; background: #fff }
 .play-badge { position: absolute; right: 8px; bottom: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(10, 30, 20, .55); color: #fff; font-size: 11px; display: grid; place-items: center; pointer-events: none }
 
 /* age bands in the drill library */
