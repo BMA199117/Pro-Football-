@@ -190,6 +190,29 @@ export function item(it: Item, i: number, net: string): ReactNode {
           {corners([4, 196])}
         </g>
       )
+      if (it[1] === 'box') return (
+        <g key={k} {...s}>
+          <rect x={4} y={4} width={192} height={102} />
+          <rect x={118} y={8} width={78} height={94} /><rect x={170} y={34} width={26} height={42} />
+          {spot(144, 55, 1)}
+          <path d="M118 36A30 30 0 0 0 118 74" />
+          {corners([196])}
+        </g>
+      )
+      if (it[1] === 'mid') return (
+        <g key={k} {...s}>
+          <rect x={4} y={4} width={192} height={102} /><line x1={100} y1={4} x2={100} y2={106} /><circle cx={100} cy={55} r={24} />
+          {spot(100, 55, 1)}
+          <line x1={52} y1={4} x2={52} y2={106} strokeDasharray="3 2.4" strokeOpacity={0.55} /><line x1={148} y1={4} x2={148} y2={106} strokeDasharray="3 2.4" strokeOpacity={0.55} />
+        </g>
+      )
+      if (it[1] === 'grid') return (
+        <g key={k} {...s}>
+          <rect x={20} y={10} width={160} height={90} />
+          {[60, 100, 140].map((x) => <line key={'x' + x} x1={x} y1={10} x2={x} y2={100} strokeDasharray="2.4 2" strokeOpacity={0.6} />)}
+          {[40, 70].map((y) => <line key={'y' + y} x1={20} y1={y} x2={180} y2={y} strokeDasharray="2.4 2" strokeOpacity={0.6} />)}
+        </g>
+      )
       const r = it[1] === 'right'
       return (
         <g key={k} {...s}>

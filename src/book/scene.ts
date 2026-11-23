@@ -35,6 +35,8 @@ export interface Player {
   quiet?: boolean
 }
 
+/** pitch markings the board can show: whole pitch, either half, a penalty box close-up, the centre zone, a small-sided grid */
+export type PitchKind = 'full' | 'right' | 'left' | 'box' | 'mid' | 'grid'
 export type Item =
   | ['area', number, number, number, number, CornerCones?]
   | ['cone', number, number, ConeColor?]
@@ -48,7 +50,7 @@ export type Item =
   | ['pole', number, number]
   | ['hurdle', number, number, boolean?]
   | ['ladder', number, number, number, number]
-  | ['pitch', 'full' | 'right' | 'left']
+  | ['pitch', PitchKind]
   /** a ball lying on the pitch (ball pile, spare balls) */
   | ['ball', number, number]
   /** traffic light held by the coach (red/yellow/green light games) */

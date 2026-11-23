@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { ballAt, marks, posAt, type BallStep, type BookScene, type ConeColor, type Item, type Pt, type Step, type Team } from '../book/scene'
+import { ballAt, marks, posAt, type BallStep, type BookScene, type ConeColor, type Item, type PitchKind, type Pt, type Step, type Team } from '../book/scene'
 import { Frame, MarkPaths, SCALABLE, TEAM, ballDot, fieldItem, item, playerDot, soccerBall } from './BookPitch'
 import { BookPlayer } from './AnimatedPitch'
 import { useT } from '../hooks'
@@ -17,6 +17,8 @@ type Tool = string
 type Pop = null | 'players' | 'kit' | 'text' | 'field' | 'color'
 type Hit = { kind: 'p'; id: string } | { kind: 'b'; i: number } | { kind: 'i'; i: number }
 
+const FIELDS: [PitchKind | 'free', Key][] = [['full', 'bFull'], ['right', 'bHalf'], ['left', 'bHalfL'], ['box', 'bBox'], ['mid', 'bMid'], ['grid', 'bGrid'], ['free', 'bFree']]
+const QUICK_KIT = ['coneo', 'discy', 'mini', 'goal', 'dummy', 'pole']
 const PLAYER_TOOLS: [Team, Key][] = [['r', 'bRed'], ['b', 'bBlue'], ['y', 'bYellow'], ['w', 'bWhite'], ['o', 'bOrange'], ['g', 'bGrey'], ['k', 'bKeeper'], ['c', 'bCoach']]
 type Kit = { key: string; label: Key; col?: Key; make: (x: number, y: number) => Item; box?: number }
 const COLS: [ConeColor, Key][] = [['y', 'cYellow'], ['r', 'cRed'], ['b', 'cBlue']]
@@ -272,12 +274,12 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
     commit({ ...sc, steps: sc.steps - 1, players: sc.players.map((p) => ({ ...p, p: p.p.length > 1 ? cut(p.p) : p.p })), balls: balls.map((tr) => (tr.length > 1 ? cut(tr) : tr)) })
     setS(Math.max(0, s - 1))
   }
-  const setField = (f: 'full' | 'right' | 'free') => {
+  const setField = (f: PitchKind | 'free') => {
     const rest = fieldPairs(sc).filter(([it]) => it[0] !== 'pitch')
     commit(withField(sc, f === 'free' ? rest : [[['pitch', f], 1], ...rest]))
     setSelItem(null)
   }
-  const fieldNow = (sc.field.find((it) => it[0] === 'pitch')?.[1] as 'full' | 'right' | undefined) ?? 'free'
+  const fieldNow = (sc.field.find((it) => it[0] === 'pitch')?.[1] as PitchKind | undefined) ?? 'free'
   const save = () => { if (!name.trim()) { document.getElementById('tb-name')?.focus(); return } onSave(sc, name.trim()) }
 
   const hintKey: Key = tool === 'move' ? (s === 0 ? 'bHintStart' : 'bHintMove')
@@ -308,6 +310,74 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
       <span className="tbb-actic" aria-hidden="true">{icon}</span><span>{label}</span>
     </button>
   )
+  /** side rails: each team's players stand beside the pitch; tap one to put it on, or drag it to a spot */
+  const railRef = useRef<null | { team: Team; l?: string; side: 'L' | 'R'; sx: number; sy: number; moved: boolean }>(null)
+  const [ghost, setGhost] = useState<null | { team: Team; l?: string; x: number; y: number }>(null)
+  const putPlayer = (team: Team, l: string | undefined, pt: Pt) =>
+    commit({ ...sc, players: [...sc.players, { id: nextId(sc, team), t: team, p: [clampPt(pt)], ...(l ? { l } : {}) }] })
+  const railSpot = (team: Team, l: string | undefined, side: 'L' | 'R'): Pt => {
+    if (team === 'k') return [side === 'L' ? 10 : 190, 55]
+    const n = Number(l ?? 1) - 1
+    // a 4-4-2-like spread on the team's own half, so tapped players don't land on each other
+    const rows: Pt[] = [[24, 22], [24, 44], [24, 66], [24, 88], [52, 18], [52, 41], [52, 69], [52, 92], [78, 40], [78, 70], [66, 55]]
+    const [x, y] = rows[n % rows.length]
+    return [side === 'L' ? x : 200 - x, y]
+  }
+  const railDown = (e: React.PointerEvent, team: Team, l: string | undefined, side: 'L' | 'R') => {
+    e.preventDefault()
+    ;(e.currentTarget as Element).setPointerCapture?.(e.pointerId)
+    railRef.current = { team, l, side, sx: e.clientX, sy: e.clientY, moved: false }
+  }
+  const railMove = (e: React.PointerEvent) => {
+    const r = railRef.current
+    if (!r) return
+    if (!r.moved && Math.hypot(e.clientX - r.sx, e.clientY - r.sy) > 6) r.moved = true
+    if (r.moved) setGhost({ team: r.team, l: r.l, x: e.clientX, y: e.clientY })
+  }
+  const railUp = (e: React.PointerEvent) => {
+    const r = railRef.current
+    railRef.current = null
+    setGhost(null)
+    if (!r || e.type === 'pointercancel') return
+    if (!r.moved) { putPlayer(r.team, r.l, railSpot(r.team, r.l, r.side)); return }
+    const svg = svgRef.current, m = svg?.getScreenCTM()
+    if (!svg || !m) return
+    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse())
+    if (p.x < 0 || p.x > 200 || p.y < 0 || p.y > 110) return
+    putPlayer(r.team, r.l, [p.x, p.y])
+  }
+  const token = (team: Team, l: string | undefined, size = 26) => (
+    <svg viewBox="-6 -6 12 12" width={size} height={size} aria-hidden="true">
+      <circle r={5.2} fill={TEAM[team].fill} stroke={team === 'w' || team === 'y' ? '#1C2A22' : '#fff'} strokeWidth={0.9} />
+      {l && <text y={2} textAnchor="middle" fontSize={5.4} fontWeight={700} fill={team === 'w' || team === 'y' ? '#1C2A22' : '#fff'}>{l}</text>}
+    </svg>
+  )
+  const rail = (side: 'L' | 'R') => {
+    const team: Team = side === 'L' ? 'b' : 'r'
+    const used = new Set(sc.players.filter((p) => p.t === team).map((p) => p.l))
+    const btn = (tm: Team, l: string | undefined, label: string, dim = false) => (
+      <button type="button" key={tm + (l ?? '')} className={'tb-tok' + (dim ? ' used' : '')} title={label} aria-label={label}
+        onPointerDown={(e) => railDown(e, tm, l, side)} onPointerMove={railMove} onPointerUp={railUp} onPointerCancel={railUp}>{token(tm, l)}</button>
+    )
+    return (
+      <div className={'tb-rail tb-rail-' + side} role="group" aria-label={t(side === 'L' ? 'bBlue' : 'bRed')}>
+        {btn('k', undefined, t('bKeeper'))}
+        <div className="tb-toks">{Array.from({ length: 11 }, (_, i) => String(i + 1)).map((l) => btn(team, l, t(side === 'L' ? 'bBlue' : 'bRed') + ' ' + l, used.has(l)))}</div>
+        <div className="tb-rail-x">
+          {side === 'L' ? <>
+            {actBtn('move', t('bMove'), '✋')}
+            {actBtn('pass', t('bPass'), arrowIc('3 2'))}
+            {actBtn('shot', t('bShot'), arrowIc('0.5 2'))}
+            {actBtn('lob', t('bLob'), arrowIc(undefined, true))}
+            {actBtn('del', t('del'), '🧽')}
+          </> : <div className="tb-kit tb-qkit">
+            {kitBtn('add:ball', t('bBall'), ballIc)}
+            {QUICK_KIT.map((key) => { const k = KIT.find((x) => x.key === key); return k ? <span key={key}>{kitBtn('add:' + k.key, t(k.label) + (k.col ? ' · ' + t(k.col) : ''), kitIc(k))}</span> : null })}
+          </div>}
+        </div>
+      </div>
+    )
+  }
   const lineSet = (patch: Partial<typeof line>) => { setLine({ ...line, ...patch }); pick('line') }
   const isLine = !preview && tool === 'line'
   const playersIc = <svg viewBox="0 0 30 22" width="34" height="26"><circle cx="10" cy="11" r="7" fill={TEAM.r.fill} stroke="#fff" strokeWidth="1.6" /><circle cx="21" cy="11" r="7" fill={TEAM.b.fill} stroke="#fff" strokeWidth="1.6" /></svg>
@@ -351,6 +421,8 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
         {preview ? (
           <div className="tb-play"><BookPlayer key={JSON.stringify(sc).length + ':' + sc.steps} scene={sc} autoPlay maxHeight={undefined} /></div>
         ) : (
+          <div className="tb-field">
+          {rail('L')}
           <Frame id={fid} svg={{ ref: svgRef, onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: up, className: 'pitch tb-svg', style: { touchAction: 'none' }, 'aria-hidden': false, 'aria-label': t('board') }}>
             {sc.field.map((it, i) => fieldItem(it, i, fid + 'net', sc.fs?.[i]))}
             {selItem !== null && sc.field[selItem] && (() => { const it = sc.field[selItem]; const [x, y] = it[0] === 'ladder' ? [((it[1] as number) + (it[3] as number)) / 2, ((it[2] as number) + (it[4] as number)) / 2] : [it[1] as number, it[2] as number]; return <circle cx={x} cy={y} r={(it[0] === 'goal' ? 13 : it[0] === 'ladder' ? 10 : 6.5) * (sc.fs?.[selItem] ?? 1)} fill="none" stroke="#FFE45C" strokeWidth={0.6} strokeDasharray="1.6 1.2" pointerEvents="none" /> })()}
@@ -364,7 +436,10 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
             {sc.players.map((p) => playerDot(p.t, posAt(sc, p, s), p.l, 'p' + p.id, sc.ps))}
             {ballsP.map((tr, i) => { const b = ballAt(sc, tr, s); return b ? ballDot(b, 'b' + i, sc.bs) : null })}
           </Frame>
+          {rail('R')}
+          </div>
         )}
+        {ghost && <div className="tb-ghost" style={{ left: ghost.x, top: ghost.y }}>{token(ghost.team, ghost.l, 34)}</div>}
         <p className="tb-hint">{preview ? t('bHintPreview') : t(hintKey)}</p>
       </div>
 
@@ -405,9 +480,12 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
             </>}
             {pop === 'field' && <>
               <div className="tb-pophead"><b>{t('bField')}</b><button type="button" className="tb-x" onClick={() => setPop(null)} aria-label={t('cancel')}>✕</button></div>
-              <div className="tb-tools">
-                {(['full', 'right', 'free'] as const).map((f) => (
-                  <button type="button" key={f} className="tb-tool" aria-pressed={fieldNow === f} onClick={() => { setField(f); setPop(null) }}><span>{t(f === 'full' ? 'bFull' : f === 'right' ? 'bHalf' : 'bFree')}</span></button>
+              <div className="tb-fields">
+                {FIELDS.map(([f, k]) => (
+                  <button type="button" key={f} className="tb-fieldbtn" aria-pressed={fieldNow === f} onClick={() => { setField(f); setPop(null) }}>
+                    <svg viewBox="0 0 200 110" aria-hidden="true"><rect width="200" height="110" rx="6" fill="#5F9B3C" />{f !== 'free' && item(['pitch', f], 0, fid + 'net')}</svg>
+                    <span>{t(k)}</span>
+                  </button>
                 ))}
               </div>
             </>}
@@ -423,7 +501,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
             <button type="button" aria-pressed={!preview} onClick={() => setPreview(false)}>✏️<span>{t('bModeEdit')}</span></button>
             <button type="button" aria-pressed={preview} disabled={sc.steps < 2} onClick={() => { setPop(null); setPreview(true) }} title={sc.steps < 2 ? t('bHintStart') : undefined}>▶<span>{t('bModeAnim')}</span></button>
           </div>
-          <div className="tbb-group">
+          <div className="tbb-group tb-dup">
             {actBtn('move', t('bMove'), '✋')}
             {actBtn('pass', t('bPass'), arrowIc('3 2'))}
             {actBtn('shot', t('bShot'), arrowIc('0.5 2'))}
@@ -435,7 +513,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
             <div className="tbb-grid tbb-w">{[1, 2, 3, 4].map((w) => <button type="button" key={w} aria-pressed={isLine && line.w === w} aria-label={t('lWidth') + ' ' + w} onClick={() => lineSet({ w })}><i style={{ width: 2 + w * 2.5, height: 2 + w * 2.5 }} /></button>)}</div>
             <button type="button" className="tbb-color" aria-label={t('bColor')} aria-expanded={pop === 'color'} onClick={() => setPop(pop === 'color' ? null : 'color')}><i style={{ background: L_COLS.find((c) => c[0] === line.col)?.[2] }} /></button>
           </div>
-          <div className="tbb-group">
+          <div className="tbb-group tb-dup">
             {actBtn('del', t('del'), '🧽')}
           </div>
           <div className="tbb-group">
