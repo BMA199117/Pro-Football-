@@ -27,7 +27,7 @@ export function DrillPitch({ id, type, maxHeight }: { id?: string; type: Diagram
 // Each step: its arrows appear first (PRE), then the players and the ball move (move), then a short hold (HOLD).
 const START = 1.2, PRE = 1.0, HOLD = 0.7, END = 3.0
 
-function timing(sc: BookScene, slow: boolean) {
+export function timing(sc: BookScene, slow: boolean) {
   const move = Math.max(2.0, (sc.speed ?? 1.15) * 1.8) * (slow ? 1.8 : 1)
   const pre = PRE * (slow ? 1.4 : 1)
   const len = pre + move + HOLD
@@ -36,7 +36,7 @@ function timing(sc: BookScene, slow: boolean) {
 }
 
 /** Where the animation is at second s: frame time t, the current step and how visible its arrows are. */
-function at(sc: BookScene, s: number, slow: boolean) {
+export function at(sc: BookScene, s: number, slow: boolean) {
   const { move, pre, len, moves } = timing(sc, slow)
   if (s < START) return { t: 0, step: 0, op: 0, k: -1 }
   const u = s - START
