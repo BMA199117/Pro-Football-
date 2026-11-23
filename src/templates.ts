@@ -9,7 +9,7 @@ type Row = [id: string, ages: string, group: string, source: string, title: [str
  * RFS 6–9 and adidas 10–14 / 15–17: sessions put together from each programme's block exercises.
  * 15–17: also sessions built from the FIFA part 8.2 physical exercises, grouped by the quality they train.
  * Pro: sessions for adult players from FIFA part 8.1 (examples and weekly cycle) and 8.2; stretching as the cool-down.
- * pro9+: positional-play sessions from the Phase of Play books (drills pp-*, xa-*, ip-*).
+ * pro9+: positional-play sessions from the Phase of Play books (drills pp-*, xa-*, ip-*, dz-*, ad-*, vp-*).
  */
 const ROWS: Row[] = [
   // EPYSA U6 — game at the end of each week: 3×3
@@ -194,6 +194,19 @@ const ROWS: Row[] = [
   ['pro13', 'Pro', 'Pro', 'posPlay', ["O'yindan 2 kun oldin: optimallashtirish", 'За 2 дня до матча: оптимизация'],
     ["Kitobdagi mikrosikl bo'yicha: jadal, lekin qisqa — rondo, uchinchi o'yinchi bilan rotatsiyalar, markazdan yakunlash, hujumga tez o'tish", 'По микроциклу из книги: интенсивно, но коротко — рондо, ротации с третьим, завершение через центр, быстрый переход в атаку'],
     ['pp-26'], ['pp-29', 'ip-19b', 'ip-33'], ['ip-38'], ['f82-40']],
+  // Pro — De Zerbi, The Art of Defending, Vertical Play in 4-2-3-1 (Phase of Play)
+  ['pro14', 'Pro', 'Pro', 'deZerbi', ["De Dzerbi: «quti» va «qum soati» bilan o'yin qurish", 'Де Дзерби: построение «коробкой» и «песочными часами»'],
+    ["S-kombinatsiya, «quti» rondosi, qum soati shakli, 2-4-2-2 da yuqori pressingga qarshi, darvozabondan yakunlashgacha", 'S-комбинация, рондо «коробка», форма «песочные часы», против высокого прессинга в 2-4-2-2, от вратаря до завершения'],
+    ['dz-20'], ['dz-18', 'dz-22', 'dz-23'], ['dz-19'], ['f82-40']],
+  ['pro15', 'Pro', 'Pro', 'vert4231', ['Vertikal o\'yin: o\'rta va past blokni yorish', 'Вертикальная игра: вскрыть средний и низкий блок'],
+    ["Devor pas bilan markazdan, markazdan o'yin qurish, qanotdan diagonal kombinatsiya, past blokka qarshi naqsh, differensial o'yin", 'Через центр со стенкой, построение через центр, диагональная комбинация с фланга, схема против низкого блока, дифференциальная игра'],
+    ['vp-20'], ['vp-14', 'vp-28', 'dz-35'], ['vp-7'], ['f82-40']],
+  ['pro16', 'Pro', 'Pro', 'artDef', ['Pressing va kontrpressing (himoya san\'ati)', 'Прессинг и контрпрессинг («Искусство обороны»)'],
+    ["Qachon bosishni tanish, zonalarda kontrpressing, olingan to'pni uzatish, signal bo'yicha yuqori pressing, yo'qotgan zahoti bosim", 'Когда прессинговать, контрпрессинг по зонам, перевод отобранного мяча, высокий прессинг по сигналу, давление сразу после потери'],
+    ['ad-7'], ['ad-9', 'vp-33a', 'vp-33b'], ['ad-8'], ['f82-40']],
+  ['pro17', 'Pro', 'Pro', 'artDef', ['Himoya tashkiloti: ixchamlik va jarima maydoni', 'Организация обороны: компактность и штрафная'],
+    ["Simeone ixchamligi, qanot almashishiga qarshi, past blokdan pressing (Mourinho), qarshi hujumga qarshi, oshirmalarni himoya qilish", 'Компактность Симеоне, защита от смены фланга, прессинг из низкого блока (Моуринью), защита от контратаки, защита от навесов'],
+    ['ad-15'], ['ad-17', 'ad-13', 'ad-23'], ['ad-26'], ['f82-40']],
 ]
 
 export const TEMPLATE_AGES = ['5–6', '7–8', '9–10', '11–12', '13–14', '15–17', 'Pro']

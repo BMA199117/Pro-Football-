@@ -6,6 +6,7 @@ import { ADIDAS_1517 } from './library-adidas1517'
 import { SSG_100 } from './library-ssg100'
 import { FIFA_8 } from './library-fifa8'
 import { POS_PLAY } from './library-pos'
+import { POS_PLAY2 } from './library-pos2'
 
 /**
  * Drills retold briefly from the coach's books (see sources.ts).
@@ -21,4 +22,4 @@ const toDrill = ([id, cat, dia, age, min, players, source, name, desc, equip, po
   points: points.map(([uz, ru]) => ({ uz, ru })),
 })
 
-export const BOOK_DRILLS: Drill[] = [...RFS_69, ...ADIDAS_1014, ...ADIDAS_1517, ...SSG_100, ...EPYSA_ROWS, ...FIFA_8, ...POS_PLAY].map(toDrill)
+export const BOOK_DRILLS: Drill[] = [...RFS_69, ...ADIDAS_1014, ...ADIDAS_1517, ...SSG_100, ...EPYSA_ROWS, ...FIFA_8, ...POS_PLAY, ...POS_PLAY2].map(toDrill)
