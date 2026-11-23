@@ -25,4 +25,5 @@ export const BENEFITS_J: Record<string, Benefit> = {
   'bc-67': [['pass', 'vision', 'decide'], "Qachon to'pni aylantirish va qachon markazga bostirib kirishni tanlash o'rganiladi.", 'Учатся выбирать: гонять мяч по кругу или врываться в центр.'],
   'bc-69': [['position', 'pass', 'trans'], "Markazda bo'sh joy yaratish va undan foydalanish, to'p yo'qotilganda darhol bosim.", 'Создание и использование пространства в центре, мгновенный прессинг после потери.'],
   'bc-78': [['support', 'vision', 'decide'], "Jokerlar bilan son ustunligida tez qaror qabul qilish, to'g'ri qabul va yordamga kelish o'rganiladi.", 'В большинстве с джокерами учатся быстро принимать решения, правильно принимать мяч и поддерживать партнёра.'],
+  'bc-80': [['position', 'support', 'vision'], "To'psiz harakat bilan bo'sh joy yaratish va undan foydalanish — to'pni ushlab turishning asosi.", 'Создание и использование пространства движением без мяча — основа удержания мяча.'],
 }
