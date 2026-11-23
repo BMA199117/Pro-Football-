@@ -144,8 +144,8 @@ export const MORE_VP: Record<string, More> = {
   }, [['gk', 'bcb2', 'bdm2']]),
   // navy win it back: the forwards counter-press straight away
   'vp-16': f16.more(3, {
-    bst: [[548, 205], [540, 210]], blw: [[455, 225], [462, 220]], bam: [[575, 230], [560, 225]],
-  }, [['ccb1', 'crb', 'crb']]),
+    bst: [[548, 205], [544, 216]], blw: [[455, 225], [458, 228]], bam: [[575, 230], [560, 225], [576, 226]],
+  }, [['ccb1', 'crb', 'ccb2']]),
   // the other team's turn: navy build through their pivots to their attacking midfielder at the far end
   'vp-20': f20.more(3, {
     bdm1: [[475, 190], [490, 230], [500, 260]], bdm2: [[590, 280], [585, 300]],

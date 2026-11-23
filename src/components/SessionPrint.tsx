@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
+import { pdfName, sheetToPdf } from '../pdf'
 import { createPortal } from 'react-dom'
 import { DrillPitch } from './AnimatedPitch'
 import { useT } from '../hooks'
@@ -9,21 +10,28 @@ import { PHASES, type Drill, type Session } from '../types'
 /** "Konspekt PDF" button: the whole session on A4 (header, the three parts with every drill's drawing and text, notes). */
 export function SessionPrintButton({ session, byId }: { session: Session; byId: Map<string, Drill> }) {
   const { t } = useT()
-  const [printing, setPrinting] = useState(0)
+  const [busy, setBusy] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (!printing) return
-    const id = setTimeout(() => { try { window.print() } catch { /* printing blocked */ } }, 200)
-    return () => clearTimeout(id)
-  }, [printing])
+    if (!busy) return
+    let live = true
+    const go = async () => {
+      try { if (ref.current) await sheetToPdf(ref.current, pdfName(`konspekt-${session.date}-${session.goal}`)) }
+      catch { try { window.print() } catch { /* printing blocked */ } }
+      finally { if (live) setBusy(false) }
+    }
+    void go()
+    return () => { live = false }
+  }, [busy, session])
   return (
     <>
-      <button className="btn ghost small" onClick={() => setPrinting((n) => n + 1)}>🖨 {t('konspekt')}</button>
-      {printing > 0 && createPortal(<SessionSheet key={printing} session={session} byId={byId} />, document.body)}
+      <button className="btn ghost small" disabled={busy} onClick={() => setBusy(true)}>{busy ? '⏳ ' + t('pdfMaking') : '📄 ' + t('konspekt')}</button>
+      {busy && createPortal(<SessionSheet sheetRef={ref} session={session} byId={byId} />, document.body)}
     </>
   )
 }
 
-function SessionSheet({ session: s, byId }: { session: Session; byId: Map<string, Drill> }) {
+function SessionSheet({ session: s, byId, sheetRef }: { session: Session; byId: Map<string, Drill>; sheetRef: RefObject<HTMLDivElement | null> }) {
   const { t, L, days, months } = useT()
   const [y, m, d] = s.date.split('-').map(Number)
   const date = new Date(y, m - 1, d)
@@ -32,7 +40,7 @@ function SessionSheet({ session: s, byId }: { session: Session; byId: Map<string
   const srcs = [...new Set(PHASES.flatMap((p) => s.phases[p]).map((id) => byId.get(id)?.source).filter((x): x is string => !!x && !!SOURCES[x]))]
   let n = 0
   return (
-    <div className="print-sheet konspekt">
+    <div className="print-sheet konspekt pdf-render" ref={sheetRef}>
       <header className="ps-head">
         <div className="ps-small">{t('konspektTitle')}</div>
         <h1>{s.goal}</h1>

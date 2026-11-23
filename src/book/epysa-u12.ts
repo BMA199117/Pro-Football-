@@ -100,7 +100,7 @@ const targets: BookScene = {
     { id: 'w2', t: 'w', p: [[44, 26]] }, { id: 'w3', t: 'w', p: [[88, 50]] }, { id: 'w4', t: 'w', p: [[160, 36]] },
     { id: 'r1', t: 'r', p: [[146, 30], [140, 26]] }, { id: 'r2', t: 'r', p: [[56, 44]] }, { id: 'r3', t: 'r', p: [[74, 62], [82, 70]] }, { id: 'r4', t: 'r', p: [[138, 62], [128, 70]] },
   ],
-  balls: [['w1', [96, 100, 2], 't', 't']],
+  balls: [['w1', [96, 100, 2], 't', 'w3']],
 }
 
 // W3 · 6v6 to goal – points for aerial service and goals

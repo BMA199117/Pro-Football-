@@ -3,7 +3,7 @@ import type { Diagram } from '../types'
 import { Field, Pitch } from './Pitch'
 import { SCENES, frame } from '../scenes'
 import { sceneOf } from '../scene-of'
-import { bookSteps, type BookScene } from '../book/scene'
+import { ballAt, bookSteps, route, tracks, type BookScene } from '../book/scene'
 import { narrate } from '../book/narrate'
 import { BookFrame, BookStatic } from './BookPitch'
 import { useT } from '../hooks'
@@ -24,25 +24,56 @@ export function DrillPitch({ id, type, maxHeight }: { id?: string; type: Diagram
 }
 
 // ---------- timeline of a book animation (seconds) ----------
-// Each step: its arrows appear first (PRE), then the players and the ball move (move), then a short hold (HOLD).
+// Each step: its arrows appear first (pre), then the players and the ball move (move), then a short hold (HOLD).
+// Steps differ: a long run or a long pass gets more time to move (so it is not rushed), and a step
+// where many players or several balls move gets longer to read its arrows first.
 const START = 1.2, PRE = 1.0, HOLD = 0.7, END = 3.0
 
+const len2 = (pts: number[][]) => { let l = 0; for (let i = 1; i < pts.length; i++) l += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); return l }
+
+/** How busy step k is: the longest run or pass (pitch units), how many players and balls move. */
+function load(sc: BookScene, k: number) {
+  let far = 0, movers = 0, balls = 0
+  for (const p of sc.players) {
+    const L = len2(route(sc, p, k))
+    if (L > 1.5 && !p.quiet) movers++
+    far = Math.max(far, L)
+  }
+  for (const tr of tracks(sc)) {
+    const a = tr[k], b = tr[Math.min(k + 1, sc.steps - 1)]
+    if (a === b) continue
+    const pa = ballAt(sc, tr, k), pb = ballAt(sc, tr, k + 1)
+    if (pa && pb) { balls++; far = Math.max(far, Math.hypot(pb[0] - pa[0], pb[1] - pa[1]) / 1.6) }
+  }
+  return { far, movers, balls }
+}
+
 export function timing(sc: BookScene, slow: boolean) {
-  const move = Math.max(2.0, (sc.speed ?? 1.15) * 1.8) * (slow ? 1.8 : 1)
-  const pre = PRE * (slow ? 1.4 : 1)
-  const len = pre + move + HOLD
+  const base = Math.max(2.0, (sc.speed ?? 1.15) * 1.8)
   const moves = sc.steps - 1
-  return { move, pre, len, moves, total: START + moves * len + END }
+  const pres: number[] = [], movs: number[] = [], starts: number[] = []
+  let t = START
+  for (let k = 0; k < moves; k++) {
+    const { far, movers, balls } = load(sc, k)
+    // ~45 units (a third of the pitch length) fits the normal time; longer runs get up to 2.2× more
+    // a step where everyone freezes (a coach's signal) is a short pause, not a long empty wait
+    const still = far < 1.5 && balls === 0
+    const mv = base * (still ? 0.55 : Math.min(2.2, Math.max(1, far / 45))) * (slow ? 1.8 : 1)
+    const pr = PRE * (1 + Math.min(0.7, Math.max(0, movers - 3) * 0.1 + Math.max(0, balls - 1) * 0.25)) * (slow ? 1.4 : 1)
+    starts.push(t); pres.push(pr); movs.push(mv)
+    t += pr + mv + HOLD
+  }
+  return { pres, movs, starts, moves, total: t + END }
 }
 
 /** Where the animation is at second s: frame time t, the current step and how visible its arrows are. */
 export function at(sc: BookScene, s: number, slow: boolean) {
-  const { move, pre, len, moves } = timing(sc, slow)
+  const { pres, movs, starts, moves } = timing(sc, slow)
   if (s < START) return { t: 0, step: 0, op: 0, k: -1 }
-  const u = s - START
-  const k = Math.floor(u / len)
+  let k = 0
+  while (k < moves && s >= starts[k] + pres[k] + movs[k] + HOLD) k++
   if (k >= moves) return { t: moves, step: moves, op: 0, k: moves }
-  const r = u - k * len
+  const r = s - starts[k], pre = pres[k], move = movs[k]
   if (r < pre) return { t: k, step: k, op: r / pre, k }
   if (r < pre + move) return { t: k + (r - pre) / move, step: k, op: 1, k }
   return { t: k + 1, step: k, op: 1, k }
@@ -56,7 +87,7 @@ export function BookPlayer({ scene, autoPlay, maxHeight, fit }: { scene: BookSce
   const [slow, setSlow] = useState(false)
   const [s, setS] = useState(0)
   const sRef = useRef(0)
-  const { len, pre, move, moves, total } = timing(scene, slow)
+  const { pres, movs, starts, moves, total } = timing(scene, slow)
 
   useEffect(() => { sRef.current = 0; setS(0) }, [scene])
 
@@ -79,7 +110,7 @@ export function BookPlayer({ scene, autoPlay, maxHeight, fit }: { scene: BookSce
   const go = (v: number) => { sRef.current = v; setS(v) }
   const pos = at(scene, s, slow)
   // jump to the end of a step (paused): the move is done and its arrows stay visible
-  const toStep = (k: number) => { setPlaying(false); go(k < 0 ? 0 : START + k * len + pre + move + 0.01) }
+  const toStep = (k: number) => { setPlaying(false); go(k < 0 ? 0 : starts[k] + pres[k] + movs[k] + 0.01) }
   const shown = pos.k < 0 ? 0 : Math.min(pos.k + 1, moves)
   // steps already completed
   const done = pos.k < 0 ? 0 : pos.k >= moves ? moves : pos.t >= pos.k + 1 ? pos.k + 1 : pos.k
