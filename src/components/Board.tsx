@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { ballAt, marks, posAt, type BallStep, type BookScene, type ConeColor, type Item, type Pt, type Step, type Team } from '../book/scene'
-import { Frame, MarkPaths, TEAM, ballDot, item, playerDot, soccerBall } from './BookPitch'
+import { Frame, MarkPaths, SCALABLE, TEAM, ballDot, fieldItem, item, playerDot, soccerBall } from './BookPitch'
 import { BookPlayer } from './AnimatedPitch'
 import { useT } from '../hooks'
 import type { Key } from '../i18n'
@@ -82,6 +82,18 @@ function itemDist(it: Item, at: Pt): number {
   const f = Math.max(0, Math.min(1, ((at[0] - a[0]) * vx + (at[1] - a[1]) * vy) / l2))
   return dist([a[0] + vx * f, a[1] + vy * f], at)
 }
+/** Sizes of the field items, one per item (missing = 1); stored only when some item is resized. */
+const sizesOf = (sc: BookScene) => sc.field.map((_, i) => sc.fs?.[i] ?? 1)
+const packSizes = (fs: number[]) => (fs.some((v) => v !== 1) ? fs : undefined)
+/** The scene with its field (and the sizes that go with it) replaced. */
+function withField(sc: BookScene, pairs: [Item, number][]): BookScene {
+  const { fs: _old, ...rest } = sc
+  const fs = packSizes(pairs.map((p) => p[1]))
+  return { ...rest, field: pairs.map((p) => p[0]), ...(fs ? { fs } : {}) }
+}
+const fieldPairs = (sc: BookScene): [Item, number][] => sc.field.map((it, i) => [it, sc.fs?.[i] ?? 1])
+const clampSize = (v: number) => Math.max(0.5, Math.min(2, Math.round(v * 10) / 10))
+
 function removePlayer(sc: BookScene, id: string): BookScene {
   const p = sc.players.find((q) => q.id === id)!
   // a ball this player had stays where the player was
@@ -110,6 +122,11 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
   const [line, setLine] = useState({ type: 'd', end: 'a', col: 'w', w: 2 })
   const [draft, setDraft] = useState<[Pt, Pt] | null>(null)
   const [text, setText] = useState('')
+  /** the field item last tapped or moved, whose size the size buttons change */
+  const [selItem, setSelItem] = useState<number | null>(null)
+  /** size given to new equipment */
+  const [kitSize, setKitSize] = useState(1)
+  const addItem = (it: Item) => { commit(withField(sc, [...fieldPairs(sc), [it, kitSize]])); setSelItem(sc.field.length) }
 
   useEffect(() => {
     // capture first, so Escape closes only the board and not the form under it
@@ -138,7 +155,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
     const consider = (h: Hit, d: number, r0: number) => { const r = Math.max(r0, 11 / px); if (d < r && d - r * 0.3 < bd) { bd = d - r * 0.3; best = h } }
     if (only !== 'b') sc.players.forEach((p) => consider({ kind: 'p', id: p.id }, dist(posAt(sc, p, s), at), 6.5 * (sc.ps ?? 1)))
     if (only !== 'p') ballsP.forEach((tr, i) => { const b = ballAt(sc, tr, s); if (b) consider({ kind: 'b', i }, dist(b, at), 4.5) })
-    if (!only) sc.field.forEach((it, i) => { if (MOVABLE.has(it[0])) consider({ kind: 'i', i }, itemDist(it, at), it[0] === 'mark' ? 3.5 : 6) })
+    if (!only) sc.field.forEach((it, i) => { if (MOVABLE.has(it[0])) consider({ kind: 'i', i }, itemDist(it, at), it[0] === 'mark' ? 3.5 : 6 * (sc.fs?.[i] ?? 1)) })
     return best
   }
   /** ball the pass tools act on: the selected one, the only one, or the one at a tapped player's feet */
@@ -153,6 +170,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
     const at = toPt(e)
     const h = hitAt(at)
     if (tool === 'move') {
+      setSelItem(h?.kind === 'i' && SCALABLE.has(sc.field[h.i][0]) ? h.i : null)
       if (!h) return
       ;(e.target as Element).setPointerCapture?.(e.pointerId)
       setHist((x) => [...x.slice(-40), sc])
@@ -169,7 +187,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
       if (!h) return
       if (h.kind === 'p') commit(removePlayer(sc, h.id))
       else if (h.kind === 'b') { commit({ ...sc, balls: balls.filter((_, i) => i !== h.i) }); setSel(null) }
-      else commit({ ...sc, field: sc.field.filter((_, i) => i !== h.i) })
+      else { commit(withField(sc, fieldPairs(sc).filter((_, i) => i !== h.i))); setSelItem(null) }
       return
     }
     if (tool === 'pass' || tool === 'shot' || tool === 'lob') {
@@ -196,7 +214,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
       return
     }
     if (kind === 'text') {
-      if (text.trim()) commit({ ...sc, field: [...sc.field, ['text', pt[0], pt[1], text.trim()]] })
+      if (text.trim()) addItem(['text', pt[0], pt[1], text.trim()])
       else document.getElementById('tb-text')?.focus()
       return
     }
@@ -209,7 +227,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
       return
     }
     const kit = KIT.find((k) => k.key === kind)
-    if (kit) commit({ ...sc, field: [...sc.field, kit.make(pt[0], pt[1])] })
+    if (kit) addItem(kit.make(pt[0], pt[1]))
   }
   const move = (e: React.PointerEvent) => {
     if (draft) { const p = clampPt(toPt(e)); setDraft([draft[0], p]); return }
@@ -228,7 +246,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
     if (draft) {
       const [a, b] = draft
       setDraft(null)
-      if (dist(a, b) > 4) commit({ ...sc, field: [...sc.field, ['mark', a[0], a[1], b[0], b[1], line.type + line.end + line.col + line.w]] })
+      if (dist(a, b) > 4) commit(withField(sc, [...fieldPairs(sc), [['mark', a[0], a[1], b[0], b[1], line.type + line.end + line.col + line.w], 1]]))
       return
     }
     const d = drag.current
@@ -252,8 +270,9 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
     setS(Math.max(0, s - 1))
   }
   const setField = (f: 'full' | 'right' | 'free') => {
-    const rest = sc.field.filter((it) => it[0] !== 'pitch')
-    commit({ ...sc, field: f === 'free' ? rest : [['pitch', f], ...rest] })
+    const rest = fieldPairs(sc).filter(([it]) => it[0] !== 'pitch')
+    commit(withField(sc, f === 'free' ? rest : [[['pitch', f], 1], ...rest]))
+    setSelItem(null)
   }
   const fieldNow = (sc.field.find((it) => it[0] === 'pitch')?.[1] as 'full' | 'right' | undefined) ?? 'free'
   const save = () => { if (!name.trim()) { document.getElementById('tb-name')?.focus(); return } onSave(sc, name.trim()) }
@@ -297,7 +316,8 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
             <BookPlayer key={JSON.stringify(sc).length + ':' + sc.steps} scene={sc} autoPlay maxHeight={undefined} />
           ) : (
             <Frame id={fid} svg={{ ref: svgRef, onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: up, className: 'pitch tb-svg', style: { touchAction: 'none' }, 'aria-hidden': false, 'aria-label': t('board') }}>
-              {sc.field.map((it, i) => item(it, i, fid + 'net'))}
+              {sc.field.map((it, i) => fieldItem(it, i, fid + 'net', sc.fs?.[i]))}
+              {selItem !== null && sc.field[selItem] && !preview && (() => { const it = sc.field[selItem]; const [x, y] = it[0] === 'ladder' ? [((it[1] as number) + (it[3] as number)) / 2, ((it[2] as number) + (it[4] as number)) / 2] : [it[1] as number, it[2] as number]; return <circle cx={x} cy={y} r={(it[0] === 'goal' ? 13 : it[0] === 'ladder' ? 10 : 6.5) * (sc.fs?.[selItem] ?? 1)} fill="none" stroke="#FFE45C" strokeWidth={0.6} strokeDasharray="1.6 1.2" pointerEvents="none" /> })()}
               {all && sc.steps > 1 && <MarkPaths scene={sc} ms={marks(sc, 0, sc.steps - 1)} id={fid} opacity={0.35} />}
               {s > 0 && <>
                 {sc.players.map((p) => { const a = posAt(sc, p, s - 1), b = posAt(sc, p, s); return dist(a, b) > 1.5 ? <circle key={'g' + p.id} cx={a[0]} cy={a[1]} r={4.4 * (sc.ps ?? 1)} fill={TEAM[p.t].fill} opacity={0.3} /> : null })}
@@ -306,7 +326,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
               {selBall && (tool === 'pass' || tool === 'shot' || tool === 'lob') && <circle cx={selBall[0]} cy={selBall[1]} r={4.6} fill="none" stroke="#FFE45C" strokeWidth={1} />}
               {draft && dist(draft[0], draft[1]) > 1 && item(['mark', ...draft[0], ...draft[1], line.type + line.end + line.col + line.w], 999, fid + 'net')}
               {sc.players.map((p) => playerDot(p.t, posAt(sc, p, s), p.l, 'p' + p.id, sc.ps))}
-              {ballsP.map((tr, i) => { const b = ballAt(sc, tr, s); return b ? ballDot(b, 'b' + i) : null })}
+              {ballsP.map((tr, i) => { const b = ballAt(sc, tr, s); return b ? ballDot(b, 'b' + i, sc.bs) : null })}
             </Frame>
           )}
           <p className="tb-hint">{preview ? t('bHintPreview') : t(hintKey)}</p>
@@ -348,6 +368,28 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
             {KIT.map((k) => kitBtn('add:' + k.key, t(k.label) + (k.col ? ' · ' + t(k.col) : ''), kitIc(k)))}
             {kitBtn('add:text', t('bText'), <b className="tb-T">T</b>)}
           </div>
+          {(() => {
+            const one = selItem !== null && sc.field[selItem] ? selItem : null
+            const cur = one !== null ? sc.fs?.[one] ?? 1 : kitSize
+            const set = (v: number) => {
+              v = clampSize(v)
+              if (one !== null) { commit(withField(sc, fieldPairs(sc).map(([it, z], i) => [it, i === one ? v : z]))); return }
+              // nothing picked: every piece of equipment and the balls, and new equipment too
+              setKitSize(v)
+              const sizes = sizesOf(sc).map((z, i) => (SCALABLE.has(sc.field[i][0]) ? v : z))
+              commit({ ...withField(sc, sc.field.map((it, i) => [it, sizes[i]])), bs: v === 1 ? undefined : v })
+            }
+            return (
+              <div className="tb-size">
+                <span>{t(one !== null ? 'bSizeOne' : 'bSizeAll')}</span>
+                <button type="button" className="tb-tool" aria-label={t('bSmaller')} disabled={cur <= 0.5} onClick={() => set(cur - 0.1)}>−</button>
+                <input type="range" min={0.5} max={2} step={0.1} value={cur} aria-label={t(one !== null ? 'bSizeOne' : 'bSizeAll')} onChange={(e) => set(Number(e.target.value))} />
+                <button type="button" className="tb-tool" aria-label={t('bBigger')} disabled={cur >= 2} onClick={() => set(cur + 0.1)}>+</button>
+                <b>{Math.round(cur * 100)}%</b>
+              </div>
+            )
+          })()}
+          <p className="tb-note">{t(selItem !== null ? 'bSizeHintOne' : 'bSizeHintAll')}</p>
           {tool === 'add:text' && <input id="tb-text" className="tb-text" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('bTextPh')} aria-label={t('bText')} />}
           <h3 className="tb-h">{t('bLines')}</h3>
           <div className="tb-tools">{toolBtn('line', t('bDraw'), lineIc(line.type + line.end + line.col + line.w))}</div>
