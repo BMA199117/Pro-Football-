@@ -32,6 +32,8 @@ export default defineConfig(({ command, mode }) => {
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // let robots.txt / sitemap.xml / og.png load as files, not as the app
+      workbox: { navigateFallbackDenylist: [/\.(xml|txt|png)$/] },
       includeAssets: ['icon.svg'],
       manifest: {
         name: 'Pro Football',
