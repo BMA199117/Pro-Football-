@@ -136,7 +136,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
     // on a phone the pitch is small: keep every target at least ~22px wide for a finger
     const px = (svgRef.current?.getBoundingClientRect().width ?? 600) / 200
     const consider = (h: Hit, d: number, r0: number) => { const r = Math.max(r0, 11 / px); if (d < r && d - r * 0.3 < bd) { bd = d - r * 0.3; best = h } }
-    if (only !== 'b') sc.players.forEach((p) => consider({ kind: 'p', id: p.id }, dist(posAt(sc, p, s), at), 6.5))
+    if (only !== 'b') sc.players.forEach((p) => consider({ kind: 'p', id: p.id }, dist(posAt(sc, p, s), at), 6.5 * (sc.ps ?? 1)))
     if (only !== 'p') ballsP.forEach((tr, i) => { const b = ballAt(sc, tr, s); if (b) consider({ kind: 'b', i }, dist(b, at), 4.5) })
     if (!only) sc.field.forEach((it, i) => { if (MOVABLE.has(it[0])) consider({ kind: 'i', i }, itemDist(it, at), it[0] === 'mark' ? 3.5 : 6) })
     return best
@@ -300,12 +300,12 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
               {sc.field.map((it, i) => item(it, i, fid + 'net'))}
               {all && sc.steps > 1 && <MarkPaths scene={sc} ms={marks(sc, 0, sc.steps - 1)} id={fid} opacity={0.35} />}
               {s > 0 && <>
-                {sc.players.map((p) => { const a = posAt(sc, p, s - 1), b = posAt(sc, p, s); return dist(a, b) > 1.5 ? <circle key={'g' + p.id} cx={a[0]} cy={a[1]} r={4.4} fill={TEAM[p.t].fill} opacity={0.3} /> : null })}
+                {sc.players.map((p) => { const a = posAt(sc, p, s - 1), b = posAt(sc, p, s); return dist(a, b) > 1.5 ? <circle key={'g' + p.id} cx={a[0]} cy={a[1]} r={4.4 * (sc.ps ?? 1)} fill={TEAM[p.t].fill} opacity={0.3} /> : null })}
                 <MarkPaths scene={sc} ms={marks(sc, s - 1, s)} id={fid} />
               </>}
               {selBall && (tool === 'pass' || tool === 'shot' || tool === 'lob') && <circle cx={selBall[0]} cy={selBall[1]} r={4.6} fill="none" stroke="#FFE45C" strokeWidth={1} />}
               {draft && dist(draft[0], draft[1]) > 1 && item(['mark', ...draft[0], ...draft[1], line.type + line.end + line.col + line.w], 999, fid + 'net')}
-              {sc.players.map((p) => playerDot(p.t, posAt(sc, p, s), p.l, 'p' + p.id))}
+              {sc.players.map((p) => playerDot(p.t, posAt(sc, p, s), p.l, 'p' + p.id, sc.ps))}
               {ballsP.map((tr, i) => { const b = ballAt(sc, tr, s); return b ? ballDot(b, 'b' + i) : null })}
             </Frame>
           )}
@@ -335,6 +335,13 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
           </div>
           <h3 className="tb-h">{t('bPlayers')}</h3>
           <div className="tb-tools">{PLAYER_TOOLS.map(([team, k]) => toolBtn(`add:${team}`, t(k), dot(team)))}</div>
+          <div className="tb-size">
+            <span>{t('bSize')}</span>
+            <button type="button" className="tb-tool" aria-label={t('bSmaller')} disabled={(sc.ps ?? 1) <= 0.6} onClick={() => commit({ ...sc, ps: Math.max(0.6, Math.round(((sc.ps ?? 1) - 0.1) * 10) / 10) })}>−</button>
+            <input type="range" min={0.6} max={1.6} step={0.1} value={sc.ps ?? 1} aria-label={t('bSize')} onChange={(e) => commit({ ...sc, ps: Number(e.target.value) })} />
+            <button type="button" className="tb-tool" aria-label={t('bBigger')} disabled={(sc.ps ?? 1) >= 1.6} onClick={() => commit({ ...sc, ps: Math.min(1.6, Math.round(((sc.ps ?? 1) + 0.1) * 10) / 10) })}>+</button>
+            <b>{Math.round((sc.ps ?? 1) * 100)}%</b>
+          </div>
           <h3 className="tb-h">{t('bKit')}</h3>
           <div className="tb-tools tb-kit">
             {kitBtn('add:ball', t('bBall'), ballIc)}

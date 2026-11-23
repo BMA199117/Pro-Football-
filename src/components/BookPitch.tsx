@@ -231,10 +231,10 @@ function trim(pts: Pt[], by: number): Pt[] {
   return out
 }
 
-export function playerDot(t: Team, at: Pt, l: string | undefined, k: string) {
+export function playerDot(t: Team, at: Pt, l: string | undefined, k: string, size = 1) {
   const c = TEAM[t]
   return (
-    <g key={k} transform={`translate(${at[0].toFixed(2)} ${at[1].toFixed(2)})`}>
+    <g key={k} transform={`translate(${at[0].toFixed(2)} ${at[1].toFixed(2)})${size !== 1 ? ` scale(${size})` : ''}`}>
       <circle r={4.4} fill={c.fill} stroke={c.stroke} strokeWidth={1.1} />
       {l && <text y={1.9} fontSize={5} fontWeight={800} fill={c.text} textAnchor="middle">{l}</text>}
     </g>
@@ -293,7 +293,7 @@ export function BookStatic({ scene, maxHeight }: { scene: BookScene; maxHeight?:
     <Frame id={id} maxHeight={maxHeight}>
       {scene.field.map((it, i) => item(it, i, id + 'net'))}
       <MarkPaths scene={scene} ms={marks(scene, 0, bookSteps(scene) - 1)} id={id} />
-      {scene.players.map((p) => playerDot(p.t, posAt(scene, p, 0), p.l, 'p' + p.id))}
+      {scene.players.map((p) => playerDot(p.t, posAt(scene, p, 0), p.l, 'p' + p.id, scene.ps))}
       {start.map((b, i) => ballDot(b, 'b' + i))}
     </Frame>
   )
@@ -317,8 +317,8 @@ export function BookFrame({ scene, t, maxHeight, step, stepOpacity = 1 }: { scen
       {step !== undefined && step > 0 && <MarkPaths scene={scene} ms={marks(scene, Math.max(0, step - 3), Math.min(step, scene.steps - 1))} id={id} opacity={0.28} />}
       {step !== undefined && step < scene.steps - 1 && stepOpacity > 0 && <MarkPaths scene={scene} ms={marks(scene, step, step + 1)} id={id} opacity={stepOpacity} />}
       {f.trails.map(([a, b, shot], i) => { const y = styleOf(scene)[shot ? 'shot' : 'pass']; return <line key={'t' + i} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={y.stroke} strokeOpacity={0.75} strokeWidth={y.width} strokeDasharray={y.dash} strokeLinecap="round" /> })}
-      {f.players.filter(({ p }) => movers.has(p.id)).map(({ p, at }) => <circle key={'h' + p.id} cx={at[0]} cy={at[1]} r={6.6} fill="none" stroke="#FFE45C" strokeWidth={0.9} strokeOpacity={0.9} />)}
-      {f.players.map(({ p, at }) => playerDot(p.t, at, p.l, 'p' + p.id))}
+      {f.players.filter(({ p }) => movers.has(p.id)).map(({ p, at }) => <circle key={'h' + p.id} cx={at[0]} cy={at[1]} r={6.6 * (scene.ps ?? 1)} fill="none" stroke="#FFE45C" strokeWidth={0.9} strokeOpacity={0.9} />)}
+      {f.players.map(({ p, at }) => playerDot(p.t, at, p.l, 'p' + p.id, scene.ps))}
       {f.balls.map((b, i) => ballDot(b, 'b' + i))}
     </Frame>
   )
