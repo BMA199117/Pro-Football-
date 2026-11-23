@@ -14,7 +14,7 @@ export const BENEFITS_J: Record<string, Benefit> = {
   'bc-37': [['drib', 'speed', 'joy'], "Yuqori tezlikda to'pni nazorat qilish musobaqa ruhida mashq qilinadi.", 'Контроль мяча на высокой скорости — в соревновательной форме.'],
   'bc-38': [['duel', 'drib', 'speed'], "Tezlikdagi 1×1 va quvib yetilganda to'pni tana bilan to'sish o'rganiladi.", 'Учатся 1×1 на скорости и укрыванию мяча, когда догнали.'],
   'bc-40': [['drib', 'vision', 'team'], "Har pasdan oldin bir necha teginish to'pni asrash va olib yurishda dadillik beradi.", 'Несколько касаний перед пасом дают уверенность в ведении и сохранении мяча.'],
-  'bc-44': [['pass', 'touch', 'support'], "Qo'riqchidan ajralib chiqish va bir teginishda qaytarma pas — o'rta chiziq o'yinchisi uchun asosiy ko'nikma.", 'Уход от опекуна и скидка в одно касание — базовый навык полузащитника.'],
+  'bc-44': [['pass', 'touch', 'support'], "Qo'riqchidan ajralib chiqish va bir teginishda qaytarma pas — yarim himoyachi uchun asosiy ko'nikma.", 'Уход от опекуна и скидка в одно касание — базовый навык полузащитника.'],
   'bc-46': [['pass', 'vision', 'endur'], "Uzluksiz «pas ber — harakatlan» tamoyili ko'p to'p bilan yuqori jadallikda o'rganiladi.", 'Принцип «отдал — открылся» в высоком темпе с несколькими мячами.'],
   'bc-48': [['pass', 'decide', 'support'], "2×1 da himoyachini o'ziga tortish va to'g'ri vaqtda pas berish o'rganiladi.", 'В 2×1 учатся притягивать защитника и отдавать пас вовремя.'],
   'bc-49': [['duel', 'shoot', 'decide'], "Son ustunligi, 1×1 va yakunlash bitta ketma-ketlikda — o'yindagidek.", 'Большинство, 1×1 и завершение в одной последовательности — как в игре.'],
@@ -28,7 +28,7 @@ export const BENEFITS_J: Record<string, Benefit> = {
   'bc-80': [['position', 'support', 'vision'], "To'psiz harakat bilan bo'sh joy yaratish va undan foydalanish — to'pni ushlab turishning asosi.", 'Создание и использование пространства движением без мяча — основа удержания мяча.'],
   'bc-89': [['duel', 'drib', 'react'], "Gavjum maydonda 1×1 tez qaror, atrofni kuzatish va yakunlashni birga rivojlantiradi.", 'В тесной зоне 1×1 развивает быстроту решений, обзор и завершение.'],
   'bc-93': [['drib', 'vision', 'trans'], "Bo'sh joyni ko'rib, to'p bilan unga kirish va hujum yo'nalishini tez o'zgartirish o'rganiladi.", 'Учатся видеть свободную зону, врываться в неё с мячом и быстро менять направление атаки.'],
-  'bc-105': [['shoot', 'coord', 'touch'], "Zarba texnikasi oddiydan murakkabga: qo'ldan, keyin yarim volley, so'ng uzoqroqdan — ikkala oyoq bilan.", 'Техника удара от простого к сложному: с рук, с полулёта, затем дальше — обеими ногами.'],
+  'bc-105': [['shoot', 'coord', 'touch'], "Zarba texnikasi oddiydan murakkabga: qo'ldan, keyin yarim voley, so'ng uzoqroqdan — ikkala oyoq bilan.", 'Техника удара от простого к сложному: с рук, с полулёта, затем дальше — обеими ногами.'],
   'bc-109': [['shoot', 'speed', 'coord'], "Harakatdagi to'pga yoysimon yugurib kelib zarba berish — o'yindagi eng ko'p uchraydigan zarba vaziyati.", 'Удар по движущемуся мячу после дугообразного забега — частая игровая ситуация.'],
   'bc-125': [['position', 'team', 'vision'], "Bolalar 3-2-1 tizimida har bir pozitsiyaning vazifasini va maydonni keng ochishni o'rganadi.", 'Дети изучают задачи каждой позиции в системе 3-2-1 и учатся раскрывать поле.'],
 }

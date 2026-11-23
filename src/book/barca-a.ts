@@ -75,7 +75,7 @@ const bc21: BookScene = {
 const k22 = persp([[335, 367], [755, 367], [222, 783], [862, 783]], [62, 14, 138, 96], false)
 const bc22: BookScene = {
   ...S, steps: 4,
-  notes: { 0: ["Ko'k o'yinchi o'z to'pini saqlab, boshqa o'yinchining to'pini kvadratdan tepib chiqaradi", 'Игрок сохраняет свой мяч и выбивает чужой мяч из квадрата'], 2: ["To'pi chiqib ketgan o'yinchi tashqariga chiqadi va to'pni oyoqda o'ynatadi (jonglyor)", 'Игрок, чей мяч выбит, выходит за квадрат и чеканит мяч'] },
+  notes: { 0: ["Ko'k o'yinchi o'z to'pini saqlab, boshqa o'yinchining to'pini kvadratdan tepib chiqaradi", 'Игрок сохраняет свой мяч и выбивает чужой мяч из квадрата'], 2: ["To'pi chiqib ketgan o'yinchi tashqariga chiqadi va to'pni yerga tushirmay oyoqda o'ynatadi", 'Игрок, чей мяч выбит, выходит за квадрат и чеканит мяч'] },
   field: [['area', 62, 14, 76, 82, 'cr'], k22.line([300, 325], [805, 325], false), k22.line([805, 325], [965, 835], false), k22.line([300, 325], [122, 835], false)],
   players: [
     k22.pl('co', 'c', 'T', [[168, 610]]),

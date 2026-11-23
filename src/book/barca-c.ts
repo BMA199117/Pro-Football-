@@ -12,7 +12,7 @@ const S = { speed: 1.2 }
 const d89 = persp([[300, 340], [790, 340], [122, 790], [962, 790]], [40, 8, 160, 102])
 const bc89: BookScene = {
   ...S, steps: 4,
-  notes: { 0: ["Hamma juftlar bir maydonda: nimcha yo'q, raqibingni o'zing taniysan", 'Все пары в одной зоне: манишек нет, своего соперника узнаёшь сам'] },
+  notes: { 0: ["Hamma juftlar bir maydonda: nimcha yo'q, har kim o'z raqibini taniydi", 'Все пары в одной зоне: манишек нет, каждый знает своего соперника'] },
   field: [d89.area('c'), d89.goal([550, 335], 'd', 14), d89.goal([545, 785], 'u', 14), d89.ball([195, 550])],
   players: [
     d89.pl('co', 'c', 'T', [[205, 505]]),
@@ -114,7 +114,7 @@ const bc125: BookScene = {
     d125.pl('wf', 'w', 'F', [[563, 490], [560, 540], [580, 580], [620, 590], [660, 580], [650, 560]]),
   ],
   balls: d125.balls([['bg', 'bcb', 'brb', 'bcm2', 'brb', 'bf']]),
-  notes: { 3: ["Chetki himoyachi markaziy yarim himoyachi ortidan o'tib ketadi (overlap): endi himoyada muammo", 'Крайний защитник забегает за спину центрального полузащитника (обгон): теперь у обороны проблема'] },
+  notes: { 3: ["Chetki himoyachi markaziy yarim himoyachi ortidan o'tib ketadi (overlap): raqib himoyasi uchun yangi muammo", 'Крайний защитник забегает за спину центрального полузащитника (обгон): у обороны соперника новая проблема'] },
 }
 
 export const BC_C: Record<string, BookScene> = { 'bc-89': bc89, 'bc-93': bc93, 'bc-105': bc105, 'bc-109': bc109, 'bc-125': bc125 }

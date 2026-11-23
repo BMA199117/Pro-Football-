@@ -38,9 +38,9 @@ export const BENEFITS_E: Record<string, Benefit> = {
   'a17-4': [['pass', 'vision', 'defend'], "6×3 yoruvchi paslar — chiziq orqali pas va himoyachilar uchligining birga harakatlanishi.", '6×3 проникающие передачи — пас сквозь линию и совместное смещение тройки защитников.'],
   'a17-5': [['team', 'trans', 'decide'], "5×4 markazdan hujum — raqib chizig'ini to'p bilan kesib, darvozabon bilan yakkama-yakka chiqish.", '5×4 атака по центру — пересечь линию соперника с мячом и выйти один на один.'],
   'a17-6': [['shoot', 'decide', 'support'], "3×2 markazda yakunlash — ustunlikni tez va aniq golga aylantirish.", '3×2 завершение по центру — быстро и точно реализовать большинство.'],
-  'a17-7': [['cross', 'shoot', 'position'], "Qanotdan pasdan keyin gol 4×2 — oshirma va jarima maydonchasida joy tanlash.", '4×2 гол после передачи с фланга — навес и выбор места в штрафной.'],
+  'a17-7': [['cross', 'shoot', 'position'], "Qanotdan pasdan keyin gol 4×2 — oshirma va jarima maydonida joy tanlash.", '4×2 гол после передачи с фланга — навес и выбор места в штрафной.'],
   'a17-8': [['defend', 'gk', 'comm'], "Ozchilikda tez hujumga qarshi himoya — himoyachi va darvozabon birga ishlashi, vaqt yutish.", 'Оборона в меньшинстве против быстрой атаки — взаимодействие защитника и вратаря, выигрыш времени.'],
   'a17-9': [['pass', 'vision', 'defend'], "8×4 yoruvchi paslar — to'rtliklar orasida tez pas va himoya chizig'ining birga ishlashi.", '8×4 проникающие передачи — быстрый пас и работа линии обороны.'],
-  'a17-10': [['cross', 'shoot', 'team'], "7×5 qanotdan pasdan keyin gol — ko'p o'yinchi bilan qanot hujumi va jarima maydonchasini to'ldirish.", '7×5 гол после передачи с фланга — фланговая атака большим числом и заполнение штрафной.'],
-  'a17-11': [['team', 'cross', 'trans'], "7+GK × 7 qanot hujumi — jamoaviy qanot hujumi va to'p yo'qotilgandan keyin himoyaga o'tish.", '7 + вратарь × 7 атака по флангу — командная фланговая атака и переход в оборону после потери.'],
+  'a17-10': [['cross', 'shoot', 'team'], "7×5 qanotdan pasdan keyin gol — ko'p o'yinchi bilan qanot hujumi va jarima maydonini to'ldirish.", '7×5 гол после передачи с фланга — фланговая атака большим числом и заполнение штрафной.'],
+  'a17-11': [['team', 'cross', 'trans'], "7 + darvozabon × 7 qanot hujumi — jamoaviy qanot hujumi va to'p yo'qotilgandan keyin himoyaga o'tish.", '7 + вратарь × 7 атака по флангу — командная фланговая атака и переход в оборону после потери.'],
 }

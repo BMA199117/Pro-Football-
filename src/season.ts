@@ -346,7 +346,7 @@ export const SEASON_PROGRAMS: SeasonProgram[] = [
     year: year(100, 80, 16, 40, 14, 8, 12, 270, 27) },
   { id: 'noi-u15', source: 'noi1217', ages: '13–14', startMonth: 7, perWeek: '5', minutes: '90',
     title: T('NOI: U15 yillik reja', 'NOI: годовой план U15'),
-    summary: T("O'yin 11×11, sxema 1-4-3-3, o'yin 2×35 daqiqa. Jamoaviy taktik harakatlar asosi, o'yin amplua'sini aniqlash.", 'Матчи 11×11, схема 1-4-3-3, матч 2×35 мин. Основы командных тактических действий, определение игрового амплуа.'),
+    summary: T("O'yin 11×11, sxema 1-4-3-3, o'yin 2×35 daqiqa. Jamoaviy taktik harakatlar asosi, o'yinchi ampluasini aniqlash.", 'Матчи 11×11, схема 1-4-3-3, матч 2×35 мин. Основы командных тактических действий, определение игрового амплуа.'),
     units: NOI_U15, rules: NOI_RULES(5, 90, [20, 45, 20, 5]),
     months: months([9, 8, 8, 7, 6, 8, 7, 8, 8, 7, 6], [8, 13, 13, 13, 7, 9, 13, 13, 13, 13, 7], [5, 6, 6, 6, 4, 4, 6, 7, 7, 7, 4], [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1], [34, 30, 31, 31, 24, 34, 33, 32, 32, 31, 28]),
     year: year(82, 122, 22, 62, 20, 14, 18, 340, 31) },

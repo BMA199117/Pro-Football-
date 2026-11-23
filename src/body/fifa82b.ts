@@ -98,7 +98,7 @@ const EX3: Exercise = {
   name: T("Qo'l va yelka mushaklari", 'Мышцы рук и плеч'), dose: D4,
   cue: T("Otjimaniya, to'ldirilgan to'pni ikki qo'llab otish, keyin tez va aniq autlar", 'Отжимания, броски набивного мяча двумя руками, затем быстрые точные вбрасывания'),
   seg: [
-    { k: [push0, push1], reps: 3, mv: 0.8, sc: [['mat', 10, 74]], label: T('10–15 dinamik yoki 5–10 tez otjimaniya', '10–15 динамичных или 5–10 быстрых отжиманий') },
+    { k: [push0, push1], reps: 3, mv: 0.8, sc: [['mat', 10, 74]], label: T('10–15 dinamik yoki 5–10 tez qo\'l bukib-yozish (otjimaniya)', '10–15 динамичных или 5–10 быстрых отжиманий') },
     { k: med, loop: 'fwd', reps: 2, mv: 0.6, show: [0], label: T("To'ldirilgan to'pni 5–10 marta otish (2–3 kg)", '5–10 бросков набивного мяча (2–3 кг)') },
     { k: throwIn, loop: 'fwd', reps: 2, mv: 0.6, show: [0], label: T("Tez va aniq autlar (sherik oyog'iga): 3–6", 'Резкие точные вбрасывания (на ногу партнёра): 3–6') },
   ],
