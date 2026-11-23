@@ -1,5 +1,5 @@
 import { useId, type ReactNode } from 'react'
-import { arcCtl, bookSteps, frameAt, marks, posAt, smooth, tracks, ballAt, type BookScene, type ConeColor, type Dir, type Item, type Mark, type Pt, type Team } from '../book/scene'
+import { spread, arcCtl, bookSteps, frameAt, marks, posAt, smooth, tracks, ballAt, type BookScene, type ConeColor, type Dir, type Item, type Mark, type Pt, type Team } from '../book/scene'
 
 export const TEAM: Record<Team, { fill: string; stroke: string; text: string }> = {
   r: { fill: '#D9342B', stroke: '#fff', text: '#fff' },
@@ -293,6 +293,8 @@ export function MarkPaths({ scene, ms, id, opacity = 1 }: { scene: BookScene; ms
   )
 }
 
+const spreadAt = (scene: BookScene, k: number) => { const l = scene.players.map((p) => ({ p, at: posAt(scene, p, k) })); spread(l, 6.4 * (scene.ps ?? 1)); return l }
+
 /** The drill as in the book: start positions and every movement as arrows. */
 export function BookStatic({ scene, maxHeight }: { scene: BookScene; maxHeight?: number }) {
   const id = 'bk' + useId().replace(/:/g, '')
@@ -303,7 +305,7 @@ export function BookStatic({ scene, maxHeight }: { scene: BookScene; maxHeight?:
     <Frame id={id} maxHeight={maxHeight}>
       {scene.field.map((it, i) => fieldItem(it, i, id + 'net', scene.fs?.[i]))}
       <MarkPaths scene={scene} ms={marks(scene, 0, bookSteps(scene) - 1)} id={id} />
-      {scene.players.map((p) => playerDot(p.t, posAt(scene, p, 0), p.l, 'p' + p.id, scene.ps))}
+      {spreadAt(scene, 0).map(({ p, at }) => playerDot(p.t, at, p.l, 'p' + p.id, scene.ps))}
       {start.map((b, i) => ballDot(b, 'b' + i, scene.bs))}
     </Frame>
   )
@@ -324,7 +326,7 @@ export function BookFrame({ scene, t, maxHeight, step, stepOpacity = 1 }: { scen
   return (
     <Frame id={id} maxHeight={maxHeight}>
       {scene.field.map((it, i) => fieldItem(it, i, id + 'net', scene.fs?.[i]))}
-      {step !== undefined && step > 0 && <MarkPaths scene={scene} ms={marks(scene, Math.max(0, step - 3), Math.min(step, scene.steps - 1))} id={id} opacity={0.28} />}
+      {step !== undefined && step > 0 && <MarkPaths scene={scene} ms={marks(scene, step - 1, Math.min(step, scene.steps - 1))} id={id} opacity={0.2} />}
       {step !== undefined && step < scene.steps - 1 && stepOpacity > 0 && <MarkPaths scene={scene} ms={marks(scene, step, step + 1)} id={id} opacity={stepOpacity} />}
       {f.trails.map(([a, b, shot], i) => { const y = styleOf(scene)[shot ? 'shot' : 'pass']; return <line key={'t' + i} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={y.stroke} strokeOpacity={0.75} strokeWidth={y.width} strokeDasharray={y.dash} strokeLinecap="round" /> })}
       {f.players.filter(({ p }) => movers.has(p.id)).map(({ p, at }) => <circle key={'h' + p.id} cx={at[0]} cy={at[1]} r={6.6 * (scene.ps ?? 1)} fill="none" stroke="#FFE45C" strokeWidth={0.9} strokeOpacity={0.9} />)}

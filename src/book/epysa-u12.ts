@@ -90,6 +90,7 @@ const horse: BookScene = {
 
 // W3 · 5v5 targets – 4v4 inside, each team's target player on the end line; aerial pass behind the defence
 const targets: BookScene = {
+  notes: { 1: ["Nishon o'yinchi havodan kelgan to'pni nazoratga oladi", 'Игрок-мишень принимает мяч, пришедший верхом'], 2: ["To'pni 1–2 teginishda nazoratga oldi — ochko; to'p nishon o'yinchidan yana o'yinga qaytadi", 'Взял под контроль в 1–2 касания — очко; мяч от игрока-мишени снова в игре'] },
   steps: 4, speed: 1.25,
   field: [['area', 24, 10, 152, 90, 'co']],
   players: [
