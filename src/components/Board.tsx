@@ -419,10 +419,11 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
 
       <div className="tb-stage" onPointerDown={() => pop && setPop(null)}>
         {preview ? (
-          <div className="tb-play"><BookPlayer key={JSON.stringify(sc).length + ':' + sc.steps} scene={sc} autoPlay maxHeight={undefined} /></div>
+          <div className="tb-play"><BookPlayer key={JSON.stringify(sc).length + ':' + sc.steps} scene={sc} autoPlay fit /></div>
         ) : (
           <div className="tb-field">
           {rail('L')}
+          <div className="tb-fitbox">
           <Frame id={fid} svg={{ ref: svgRef, onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: up, className: 'pitch tb-svg', style: { touchAction: 'none' }, 'aria-hidden': false, 'aria-label': t('board') }}>
             {sc.field.map((it, i) => fieldItem(it, i, fid + 'net', sc.fs?.[i]))}
             {selItem !== null && sc.field[selItem] && (() => { const it = sc.field[selItem]; const [x, y] = it[0] === 'ladder' ? [((it[1] as number) + (it[3] as number)) / 2, ((it[2] as number) + (it[4] as number)) / 2] : [it[1] as number, it[2] as number]; return <circle cx={x} cy={y} r={(it[0] === 'goal' ? 13 : it[0] === 'ladder' ? 10 : 6.5) * (sc.fs?.[selItem] ?? 1)} fill="none" stroke="#FFE45C" strokeWidth={0.6} strokeDasharray="1.6 1.2" pointerEvents="none" /> })()}
@@ -436,6 +437,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
             {sc.players.map((p) => playerDot(p.t, posAt(sc, p, s), p.l, 'p' + p.id, sc.ps))}
             {ballsP.map((tr, i) => { const b = ballAt(sc, tr, s); return b ? ballDot(b, 'b' + i, sc.bs) : null })}
           </Frame>
+          </div>
           {rail('R')}
           </div>
         )}
