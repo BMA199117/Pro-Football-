@@ -9,6 +9,7 @@ type Row = [id: string, ages: string, group: string, source: string, title: [str
  * RFS 6–9 and adidas 10–14 / 15–17: sessions put together from each programme's block exercises.
  * 15–17: also sessions built from the FIFA part 8.2 physical exercises, grouped by the quality they train.
  * Pro: sessions for adult players from FIFA part 8.1 (examples and weekly cycle) and 8.2; stretching as the cool-down.
+ * pro9+: positional-play sessions from the Phase of Play books (drills pp-*, xa-*, ip-*).
  */
 const ROWS: Row[] = [
   // EPYSA U6 — game at the end of each week: 3×3
@@ -177,6 +178,22 @@ const ROWS: Row[] = [
   ['pro8', 'Pro', 'Pro', 'fifaPhys', ["Laktat chidamlilik (haftada 1 marta)", 'Лактатная выносливость (раз в неделю)'],
     ["Maxsus intervallar, 1×1 va 2×2; o'yindan 3 kun oldin o'tkazilmaydi", 'Специальные интервалы, 1×1 и 2×2; не за 3 дня до матча'],
     ['f82-25'], ['f82-21', 'f82-23'], ['f82-24'], ['f82-40']],
+  // Pro — positional play (Phase of Play books: Positional Play, Xabi Alonso, 4-3-3 In Possession)
+  ['pro9', 'Pro', 'Pro', 'ip433', ["Orqadan o'yin boshlash (4-3-3)", 'Розыгрыш от своих ворот (4-3-3)'],
+    ["Rondo, darvozabon–2 markaziy himoyachi–6-raqam olmosi, yuqori pressingni yorish, qanot orqali chiqish", 'Рондо, ромб вратарь–2 центральных–6-й, выход из-под высокого прессинга, выход через фланг'],
+    ['pp-26'], ['ip-11a', 'ip-11b', 'ip-13'], ['pp-19'], ['f82-40']],
+  ['pro10', 'Pro', 'Pro', 'xabi', ["O'rta blokni yorish (Leverkuzen)", 'Как вскрыть средний блок («Леверкузен»)'],
+    ["Yaqin masofada paslar, 3 markaziy himoyachi + ikki tayanch, uchinchi o'yinchi, «yuqoriga – orqaga – oldinga»", 'Передачи в близкой дистанции, 3 центральных + двойной опорный, третий игрок, «вверх – назад – вперёд»'],
+    ['xa-12'], ['xa-23', 'ip-19a', 'pp-41'], ['pp-32'], ['f82-40']],
+  ['pro11', 'Pro', 'Pro', 'xabi', ['Past blokka qarshi hujum', 'Атака против низкого блока'],
+    ["Qanot rondosi, qanot kombinatsiyalari, ortiqcha yuklab yakkalash, 3-2-3 va qanot himoyachisi orqali gol", 'Фланговое рондо, фланговые комбинации, перегрузка для изоляции, 3-2-3 и гол через вингбека'],
+    ['ip-21'], ['xa-25', 'pp-45', 'xa-34'], ['xa-30'], ['f82-40']],
+  ['pro12', 'Pro', 'Pro', 'xabi', ['Pressing va kontrpressing', 'Прессинг и контрпрессинг'],
+    ["Yo'qotishdan keyingi 5 soniya, Barselona rondosi, ixcham o'rta blok, signal bo'yicha shaxsiy pressing", '5 секунд после потери, рондо «Барселоны», компактный средний блок, персональный прессинг по сигналу'],
+    ['xa-39'], ['pp-39', 'pp-35', 'xa-41'], ['xa-38'], ['f82-40']],
+  ['pro13', 'Pro', 'Pro', 'posPlay', ["O'yindan 2 kun oldin: optimallashtirish", 'За 2 дня до матча: оптимизация'],
+    ["Kitobdagi mikrosikl bo'yicha: jadal, lekin qisqa — rondo, uchinchi o'yinchi bilan rotatsiyalar, markazdan yakunlash, hujumga tez o'tish", 'По микроциклу из книги: интенсивно, но коротко — рондо, ротации с третьим, завершение через центр, быстрый переход в атаку'],
+    ['pp-26'], ['pp-29', 'ip-19b', 'ip-33'], ['ip-38'], ['f82-40']],
 ]
 
 export const TEMPLATE_AGES = ['5–6', '7–8', '9–10', '11–12', '13–14', '15–17', 'Pro']

@@ -1,0 +1,29 @@
+import type { Benefit } from './skills'
+
+/** Why each positional-play drill (Phase of Play books, Professional section) is useful. */
+export const BENEFITS_H: Record<string, Benefit> = {
+  'pp-19': [['pass', 'position', 'gk'], "Darvozabon va himoyachilar pressing ostida to'pni oldinga olib chiqishni o'rganadi: kenglik, chuqurlik va uchburchaklar hisobiga.", 'Вратарь и защитники учатся выводить мяч вперёд под прессингом — за счёт ширины, глубины и треугольников.'],
+  'pp-26': [['position', 'support', 'trans'], "Diagonal ochilish odatiga aylanadi: o'yinchilar bir chiziqda turib qolmaydi, har doim pas varianti bor.", 'Открывание по диагонали становится привычкой: игроки не стоят на одной линии, вариант для паса есть всегда.'],
+  'pp-29': [['support', 'vision', 'team'], "Yarim himoyachilar o'rin almashib, raqibni chalg'itishni va bo'sh joyni topishni o'rganadi.", 'Полузащитники учатся меняться местами, сбивать соперника с толку и находить свободное место.'],
+  'pp-32': [['pass', 'vision', 'decide'], "Tor maydonda vertikal pas va uchinchi o'yinchini ko'rish — chiziqlarni yorib o'tish ko'nikmasi.", 'Вертикальный пас и поиск третьего в узком поле — навык проходить линии.'],
+  'pp-35': [['defend', 'team', 'comm'], "Ozchilikda ham ixcham blok gol o'tkazmaydi: birga surilish, sug'urta va markazni yopish.", 'Даже в меньшинстве компактный блок не пропускает: совместное смещение, страховка и закрытый центр.'],
+  'pp-39': [['press', 'trans', 'drib'], "Barselona usuli: to'p yo'qotilgan zahoti kontrpressing, olinganda bosimdan dribling bilan chiqish.", 'Метод «Барселоны»: контрпрессинг сразу после потери, после отбора — выход из-под давления дриблингом.'],
+  'pp-41': [['pass', 'support', 'decide'], "«Yuqoriga – orqaga – oldinga» kombinatsiyasi avtomatizmga aylanadi: tushib kelish, qaytarish va yugurish vaqti.", 'Комбинация «вверх – назад – вперёд» доводится до автоматизма: опускание, скидка и время рывка.'],
+  'pp-45': [['team', 'vision', 'duel'], "Bir tomonda ko'pchilik raqibni tortadi, uzoq tomonda esa qanot o'yinchisi 1×1 yoki 2×1 vaziyatga chiqadi.", 'Перегрузка одной стороны стягивает соперника, а на дальней вингер получает 1×1 или 2×1.'],
+  'xa-12': [['pass', 'touch', 'support'], "Yaqin masofada tez paslar va to'g'ri birinchi teginish — to'pni bosim ostida vertikal olib o'tish.", 'Быстрые передачи и правильное первое касание в близкой дистанции — вертикальное продвижение под давлением.'],
+  'xa-23': [['pass', 'position', 'press'], "3 markaziy himoyachi va ikki tayanch o'rta blokka qarshi o'yin qurishda bir-birini his qilishni o'rganadi.", 'Трое центральных и двойной опорный учатся чувствовать друг друга в построении атаки против среднего блока.'],
+  'xa-25': [['pass', 'team', 'cross'], "Qanotdagi kombinatsiyalar sxemasi o'yinda tanib olinadi va tez, kam teginish bilan bajariladi.", 'Схемы комбинаций на фланге узнаются в игре и выполняются быстро, в мало касаний.'],
+  'xa-30': [['pass', 'shoot', 'support'], "Past blokka qarshi markazdan o'ynash: bir-ikki, uchinchi o'yinchi va chiziqlar orasidagi «cho'ntak»lar.", 'Игра через центр против низкого блока: стенки, третий игрок и «карманы» между линиями.'],
+  'xa-34': [['cross', 'shoot', 'position'], "Qanot himoyachisining oshirmasi va jarima maydoniga to'g'ri yugurishlar — qanotdan gol.", 'Подача вингбека и правильные забегания в штрафную — гол с фланга.'],
+  'xa-38': [['press', 'team', 'speed'], "Signal bo'yicha butun jamoa bilan shaxsiy pressing: to'pni raqib darvozasi yonida qaytarib olish.", 'Персональный прессинг всей командой по сигналу: вернуть мяч у чужих ворот.'],
+  'xa-39': [['press', 'trans', 'endur'], "Yo'qotishdan keyingi birinchi 5 soniya: to'pni darhol qaytarib olish odatiga aylanadi.", 'Первые 5 секунд после потери: немедленный возврат мяча становится привычкой.'],
+  'xa-41': [['defend', 'team', 'comm'], "O'rta blokda markazni yopish va birga surilish: ozchilikda ham raqibga bo'sh joy berilmaydi.", 'Закрыть центр и смещаться вместе в среднем блоке: даже в меньшинстве сопернику не дают пространства.'],
+  'ip-11a': [['pass', 'gk', 'position'], "Darvozabon, markaziy himoyachilar va 6-raqam — o'yin boshlashning asosiy olmosi pressing ostida ishlaydi.", 'Вратарь, центральные и 6-й — главный ромб начала атаки работает под прессингом.'],
+  'ip-11b': [['pass', 'support', 'decide'], "Yuqori pressingni yorib o'tish: yarim himoyachilar tushadi, darvozabon qo'shimcha o'yinchi bo'ladi.", 'Пройти высокий прессинг: полузащитники опускаются, вратарь становится лишним игроком.'],
+  'ip-13': [['pass', 'support', 'trans'], "Qanot orqali o'yin boshlash: markaziy himoyachidan qanot hujumchisigacha uchburchaklar orqali.", 'Выход через фланг: от центрального защитника до вингера через треугольники.'],
+  'ip-19a': [['pass', 'support', 'decide'], "Uchinchi o'yinchi kombinatsiyasi: kim pas beradi, kim yuguradi — oldindan tushunish.", 'Комбинация с третьим: заранее понимать, кто отдаёт, кто бежит.'],
+  'ip-19b': [['pass', 'shoot', 'support'], "Soxta 9 va yarim himoyachilar o'rtasida «yuqoriga – orqaga – oldinga» — markazdan gol.", '«Вверх – назад – вперёд» между ложной девяткой и полузащитниками — гол через центр.'],
+  'ip-21': [['pass', 'touch', 'support'], "Qanotdagi chetki himoyachi va qanot hujumchisi bir teginishda, doim harakatda o'ynashni o'rganadi.", 'Крайний защитник и вингер учатся играть в одно касание, постоянно двигаясь.'],
+  'ip-33': [['shoot', 'pass', 'support'], "Markazdan yakunlash: vertikal pas, birinchi teginishda zarba va qaytgan to'pga yugurish.", 'Завершение через центр: вертикальный пас, удар с первого касания и добивание.'],
+  'ip-38': [['trans', 'speed', 'decide'], "Hujumga tez o'tish: to'p olinganda darhol oldinga qarash, bo'sh joyga pas va son ustunligidan foydalanish.", 'Быстрый переход в атаку: после отбора сразу смотреть вперёд, пас в свободную зону и использование численного перевеса.'],
+}
