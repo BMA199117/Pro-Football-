@@ -39,6 +39,7 @@ const KEEP: Record<string, [number, number, Record<string, string>?]> = {
   'bc-26': [30, 25, { tb: 'T', ty: 'T', rr: 'T', tw: 'dT', ly: 'L', lw: 'L', tr: 'L', lb: 'dL', ry: 'R', rb: 'R', lr: 'R', rw: 'dR' }], 'bc-62': [60, 40, { p1: 'B', p3: 'B', p4: 'B', p5: 'B', d: 'B', p2: 'dT', t1: 'T', t2: 'T', t3: 'T', t4: 'T', t5: 'T' }],
   'bc-40': [90, 200, { j1: 'b', j2: 'b' }],
   'bc-22': [90, 200, { d: 'x1', e: 'x2' }],
+  'bc-78': [90, 200, { jl: 'w', jt: 'w', jr: 'w', jb: 'w' }],
   'bc-59': [90, 200, { b1: 'w', b2: 'w', nx: 'x' }], 'bc-46': [40, 200] }
 export const MORE: Record<string, More> = { ...MORE_U6, ...MORE_U8, ...MORE_U10, ...MORE_U12, ...MORE_F82, ...MORE_F81, ...MORE_RFS69, ...MORE_A14, ...MORE_A17, ...MORE_S100, ...MORE_PP, ...MORE_XA, ...MORE_IP, ...MORE_DZ, ...MORE_AD, ...MORE_VP, ...MORE_BC_A, ...MORE_BC_B }
 
