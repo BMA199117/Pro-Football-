@@ -83,6 +83,8 @@ export interface BookScene {
   balls?: BallStep[][]
   /** seconds per step (default 1.15) */
   speed?: number
+  /** size of the player markers, 1 = normal (the coach can set 0.6–1.6 on the board) */
+  ps?: number
   /**
    * Line key of the source book. epysa (default): run = red solid, pass = white dashed.
    * fifa: run = dashed, pass = solid (as in the FIFA manuals).
