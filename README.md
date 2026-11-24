@@ -82,3 +82,10 @@ GitHub Pages workflow (`.github/workflows/deploy.yml`) faqat qo'lda ishga tushir
 ## Texnologiyalar
 
 React 19, TypeScript, Vite, vite-plugin-pwa, Supabase (auth + Postgres + realtime).
+
+## Telegram bot
+
+Bot ichida sayt Mini App bo'lib ochiladi (Telegram bilan kirish, konspekt PDF chatga, admin paneldan xabar yuborish).
+Cloudflare Pages → Settings → Variables and Secrets (Production, turi Secret): `TG_BOT_TOKEN` (BotFather tokeni)
+va `SUPABASE_SERVICE_ROLE_KEY`. Supabase'da `supabase/telegram.sql` ni ishga tushiring, keyin admin panel →
+«Telegram bot» → «Botni sozlash».
