@@ -8,6 +8,7 @@
  */
 import { createClient, type SupabaseClient, type RealtimeChannel } from '@supabase/supabase-js'
 import { useSyncExternalStore } from 'react'
+import { isTgEmail } from './telegram'
 import { clearLocal, getData, replaceFromRemote, setLocalChangeHandler } from './store'
 import {
   adoptUntracked, applyRows, emptyMeta, markPushed, pendingCount, recordChanges, rowsToPush,
@@ -176,6 +177,38 @@ function onSignedOut() {
   set({ status: supabase ? 'signedOut' : 'disabled', email: null })
 }
 
+/** What the app shows for the account: the email, or the Telegram name for an account made in the bot. */
+function shownName(u: { email?: string; user_metadata?: Record<string, unknown> }): string | null {
+  if (!isTgEmail(u.email)) return u.email ?? null
+  const m = u.user_metadata || {}
+  return String(m.tg_name || (m.tg_username ? '@' + m.tg_username : '') || 'Telegram')
+}
+/** The account was made through Telegram and has no real email yet. */
+export async function isTelegramAccount(): Promise<boolean> {
+  if (!supabase) return false
+  const { data } = await supabase.auth.getSession()
+  return isTgEmail(data.session?.user.email)
+}
+
+/** Add an email and password to an account made in Telegram, so the coach can sign in on a computer too. */
+export async function addEmailLogin(email: string, password: string): Promise<AuthError | null> {
+  if (!supabase) return 'unknown'
+  const { data } = await supabase.auth.getSession()
+  if (!data.session) return 'unknown'
+  try {
+    const r = await fetch('/api/tg/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + data.session.access_token },
+      body: JSON.stringify({ email, password }),
+    })
+    const j = await r.json().catch(() => ({})) as { error?: string }
+    if (!r.ok) return j.error === 'exists' ? 'exists' : j.error === 'weak_password' ? 'weakPass' : j.error === 'bad_email' ? 'badLogin' : 'unknown'
+  } catch { return 'noNet' }
+  await supabase.auth.refreshSession()
+  set({ email })
+  return null
+}
+
 export function initSync() {
   // Track every local edit, even before signing in, so nothing is missed later.
   setLocalChangeHandler((prev, next) => {
@@ -185,9 +218,10 @@ export function initSync() {
   if (!supabase) return
   supabase.auth.onAuthStateChange((_event, session) => {
     const id = session?.user.id ?? null
-    if (id === userId) { if (session?.user.email && session.user.email !== state.email) set({ email: session.user.email }); return }
+    const shown = session ? shownName(session.user) : null
+    if (id === userId) { if (shown && shown !== state.email) set({ email: shown }); return }
     // Supabase advises not to call it again inside this callback; run on the next tick.
-    setTimeout(() => (id ? onSignedIn(id, session?.user.email ?? null) : onSignedOut()), 0)
+    setTimeout(() => (id ? onSignedIn(id, shown) : onSignedOut()), 0)
   })
   window.addEventListener('online', () => syncNow())
   window.addEventListener('offline', () => { if (userId) set({ status: 'offline' }) })

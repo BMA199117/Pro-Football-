@@ -50,6 +50,9 @@ export type Tab = 'home' | 'plan' | 'drills' | 'team' | 'cal' | 'know'
 export interface Prefs { lang: Lang; tab: Tab; selected: string | null; theme?: 'light' | 'dark' }
 let prefs: Prefs = { lang: 'uz', tab: 'home', selected: null, ...(read<Prefs>(PREFS_KEY) ?? {}) }
 const prefListeners = new Set<() => void>()
+export const getPrefs = () => prefs
+/** True once the coach (or an earlier visit) saved preferences on this device. */
+export const prefsSaved = () => read<Prefs>(PREFS_KEY) !== null
 export function setPrefs(p: Partial<Prefs>) {
   prefs = { ...prefs, ...p }
   write(PREFS_KEY, prefs)

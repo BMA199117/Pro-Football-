@@ -16,7 +16,7 @@ import type { Drill } from '../types'
 
 /** "PDF / print" and "send a link" for a drill. */
 export function DrillShare({ drill }: { drill: Drill }) {
-  const { t } = useT()
+  const { t, L } = useT()
   const [busy, setBusy] = useState(false)
   const [link, setLink] = useState('')
   const [copied, setCopied] = useState(false)
@@ -26,7 +26,7 @@ export function DrillShare({ drill }: { drill: Drill }) {
     if (!busy) return
     let live = true
     const go = async () => {
-      try { if (ref.current) await sheetToPdf(ref.current, pdfName(drill.name.uz)) }
+      try { if (ref.current) await sheetToPdf(ref.current, pdfName(drill.name.uz), '⚽ ' + L(drill.name)) }
       catch { try { window.print() } catch { /* printing blocked */ } }
       finally { if (live) setBusy(false) }
     }

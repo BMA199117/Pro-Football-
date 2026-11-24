@@ -16,7 +16,7 @@ export function SessionPrintButton({ session, byId }: { session: Session; byId: 
     if (!busy) return
     let live = true
     const go = async () => {
-      try { if (ref.current) await sheetToPdf(ref.current, pdfName(`konspekt-${session.date}-${session.goal}`)) }
+      try { if (ref.current) await sheetToPdf(ref.current, pdfName(`konspekt-${session.date}-${session.goal}`), `📄 ${t('konspektTitle')} · ${session.date}${session.goal ? ' · ' + session.goal : ''}`) }
       catch { try { window.print() } catch { /* printing blocked */ } }
       finally { if (live) setBusy(false) }
     }

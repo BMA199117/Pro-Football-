@@ -5,13 +5,15 @@
 //   The code comes from the GEO_BYPASS environment variable in Cloudflare (fallback below).
 // - ALLOWED_COUNTRIES (comma separated, e.g. "UZ,KZ") changes the list without a code change;
 //   ALLOWED_COUNTRIES="*" turns the restriction off.
-// Only "/" and "/index.html" run through here (see public/_routes.json); hash routes (#admin) are all "/".
+// Only "/", "/index.html" and "/api/*" run through here (see public/_routes.json); hash routes (#admin) are all "/".
+// /api/* (the Telegram bot) is never blocked: Telegram's servers are not in Uzbekistan.
 
 const BOTS = /googlebot|google-inspectiontool|googleother|adsbot-google|mediapartners-google|bingbot|yandex|duckduckbot|applebot|facebookexternalhit|telegrambot|twitterbot|whatsapp/i
 const COOKIE = 'pf_pass'
 
 export async function onRequest(context) {
   const { request, env, next } = context
+  if (new URL(request.url).pathname.startsWith('/api/')) return next()
   const allowed = String(env.ALLOWED_COUNTRIES || 'UZ').toUpperCase().split(',').map((s) => s.trim()).filter(Boolean)
   if (allowed.includes('*')) return next()
 

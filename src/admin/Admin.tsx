@@ -7,13 +7,15 @@ import { Coaches, Admins } from './Coaches'
 import { ContentList } from './ContentList'
 import { History } from './History'
 import { Premium } from './Premium'
+import { Telegram } from './Telegram'
 import { KIND_LABEL } from './labels'
 
-export type Section = 'home' | 'coaches' | 'premium' | Kind | 'history' | 'admins'
+export type Section = 'home' | 'coaches' | 'premium' | 'telegram' | Kind | 'history' | 'admins'
 const NAV: [Section, string, string][] = [
   ['home', "Umumiy ko'rinish", '📊'],
   ['coaches', 'Murabbiylar', '👥'],
   ['premium', 'Obuna (Premium)', '⭐'],
+  ['telegram', 'Telegram bot', '✈️'],
   ['drill', KIND_LABEL.drill.many, '⚽'],
   ['plan', KIND_LABEL.plan.many, '📋'],
   ['card', KIND_LABEL.card.many, '💡'],
@@ -99,9 +101,10 @@ export default function AdminApp() {
           {sec === 'home' && <Dashboard go={setSec} />}
           {sec === 'coaches' && <Coaches />}
           {sec === 'premium' && <Premium />}
+          {sec === 'telegram' && <Telegram />}
           {sec === 'history' && <History />}
           {sec === 'admins' && <Admins />}
-          {sec !== 'home' && sec !== 'coaches' && sec !== 'premium' && sec !== 'history' && sec !== 'admins' && <ContentList kind={sec} />}
+          {sec !== 'home' && sec !== 'coaches' && sec !== 'premium' && sec !== 'telegram' && sec !== 'history' && sec !== 'admins' && <ContentList kind={sec} />}
         </div></main>
       </div>
     </Gate>
