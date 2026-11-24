@@ -1,7 +1,7 @@
 // Shared helpers for the Telegram bot (Cloudflare Pages Functions).
 //
 // Secrets (Cloudflare → Workers & Pages → pro-football → Settings → Variables and Secrets):
-//   TELEGRAM_BOT_TOKEN         the token from @BotFather
+//   TG_BOT_TOKEN (or TELEGRAM_BOT_TOKEN)  the token from @BotFather; TG_BOT_TOKEN wins when both exist
 //   SUPABASE_SERVICE_ROLE_KEY  Supabase → Project Settings → API keys → service_role (secret)
 // Already there for the build: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY.
 //
@@ -14,13 +14,13 @@ export const json = (data, status = 200) =>
 
 export function config(env) {
   // tolerate copy mistakes: spaces, quotes, new lines, or BotFather's whole message pasted around the token
-  const raw = String(env.TELEGRAM_BOT_TOKEN || '')
+  const raw = String(env.TG_BOT_TOKEN || env.TELEGRAM_BOT_TOKEN || '')
   const m = raw.match(/\d{5,}:[A-Za-z0-9_-]{30,}/)
   const token = m ? m[0] : raw.trim() || undefined
   const sbUrl = (env.SUPABASE_URL || env.VITE_SUPABASE_URL || '').replace(/\/$/, '')
   const service = env.SUPABASE_SERVICE_ROLE_KEY
   const anon = env.SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY
-  const missing = [!token && 'TELEGRAM_BOT_TOKEN', !sbUrl && 'VITE_SUPABASE_URL', !service && 'SUPABASE_SERVICE_ROLE_KEY'].filter(Boolean)
+  const missing = [!token && 'TG_BOT_TOKEN', !sbUrl && 'VITE_SUPABASE_URL', !service && 'SUPABASE_SERVICE_ROLE_KEY'].filter(Boolean)
   return { token, sbUrl, service, anon, missing }
 }
 

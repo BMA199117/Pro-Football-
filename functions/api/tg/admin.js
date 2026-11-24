@@ -32,7 +32,7 @@ export async function onRequestPost({ request, env }) {
     ])
     if (!me.ok) {
       // a hint about what was pasted, never the token itself
-      const raw = String(env.TELEGRAM_BOT_TOKEN || '')
+      const raw = String(env.TG_BOT_TOKEN || env.TELEGRAM_BOT_TOKEN || '')
       return json({ error: 'bad_token', detail: me.description, shape: { length: raw.length, colon: raw.includes(':'), digitsBefore: (raw.trim().split(':')[0] || '').replace(/\D/g, '').length, spaces: /\s/.test(raw), quotes: /["'`]/.test(raw), tail: cfg.token ? cfg.token.slice(-4) : '' } })
     }
     const want = new URL('/api/tg/webhook', url).href
