@@ -13,7 +13,10 @@ export const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } })
 
 export function config(env) {
-  const token = env.TELEGRAM_BOT_TOKEN
+  // tolerate copy mistakes: spaces, quotes, new lines, or BotFather's whole message pasted around the token
+  const raw = String(env.TELEGRAM_BOT_TOKEN || '')
+  const m = raw.match(/\d{5,}:[A-Za-z0-9_-]{30,}/)
+  const token = m ? m[0] : raw.trim() || undefined
   const sbUrl = (env.SUPABASE_URL || env.VITE_SUPABASE_URL || '').replace(/\/$/, '')
   const service = env.SUPABASE_SERVICE_ROLE_KEY
   const anon = env.SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY
