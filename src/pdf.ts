@@ -1,9 +1,12 @@
+import { inTelegram, sendPdfToChat, tgApp } from './telegram'
+import { getPrefs } from './store'
+import { tr } from './i18n'
 /**
  * Real PDF file from a printable sheet (no print dialog): each block of the sheet is drawn to a
  * picture and laid out on A4 pages, a block that does not fit goes to the next page whole.
  * The libraries are loaded only when the coach presses the button.
  */
-export async function sheetToPdf(sheet: HTMLElement, fileName: string): Promise<void> {
+export async function sheetToPdf(sheet: HTMLElement, fileName: string, caption?: string): Promise<void> {
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([import('jspdf'), import('html2canvas')])
   // let the drawings lay out
   await new Promise((ok) => requestAnimationFrame(() => setTimeout(ok, 120)))
@@ -47,6 +50,15 @@ export async function sheetToPdf(sheet: HTMLElement, fileName: string): Promise<
   }
   const blob = pdf.output('blob')
   const file = new File([blob], fileName, { type: 'application/pdf' })
+  // inside the Telegram Mini App downloads do not work: the bot sends the file to the coach's chat
+  if (inTelegram()) {
+    const lang = getPrefs().lang
+    const r = await sendPdfToChat(file, caption || '')
+    const msg = tr(lang, r === null ? 'tgPdfSent' : r === 'blocked' ? 'tgPdfBlocked' : 'tgPdfFail')
+    const app = tgApp()
+    if (app) app.showAlert(msg); else alert(msg)
+    return
+  }
   // phones: offer the share sheet (save to files, Telegram…); otherwise download
   const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean }
   const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)

@@ -1,9 +1,11 @@
 import { PremiumLine } from '../premium/Locked'
-import { useState } from 'react'
 import { Modal } from './Modal'
 import { useT } from '../hooks'
 import type { Key } from '../i18n'
-import { useSync, signIn, signUp, sendCode, verifyCode, setPassword, signOut, syncNow, type AuthError, type SyncState } from '../sync'
+import { useSync, signIn, signUp, sendCode, verifyCode, setPassword, signOut, syncNow, supabase, isTelegramAccount, addEmailLogin, type AuthError, type SyncState } from '../sync'
+import { inTelegram, tgSignIn, useTgAuth } from '../telegram'
+import { TgIcon } from './TgWelcome'
+import { useEffect, useState } from 'react'
 
 const STATUS_KEY: Record<SyncState, Key> = {
   disabled: 'syncOff', signedOut: 'syncOff', syncing: 'syncing', synced: 'syncOn', offline: 'syncOffline', error: 'syncErr',
@@ -53,6 +55,9 @@ export function SyncPanel({ onClose }: { onClose: () => void }) {
   const [info, setInfo] = useState<Key | null>(null)
   const [newPass, setNewPass] = useState('')
   const [outErr, setOutErr] = useState<AuthError | null>(null)
+  const [tgAcc, setTgAcc] = useState(false)
+  const tgAuth = useTgAuth()
+  useEffect(() => { if (email) isTelegramAccount().then(setTgAcc); else setTgAcc(false) }, [email])
 
   const run = async (fn: () => Promise<AuthError | null>, ok?: Key) => {
     setBusy(true); setErr(null); setInfo(null)
@@ -84,6 +89,17 @@ export function SyncPanel({ onClose }: { onClose: () => void }) {
           <p className={'sync-line s-' + status}><span className="sdot" />{t(STATUS_KEY[status])}{time && <span className="muted"> · {t('lastSync')}: {time}</span>}</p>
           {pending > 0 && <p className="note">{pending} {t('pendingN')}</p>}
           <div className="row"><button className="btn ghost" disabled={status === 'syncing'} onClick={() => syncNow()}>{t('syncNow')}</button></div>
+          {tgAcc ? (
+            <details className="sync-more" open>
+              <summary>{t('tgAddEmail')}</summary>
+              <p className="muted small">{t('tgAddEmailHint')}</p>
+              <form className="form" onSubmit={(e) => { e.preventDefault(); run(async () => { const r = await addEmailLogin(mail.trim(), newPass); if (!r) { setTgAcc(false); setNewPass('') } return r }, 'tgEmailAdded') }}>
+                <label className="full">{t('email')}<input type="email" autoComplete="email" inputMode="email" value={mail} onChange={(e) => setMail(e.target.value)} required /></label>
+                <label className="full">{t('password')}<input type="password" autoComplete="new-password" minLength={6} value={newPass} onChange={(e) => setNewPass(e.target.value)} required /><span className="muted small">{t('passHint')}</span></label>
+                <div className="row full"><button className="btn" disabled={busy}>{t('save')}</button></div>
+              </form>
+            </details>
+          ) : (
           <details className="sync-more">
             <summary>{t('setPass')}</summary>
             <form className="form" onSubmit={(e) => { e.preventDefault(); run(async () => { const r = await setPassword(newPass); if (!r) setNewPass(''); return r }, 'passSaved') }}>
@@ -91,6 +107,7 @@ export function SyncPanel({ onClose }: { onClose: () => void }) {
               <div className="row full"><button className="btn" disabled={busy}>{t('save')}</button></div>
             </form>
           </details>
+          )}
           {err && <p className="note err" role="alert">{t(ERR_KEY[err])}</p>}
           {info && <p className="note" role="status">{t(info)}</p>}
           <p className="muted small">{t('signOutNote')}</p>
@@ -103,6 +120,13 @@ export function SyncPanel({ onClose }: { onClose: () => void }) {
         </div>
       ) : (
         <form className="form sync-form" onSubmit={submit}>
+          {inTelegram() && supabase && (
+            <div className="full tg-welcome">
+              <button type="button" className="btn tg-btn" disabled={tgAuth === 'signingIn'} onClick={() => tgSignIn(supabase!, true)}><TgIcon />{t('tgSignIn')}</button>
+              {tgAuth === 'error' && <p className="note err" role="alert">{t('tgErr')}</p>}
+              <p className="muted small">{t('tgOr')}</p>
+            </div>
+          )}
           <p className="full">{t('syncHelp')}</p>
           {mode !== 'code' && (
             <div className="libtabs full" role="group">
