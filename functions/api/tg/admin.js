@@ -14,6 +14,29 @@ async function count(cfg, filter) {
   return r.ok && Number.isFinite(n) ? n : null
 }
 
+async function runSetup(cfg, url) {
+    const steps = {}
+    steps.webhook = await tg(cfg.token, 'setWebhook', {
+      url: new URL('/api/tg/webhook', url).href,
+      secret_token: await webhookSecret(cfg.token),
+      allowed_updates: ['message', 'my_chat_member'],
+    })
+    const cmds = (l) => [
+      { command: 'start', description: l === 'ru' ? 'Открыть приложение' : 'Ilovani ochish' },
+      { command: 'help', description: l === 'ru' ? 'Помощь' : 'Yordam' },
+      { command: 'stop', description: l === 'ru' ? 'Отключить уведомления' : "Xabarlarni o'chirish" },
+    ]
+    steps.commands = await tg(cfg.token, 'setMyCommands', { commands: cmds('uz') })
+    steps.commandsRu = await tg(cfg.token, 'setMyCommands', { commands: cmds('ru'), language_code: 'ru' })
+    steps.menu = await tg(cfg.token, 'setChatMenuButton', { menu_button: { type: 'web_app', text: 'Pro Football', web_app: { url } } })
+    steps.desc = await tg(cfg.token, 'setMyDescription', { description: "Futbol murabbiylari uchun: kitobdagi chizma va animatsiyali 300+ mashq, tayyor mashg'ulot va mavsum rejalari, taktik doska, davomat. «Start» bosing." })
+    steps.descRu = await tg(cfg.token, 'setMyDescription', { language_code: 'ru', description: 'Для футбольных тренеров: 300+ упражнений со схемами и анимацией из книг, готовые планы тренировок и сезона, тактическая доска, посещаемость. Нажмите «Старт».' })
+    steps.short = await tg(cfg.token, 'setMyShortDescription', { short_description: "Futbol murabbiylari uchun mashqlar va mashg'ulot rejalari" })
+    steps.shortRu = await tg(cfg.token, 'setMyShortDescription', { language_code: 'ru', short_description: 'Упражнения и планы тренировок для футбольных тренеров' })
+    const failed = Object.entries(steps).filter(([, r]) => !r.ok).map(([k, r]) => `${k}: ${r.description}`)
+    return { ok: !failed.length, failed }
+}
+
 export async function onRequestPost({ request, env }) {
   const cfg = config(env)
   if (!cfg.sbUrl) return json({ error: 'not_configured', missing: cfg.missing }, 503)
@@ -36,6 +59,12 @@ export async function onRequestPost({ request, env }) {
       return json({ error: 'bad_token', detail: me.description, shape: { length: raw.length, colon: raw.includes(':'), digitsBefore: (raw.trim().split(':')[0] || '').replace(/\D/g, '').length, spaces: /\s/.test(raw), quotes: /["'`]/.test(raw), tail: cfg.token ? cfg.token.slice(-4) : '' } })
     }
     const want = new URL('/api/tg/webhook', url).href
+    // first open of the admin page on the live site: connect the bot by itself (no button needed)
+    const live = url === (env.APP_URL ? env.APP_URL + '/' : 'https://pro-football.pages.dev/')
+    if (live && !(hook.ok && hook.result.url === want)) {
+      const r = await runSetup(cfg, url)
+      if (r.ok) { const h2 = await tg(cfg.token, 'getWebhookInfo'); if (h2.ok) Object.assign(hook, h2) }
+    }
     return json({
       bot: { username: me.result.username, name: me.result.first_name },
       webhook: { ok: hook.ok && hook.result.url === want, url: hook.ok ? hook.result.url : '', error: hook.ok ? hook.result.last_error_message || null : hook.description },
@@ -45,28 +74,7 @@ export async function onRequestPost({ request, env }) {
     })
   }
 
-  if (body.action === 'setup') {
-    const steps = {}
-    steps.webhook = await tg(cfg.token, 'setWebhook', {
-      url: new URL('/api/tg/webhook', url).href,
-      secret_token: await webhookSecret(cfg.token),
-      allowed_updates: ['message', 'my_chat_member'],
-    })
-    const cmds = (l) => [
-      { command: 'start', description: l === 'ru' ? 'Открыть приложение' : 'Ilovani ochish' },
-      { command: 'help', description: l === 'ru' ? 'Помощь' : 'Yordam' },
-      { command: 'stop', description: l === 'ru' ? 'Отключить уведомления' : "Xabarlarni o'chirish" },
-    ]
-    steps.commands = await tg(cfg.token, 'setMyCommands', { commands: cmds('uz') })
-    steps.commandsRu = await tg(cfg.token, 'setMyCommands', { commands: cmds('ru'), language_code: 'ru' })
-    steps.menu = await tg(cfg.token, 'setChatMenuButton', { menu_button: { type: 'web_app', text: 'Pro Football', web_app: { url } } })
-    steps.desc = await tg(cfg.token, 'setMyDescription', { description: "Futbol murabbiylari uchun: kitobdagi chizma va animatsiyali 300+ mashq, tayyor mashg'ulot va mavsum rejalari, taktik doska, davomat. «Start» bosing." })
-    steps.descRu = await tg(cfg.token, 'setMyDescription', { language_code: 'ru', description: 'Для футбольных тренеров: 300+ упражнений со схемами и анимацией из книг, готовые планы тренировок и сезона, тактическая доска, посещаемость. Нажмите «Старт».' })
-    steps.short = await tg(cfg.token, 'setMyShortDescription', { short_description: "Futbol murabbiylari uchun mashqlar va mashg'ulot rejalari" })
-    steps.shortRu = await tg(cfg.token, 'setMyShortDescription', { language_code: 'ru', short_description: 'Упражнения и планы тренировок для футбольных тренеров' })
-    const failed = Object.entries(steps).filter(([, r]) => !r.ok).map(([k, r]) => `${k}: ${r.description}`)
-    return json({ ok: !failed.length, failed })
-  }
+  if (body.action === 'setup') return json(await runSetup(cfg, url))
 
   if (body.action === 'broadcast') {
     const text = String(body.text || '').trim()
