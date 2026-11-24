@@ -98,7 +98,7 @@ export function Telegram() {
     const sh = st.shape
     return (
       <>{head}
-        <p className="note err">Bot tokeni noto'g'ri: Telegram uni qabul qilmadi ({st.detail || 'xato'}). BotFather'dan tokenni qayta nusxalab, Cloudflare'dagi TELEGRAM_BOT_TOKEN ni yangilang va saytni qayta deploy qiling.</p>
+        <p className="note err">Bot tokeni noto'g'ri: Telegram uni qabul qilmadi ({st.detail || 'xato'}). BotFather'dan tokenni qayta nusxalab, Cloudflare'dagi TG_BOT_TOKEN ni yangilang va saytni qayta deploy qiling.</p>
         {sh && <p className="muted small">Cloudflare'dagi qiymat: {sh.length} belgi, «:» {sh.colon ? 'bor' : "yo'q"}, undan oldin {sh.digitsBefore} ta raqam{sh.spaces ? ', bo\'sh joy bor' : ''}{sh.quotes ? ', qo\'shtirnoq bor' : ''}. To'g'ri token taxminan 46 belgi, «:» dan oldin 10 ta raqam bo'ladi.{sh.tail && <> Sayt ishlatayotgan tokenning oxirgi 4 belgisi: <b>…{sh.tail}</b>. BotFather bergan yangi token ham shu belgilar bilan tugashini solishtiring.</>}</p>}
         <p className="muted small">«Unauthorized» chiqsa, token eskirgan: BotFather'da /mybots → bot → API Token → Revoke qilib, yangisini qo'ying.</p>
       </>
