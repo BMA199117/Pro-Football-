@@ -30,7 +30,11 @@ export async function onRequestPost({ request, env }) {
       count(cfg, '&subscribed=eq.true&blocked=eq.false'),
       count(cfg, '&user_id=not.is.null'),
     ])
-    if (!me.ok) return json({ error: 'bad_token', detail: me.description })
+    if (!me.ok) {
+      // a hint about what was pasted, never the token itself
+      const raw = String(env.TELEGRAM_BOT_TOKEN || '')
+      return json({ error: 'bad_token', detail: me.description, shape: { length: raw.length, colon: raw.includes(':'), digitsBefore: (raw.trim().split(':')[0] || '').replace(/\D/g, '').length, spaces: /\s/.test(raw), quotes: /["'`]/.test(raw) } })
+    }
     const want = new URL('/api/tg/webhook', url).href
     return json({
       bot: { username: me.result.username, name: me.result.first_name },
