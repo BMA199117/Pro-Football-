@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useT } from '../hooks'
 import { update, useData, usePrefs, setPrefs } from '../store'
 import { Modal } from '../components/Modal'
+import { EmptyState } from '../components/Icon'
 import { parse, uid } from '../dates'
 import { allGroups } from '../groups'
 import type { Player } from '../types'
@@ -45,7 +46,11 @@ export function Team() {
           )}
           {s && <span className="chip">{came}/{players.length} {t('present')}</span>}
         </div>
-        {players.length === 0 ? <div className="empty">{t('noPlayers')}</div> : (
+        {players.length === 0 ? (
+          <EmptyState icon="user" title={t('esPlayersT')} text={t('esPlayers')}>
+            <button className="btn" onClick={() => setAdding(true)}>+ {t('addPlayer')}</button>
+          </EmptyState>
+        ) : (
           <div className="tw">
             <table>
               <thead><tr><th>{t('num')}</th><th>{t('pname')}</th><th>{t('pos')}</th>{s && <th>{t('session')}</th>}<th>{t('rate')}</th></tr></thead>

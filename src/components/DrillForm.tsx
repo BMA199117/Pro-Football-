@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Ic } from './Icon'
 import { useT } from '../hooks'
 import { update } from '../store'
 import { Modal } from './Modal'
@@ -39,7 +40,7 @@ export function DrillForm({ drill, onClose, onSaved }: { drill?: Drill; onClose:
         <label className="full">{t('name')}<input id="fd-name" value={f.name} onChange={set('name')} required autoFocus /></label>
         <div className="full fd-draw">
           {scene ? <BookStatic scene={scene} maxHeight={150} /> : <p className="muted">{t('ownDrawing')}: —</p>}
-          <button type="button" className="btn small" onClick={() => setDrawing(true)}>✏️ {scene ? t('redraw') : t('drawBoard')}</button>
+          <button type="button" className="btn small" onClick={() => setDrawing(true)}><Ic n="edit" />{scene ? t('redraw') : t('drawBoard')}</button>
         </div>
         <label className="full">{t('desc')}<textarea id="fd-desc" rows={3} value={f.desc} onChange={set('desc')} /></label>
         <label>{t('cat')}<select id="fd-cat" value={f.cat} onChange={set('cat')}>{CATEGORIES.map((c) => <option key={c} value={c}>{t(c)}</option>)}</select></label>

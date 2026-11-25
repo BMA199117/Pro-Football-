@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Ic, EmptyState } from '../components/Icon'
 import { useT, useDrills, sessionMinutes, PHASE_COLOR } from '../hooks'
 import { update, useData, usePrefs, setPrefs, takeIntent } from '../store'
 import { DrillPitch } from '../components/AnimatedPitch'
@@ -41,7 +42,7 @@ export function Plan() {
     <div className="head">
       <div><h1>{t('plan')}</h1><p className="sub">{t('planSub')}</p></div>
       <div className="row">
-        <button className="btn ghost" onClick={() => setTplOpen(true)}>📋 {t('fromTemplate')}</button>
+        <button className="btn ghost" onClick={() => setTplOpen(true)}><Ic n="plan" />{t('fromTemplate')}</button>
         <button className="btn" onClick={() => setForm('new')}>+ {t('newS')}</button>
       </div>
     </div>
@@ -78,11 +79,12 @@ export function Plan() {
   if (!s) return (
     <>
       {head}
-      <div className="panel empty-state">
-        <p>{t('noSessions')}</p>
-        <div className="row" style={{ justifyContent: 'center' }}>
+      <div className="panel">
+        <EmptyState icon="plan" title={t('esPlanT')} text={t('noPlanYet')}>
+          <button className="btn" onClick={() => setTplOpen(true)}><Ic n="plan" />{t('fromTemplate')}</button>
+          <button className="btn ghost" onClick={() => setForm('new')}>+ {t('newS')}</button>
           <button className="btn ghost" onClick={() => update(() => sampleData())}>{t('loadSample')}</button>
-        </div>
+        </EmptyState>
       </div>
       {form && <SessionForm onClose={() => setForm(null)} />}
       {modals}

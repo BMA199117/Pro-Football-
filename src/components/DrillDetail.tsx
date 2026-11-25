@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Ic } from './Icon'
 import { Modal } from './Modal'
 import { DrillViews } from './AnimatedPitch'
 import { LineKey } from './BookPitch'
@@ -57,7 +58,7 @@ export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onC
       )}
       <div className="dd-bar">
         <button className={'star' + (fav ? ' on' : '')} onClick={toggleFav} aria-pressed={fav} aria-label={t('favs')} title={t('favs')}>{fav ? '★' : '☆'}</button>
-        {drill.custom && <button className="btn ghost" onClick={() => setEditing(true)}>✏️ {t('edit')}</button>}
+        {drill.custom && <button className="btn ghost" onClick={() => setEditing(true)}><Ic n="edit" />{t('edit')}</button>}
         {upcoming.length > 0 ? (
           picking
             ? <button className="btn grow" onClick={add} disabled={added}>{added ? '✓ ' + t('added') : '+ ' + t('addTo')}</button>
@@ -82,7 +83,7 @@ export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onC
       {L(drill.desc) && <p className="lead">{L(drill.desc)}</p>}
       {ben && (
         <div className="benefit">
-          <h3 className="label">💡 {t('why')}</h3>
+          <h3 className="label"><Ic n="bulb" />{t('why')}</h3>
           <p>{lang === 'ru' ? ben[2] : ben[1]}</p>
           <div className="skills"><span className="skills-l">{t('develops')}:</span>{ben[0].map((k) => <span key={k} className="skill">{SKILLS[k][lang === 'ru' ? 1 : 0]}</span>)}</div>
         </div>
@@ -95,7 +96,7 @@ export function DrillDetail({ drill: drill0, onClose, top }: { drill: Drill; onC
       )}
       <p className="sub"><b>{t('equip')}:</b> {L(drill.equip)}</p>
       {drill.source && SOURCES[drill.source] && (
-        <p className="source">📖 {t('source')}: {SOURCES[drill.source].author}, «{SOURCES[drill.source].title}»</p>
+        <p className="source"><Ic n="book" />{t('source')}: {SOURCES[drill.source].author}, «{SOURCES[drill.source].title}»</p>
       )}
       <DrillShare drill={drill} />
       {editing && <DrillForm drill={drill} onClose={() => setEditing(false)} />}

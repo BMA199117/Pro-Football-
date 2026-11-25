@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { Ic } from './Icon'
 import { ballAt, marks, posAt, type BallStep, type BookScene, type ConeColor, type Item, type PitchKind, type Pt, type Step, type Team } from '../book/scene'
 import { Frame, MarkPaths, SCALABLE, TEAM, ballDot, fieldItem, item, playerDot, soccerBall } from './BookPitch'
 import { BookPlayer } from './AnimatedPitch'
@@ -389,11 +390,11 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
         <div className="tb-toks">{Array.from({ length: 11 }, (_, i) => String(i + 1)).map((l) => btn(team, l, t(side === 'L' ? 'bBlue' : 'bRed') + ' ' + l, used.has(l)))}</div>
         <div className="tb-rail-x">
           {side === 'L' ? <>
-            {actBtn('move', t('bMove'), '✋')}
+            {actBtn('move', t('bMove'), <Ic n="move" />)}
             {actBtn('pass', t('bPass'), arrowIc('3 2'))}
             {actBtn('shot', t('bShot'), arrowIc('0.5 2'))}
             {actBtn('lob', t('bLob'), arrowIc(undefined, true))}
-            {actBtn('del', t('del'), '🧽')}
+            {actBtn('del', t('del'), <Ic n="erase" />)}
           </> : <div className="tb-kit tb-qkit">
             {kitBtn('add:ball', t('bBall'), ballIc)}
             {QUICK_KIT.map((key) => { const k = KIT.find((x) => x.key === key); return k ? <span key={key}>{kitBtn('add:' + k.key, t(k.label) + (k.col ? ' · ' + t(k.col) : ''), kitIc(k))}</span> : null })}
@@ -437,7 +438,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
         <input id="tb-name" className="tb-name" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('bName')} aria-label={t('name')} />
         <div className="tb-top-btns">
           <button type="button" className="btn ghost small" onClick={undo} disabled={!hist.length} title={t('bUndo')} aria-label={t('bUndo')}>↶</button>
-          {sc.steps > 1 && <button type="button" className="btn ghost small tb-dl" onClick={startVideo} title={t('vDownload')}>⬇ {t('vVideo')}{!hasPremium(access) && ' 🔒'}</button>}
+          {sc.steps > 1 && <button type="button" className="btn ghost small tb-dl" onClick={startVideo} title={t('vDownload')}><Ic n="download" />{t('vVideo')}{!hasPremium(access) && <Ic n="lock" />}</button>}
           <button type="button" className="btn small" onClick={save}>{t('save')}</button>
         </div>
       </div>
@@ -492,7 +493,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
               <p className="muted">{t('vKeepOpen')}</p>
               <button type="button" className="btn ghost small" onClick={() => vid.ac.abort()}>{t('cancel')}</button>
             </> : 'file' in vid ? <>
-              <b>✅ {t('vDone')}</b>
+              <b><Ic n="check" /> {t('vDone')}</b>
               <p className="muted">{t('vDoneHint')}</p>
               <div className="tb-recbtns">
                 <button type="button" className="btn small" onClick={() => import('./boardVideo').then((v) => v.saveFile(vid.file, fileName() + '.' + vid.ext))}>⬇ {t('vAgain')}</button>
@@ -549,11 +550,11 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
 
         <div className="tb-bar" role="toolbar" aria-label={t('board')}>
           <div className="tbb-group tbb-mode">
-            <button type="button" aria-pressed={!preview} onClick={() => setPreview(false)}>✏️<span>{t('bModeEdit')}</span></button>
+            <button type="button" aria-pressed={!preview} onClick={() => setPreview(false)}><Ic n="edit" /><span>{t('bModeEdit')}</span></button>
             <button type="button" aria-pressed={preview} disabled={sc.steps < 2} onClick={() => { setPop(null); setPreview(true) }} title={sc.steps < 2 ? t('bHintStart') : undefined}>▶<span>{t('bModeAnim')}</span></button>
           </div>
           <div className="tbb-group tb-dup">
-            {actBtn('move', t('bMove'), '✋')}
+            {actBtn('move', t('bMove'), <Ic n="move" />)}
             {actBtn('pass', t('bPass'), arrowIc('3 2'))}
             {actBtn('shot', t('bShot'), arrowIc('0.5 2'))}
             {actBtn('lob', t('bLob'), arrowIc(undefined, true))}
@@ -565,7 +566,7 @@ export function Board({ initial, name: name0 = '', onSave, onClose }: { initial?
             <button type="button" className="tbb-color" aria-label={t('bColor')} aria-expanded={pop === 'color'} onClick={() => setPop(pop === 'color' ? null : 'color')}><i style={{ background: L_COLS.find((c) => c[0] === line.col)?.[2] }} /></button>
           </div>
           <div className="tbb-group tb-dup">
-            {actBtn('del', t('del'), '🧽')}
+            {actBtn('del', t('del'), <Ic n="erase" />)}
           </div>
           <div className="tbb-group">
             {popBtn('players', t('bPlayers'), playersIc, tool.length === 5 && tool.startsWith('add:'))}
