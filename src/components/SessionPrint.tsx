@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
+import { Ic } from './Icon'
 import { pdfName, sheetToPdf } from '../pdf'
 import { createPortal } from 'react-dom'
 import { DrillPitch } from './AnimatedPitch'
@@ -25,7 +26,7 @@ export function SessionPrintButton({ session, byId }: { session: Session; byId: 
   }, [busy, session])
   return (
     <>
-      <button className="btn ghost small" disabled={busy} onClick={() => setBusy(true)}>{busy ? '⏳ ' + t('pdfMaking') : '📄 ' + t('konspekt')}</button>
+      <button className="btn ghost small" disabled={busy} onClick={() => setBusy(true)}>{busy ? '⏳ ' + t('pdfMaking') : <><Ic n="file" />{t('konspekt')}</>}</button>
       {busy && createPortal(<SessionSheet sheetRef={ref} session={session} byId={byId} />, document.body)}
     </>
   )
@@ -77,7 +78,7 @@ function SessionSheet({ session: s, byId, sheetRef }: { session: Session; byId: 
         <h2>{t('notes')}</h2>
         {Array.from({ length: 5 }, (_, i) => <div key={i} className="ks-line" />)}
       </section>
-      {srcs.length > 0 && <p className="ps-small">📖 {t('source')}: {srcs.map((k) => `${SOURCES[k].author}, «${SOURCES[k].title}»`).join('; ')}</p>}
+      {srcs.length > 0 && <p className="ps-small"><Ic n="book" /> {t('source')}: {srcs.map((k) => `${SOURCES[k].author}, «${SOURCES[k].title}»`).join('; ')}</p>}
       <footer className="ps-foot">{t('printedFrom')}</footer>
     </div>
   )

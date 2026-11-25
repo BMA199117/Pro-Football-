@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Ic, EmptyState } from '../components/Icon'
 import { useT, useDrills } from '../hooks'
 import { update, useData } from '../store'
 import { DrillDetail } from '../components/DrillDetail'
@@ -71,7 +72,7 @@ export function Drills() {
               <div className="meta">
                 <span className="chip" style={{ boxShadow: `inset 3px 0 0 ${CAT_COLOR[d.cat]}` }}>{t(d.cat)}</span>
                 <span className="chip cone">{d.min} {t('min')}</span>
-                {d.source && <span className="chip book" title={t('source')}>📖</span>}
+                {d.source && <span className="chip book" title={t('source')}><Ic n="book" /></span>}
                 {paid && !d.custom && <AccessChip locked={locked(d.id)} />}
               </div>
               {d.custom && (
@@ -87,7 +88,7 @@ export function Drills() {
       <div className="head">
         <div><h1>{t('lib')}</h1><p className="sub">{t('libSub')}</p></div>
         <div className="head-btns">
-          <button className="btn" onClick={() => setDrawing(true)}>✏️ {t('board')}</button>
+          <button className="btn" onClick={() => setDrawing(true)}><Ic n="edit" />{t('board')}</button>
           <button className="btn ghost" onClick={() => setAdding(true)}>+ {t('own')}</button>
         </div>
       </div>
@@ -99,7 +100,7 @@ export function Drills() {
       </div>
       <div className="libtabs" role="group">
         {(['base', 'fav', 'mine'] as const).map((v) => (
-          <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>{v === 'fav' ? '★ ' + t('favs') : t(v)}</button>
+          <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>{v === 'fav' ? <><Ic n="star" />{t('favs')}</> : t(v)}</button>
         ))}
       </div>
       <div className="ages" role="group" aria-label={t('age')}>
@@ -114,7 +115,7 @@ export function Drills() {
         {(['all', ...CATEGORIES] as const).map((c) => (
           <button key={c} aria-pressed={cat === c} onClick={() => setCat(c)}>{t(c)}</button>
         ))}
-        <button aria-pressed={onlyBooks} onClick={() => setOnlyBooks(!onlyBooks)}>📖 {t('fromBooks')}</button>
+        <button aria-pressed={onlyBooks} onClick={() => setOnlyBooks(!onlyBooks)}><Ic n="book" />{t('fromBooks')}</button>
       </div>
       {sections.map(({ band: b, list }) => (
         <section key={b.id} className="band">
@@ -122,7 +123,20 @@ export function Drills() {
           <div className="cards">{list.map(card)}</div>
         </section>
       ))}
-      {shown.length === 0 && <p className="empty">{t('noDrills')}</p>}
+      {shown.length === 0 && (
+        view === 'fav' && favs.length === 0 ? (
+          <EmptyState icon="star" title={t('esFavT')} text={t('esFav')}><button className="btn ghost" onClick={() => setView('base')}>{t('toBase')}</button></EmptyState>
+        ) : view === 'mine' && !drills.some((d) => d.custom) ? (
+          <EmptyState icon="edit" title={t('esMineT')} text={t('esMine')}>
+            <button className="btn" onClick={() => setDrawing(true)}><Ic n="edit" />{t('board')}</button>
+            <button className="btn ghost" onClick={() => setAdding(true)}>+ {t('own')}</button>
+          </EmptyState>
+        ) : (
+          <EmptyState icon="target" title={t('esFilterT')} text={t('esFilter')}>
+            <button className="btn ghost" onClick={() => { setQ(''); setCat('all'); setOnlyBooks(false); setAge('') }}>{t('clearFilters')}</button>
+          </EmptyState>
+        )
+      )}
       {adding && <DrillForm onClose={() => setAdding(false)} />}
       {drawing && <Board onClose={() => setDrawing(false)} onSave={(scene, name) => {
         const both = { uz: name, ru: name }

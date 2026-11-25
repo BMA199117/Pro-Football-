@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
+import { Ic } from './components/Icon'
 import { usePrefs, setPrefs, type Tab } from './store'
 import { useTabHistory } from './back'
 import { useT } from './hooks'
@@ -58,11 +59,10 @@ function CoachApp() {
           ))}
         </nav>
         <div className="rail-foot">
-          {admin && <a className="admin-link" href="#admin" title="Admin panel">⚙<span className="slabel"> Admin panel</span></a>}
+          {admin && <a className="admin-link" href="#admin" title="Admin panel"><Ic n="gear" /><span className="slabel"> Admin panel</span></a>}
           <div className="row-ctl">
             <SyncBadge onClick={() => setSync(true)} />
-            <button className="theme-btn" aria-label={t('theme')} title={t('theme')}
-              onClick={() => { const dark = theme ? theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; setPrefs({ theme: dark ? 'light' : 'dark' }) }}>◐</button>
+            <ThemeButton theme={theme} />
           </div>
           <div className="lang" role="group" aria-label="Til / Язык">
             {(['uz', 'ru'] as const).map((l) => (
@@ -75,5 +75,17 @@ function CoachApp() {
       {sync && <SyncPanel onClose={() => setSync(false)} />}
       <SharedDrill />
     </div>
+  )
+}
+
+/** Sun / moon switch: shows the mode you switch TO, with its name as the tooltip. */
+function ThemeButton({ theme }: { theme?: 'light' | 'dark' }) {
+  const { t } = useT()
+  const dark = theme ? theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+  const label = dark ? t('themeLight') : t('themeDark')
+  return (
+    <button className="theme-btn" aria-label={label} title={label} onClick={() => setPrefs({ theme: dark ? 'light' : 'dark' })}>
+      <Ic n={dark ? 'sun' : 'moon'} />
+    </button>
   )
 }

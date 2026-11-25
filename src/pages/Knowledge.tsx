@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Ic } from '../components/Icon'
 import { useT } from '../hooks'
 import { TOPICS } from '../knowledge'
 import { useContent } from '../content'
@@ -52,7 +53,7 @@ export function Knowledge() {
                   <ul className="points">{k.tips.map((tip, i) => <li key={i}>{L(tip)}</li>)}</ul>
                 </div>
               )}
-              {src && <p className="source">📖 {src.author}, «{src.title}»</p>}
+              {src && <p className="source"><Ic n="book" /> {src.author}, «{src.title}»</p>}
             </article>
           )
         })}
@@ -70,7 +71,7 @@ function SourceLinks({ ids }: { ids: string[] }) {
   const list = DEV_SOURCES.filter((s) => ids.includes(s.id))
   if (!list.length) return null
   return (
-    <p className="source">🔗 {t('source')}: {list.map((s, i) => (
+    <p className="source"><Ic n="link" /> {t('source')}: {list.map((s, i) => (
       <span key={s.id}>{i > 0 && ' · '}<a href={s.url} target="_blank" rel="noreferrer">{s.org}: {s.title}</a></span>
     ))}</p>
   )
@@ -93,7 +94,7 @@ function Stages() {
       </div>
       <article className="stage">
         <h2 className="band-h">{L(st.title)} <span>· {st.ages} {t('years')}</span></h2>
-        <p className="lead">🎯 {L(st.goal)}</p>
+        <p className="lead"><Ic n="target" /> {L(st.goal)}</p>
         <h3 className="label">{t('profile')}</h3>
         <ul className="points">{st.profile.map((x, i) => <li key={i}>{L(x)}</li>)}</ul>
         <div className="stage-grid">

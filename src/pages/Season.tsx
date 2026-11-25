@@ -1,4 +1,5 @@
 import { AccessChip, PaywallBody } from '../premium/Locked'
+import { Ic } from '../components/Icon'
 import { hasPremium, isLocked, useAccess } from '../premium/access'
 import { useMemo, useState } from 'react'
 import { useT } from '../hooks'
@@ -82,7 +83,7 @@ function NewSeason({ onSaved }: { onSaved: (id: string) => void }) {
             <div style={{ flex: 1, minWidth: 0 }}>
               <b>{L(p.title)}</b>
               <div className="m">{L(p.summary)}</div>
-              <div className="m src">📖 {SOURCES[p.source]?.title}</div>
+              <div className="m src"><Ic n="book" /> {SOURCES[p.source]?.title}</div>
             </div>
             {paid && <AccessChip locked={isLocked('season', p.id, access)} />}
           </button>
@@ -155,7 +156,7 @@ function PlanView({ plan, prog }: { plan: SeasonPlan; prog: SeasonProgram }) {
           <b>{L(u.title)}</b>
           <p className="sub">{t('stageYear')}</p>
           <div className="row" style={{ justifyContent: 'flex-start' }}>
-            {(u.tpl ?? []).map((id) => { const x = tplOf(id); return x && <button key={id} className="btn ghost small" onClick={() => setForm({ date: today, goal: L(x.title), tpl: x })}>📋 {L(x.title)}</button> })}
+            {(u.tpl ?? []).map((id) => { const x = tplOf(id); return x && <button key={id} className="btn ghost small" onClick={() => setForm({ date: today, goal: L(x.title), tpl: x })}><Ic n="plan" />{L(x.title)}</button> })}
           </div>
         </div>
       ))}
@@ -186,7 +187,7 @@ function PlanView({ plan, prog }: { plan: SeasonPlan; prog: SeasonProgram }) {
                     {w.unit?.focus && <p className="sub" style={{ margin: 0 }}>{L(w.unit.focus)}</p>}
                     {!w.unit && <p className="sub" style={{ margin: 0 }}>{t('noTheme')}</p>}
                     <div className="row" style={{ justifyContent: 'flex-start' }}>
-                      {(w.unit?.tpl ?? []).map((id) => { const x = tplOf(id); return x && <button key={id} className="btn small" onClick={() => setForm({ date: w.monday < today ? today : w.monday, goal: L(x.title), tpl: x })}>📋 {t('readyPlan')}: {L(x.title)}</button> })}
+                      {(w.unit?.tpl ?? []).map((id) => { const x = tplOf(id); return x && <button key={id} className="btn small" onClick={() => setForm({ date: w.monday < today ? today : w.monday, goal: L(x.title), tpl: x })}><Ic n="plan" />{t('readyPlan')}: {L(x.title)}</button> })}
                       <button className={'btn small' + (w.unit?.tpl ? ' ghost' : '')} onClick={() => setForm({ date: w.monday < today ? today : w.monday, goal: w.unit ? stripNo(L(w.unit.title)) : `${weekWord(w.n)}` })}>+ {t('makeSession')}</button>
                     </div>
                   </div>
@@ -222,7 +223,7 @@ function PlanView({ plan, prog }: { plan: SeasonPlan; prog: SeasonProgram }) {
           <ul className="points">{prog.rules.map((r, i) => <li key={i}>{L(r)}</li>)}</ul>
         </div>
       )}
-      {SOURCES[prog.source] && <p className="source">📖 {t('source')}: {SOURCES[prog.source].author}, «{SOURCES[prog.source].title}»</p>}
+      {SOURCES[prog.source] && <p className="source"><Ic n="book" /> {t('source')}: {SOURCES[prog.source].author}, «{SOURCES[prog.source].title}»</p>}
       {form && <SessionForm defaultDate={form.date} goal={form.goal} template={form.tpl} onClose={() => setForm(null)} />}
     </div>
   )

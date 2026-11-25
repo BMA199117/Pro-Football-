@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
+import { Ic } from './Icon'
 import { pdfName, sheetToPdf } from '../pdf'
 import { createPortal } from 'react-dom'
 import { DrillPitch } from './AnimatedPitch'
@@ -45,8 +46,8 @@ export function DrillShare({ drill }: { drill: Drill }) {
   return (
     <div className="share">
       <div className="row" style={{ justifyContent: 'flex-start' }}>
-        <button className="btn ghost small" disabled={busy} onClick={() => setBusy(true)}>{busy ? '⏳ ' + t('pdfMaking') : '📄 ' + t('printPdf')}</button>
-        <button className="btn ghost small" onClick={send}>🔗 {t('shareLink')}</button>
+        <button className="btn ghost small" disabled={busy} onClick={() => setBusy(true)}>{busy ? '⏳ ' + t('pdfMaking') : <><Ic n="file" />{t('printPdf')}</>}</button>
+        <button className="btn ghost small" onClick={send}><Ic n="link" />{t('shareLink')}</button>
       </div>
       {link && (
         <div className="share-link">
@@ -93,7 +94,7 @@ function PrintSheet({ drill, sheetRef }: { drill: Drill; sheetRef: RefObject<HTM
       )}
       {ben && (
         <section>
-          <h2>💡 {t('why')}</h2>
+          <h2><Ic n="bulb" /> {t('why')}</h2>
           <p>{lang === 'ru' ? ben[2] : ben[1]}</p>
           <p className="ps-small"><b>{t('develops')}:</b> {ben[0].map((k) => SKILLS[k][lang === 'ru' ? 1 : 0]).join(', ')}</p>
         </section>
@@ -102,7 +103,7 @@ function PrintSheet({ drill, sheetRef }: { drill: Drill; sheetRef: RefObject<HTM
         <section><h2>{t('points')}</h2><ul>{drill.points.map((p, i) => <li key={i}>{L(p)}</li>)}</ul></section>
       )}
       {L(drill.equip) && <p className="ps-small"><b>{t('equip')}:</b> {L(drill.equip)}</p>}
-      {drill.source && SOURCES[drill.source] && <p className="ps-small">📖 {t('source')}: {SOURCES[drill.source].author}, «{SOURCES[drill.source].title}»</p>}
+      {drill.source && SOURCES[drill.source] && <p className="ps-small"><Ic n="book" /> {t('source')}: {SOURCES[drill.source].author}, «{SOURCES[drill.source].title}»</p>}
       <footer className="ps-foot">{t('printedFrom')}</footer>
     </div>
   )

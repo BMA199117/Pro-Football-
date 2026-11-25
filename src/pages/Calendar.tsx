@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Ic } from '../components/Icon'
 import { useT, useDrills, sessionMinutes } from '../hooks'
 import { useData, setPrefs } from '../store'
 import { addDays, iso, monday } from '../dates'
@@ -25,7 +26,7 @@ export function Calendar() {
         </div>}
       </div>
       <div className="libtabs" role="group">
-        {(['week', 'season'] as const).map((v) => <button key={v} aria-pressed={mode === v} onClick={() => setMode(v)}>{v === 'week' ? '🗓 ' + t('vWeek') : '📅 ' + t('season')}</button>)}
+        {(['week', 'season'] as const).map((v) => <button key={v} aria-pressed={mode === v} onClick={() => setMode(v)}>{v === 'week' ? <><Ic n="week" />{t('vWeek')}</> : <><Ic n="season" />{t('season')}</>}</button>)}
       </div>
       {mode === 'season' ? <Season /> : <div className="week">
         {days.map((name, i) => {
@@ -39,7 +40,7 @@ export function Calendar() {
                   <b>{s.time} · {s.group}</b>{s.goal} · {sessionMinutes(s, drills)} {t('min')}
                 </button>
               ))}
-              <button className="add-day" onClick={() => setNewOn(k)} aria-label={t('newS')}>+</button>
+              <button className="add-day" onClick={() => setNewOn(k)} aria-label={t('newS')}>+ {t('addSession')}</button>
             </div>
           )
         })}

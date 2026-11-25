@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Ic } from './Icon'
 import { DrillDetail } from './DrillDetail'
 import { Modal } from './Modal'
 import { useT, useDrills } from '../hooks'
@@ -47,7 +48,7 @@ export function SharedDrill() {
   return (
     <DrillDetail drill={drill} onClose={close} top={
       <div className="shared-top">
-        <span>📨 {t('sharedDrill')}</span>
+        <span><Ic n="send" /> {t('sharedDrill')}</span>
         {got.kind === 'own' && (have
           ? <span className="chip">✓ {t('savedMine')}</span>
           : <button className="btn small" onClick={save}>+ {t('saveToMine')}</button>)}
